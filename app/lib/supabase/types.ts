@@ -2168,6 +2168,27 @@ export type Database = {
     }
     Functions: {
       auth_athlete_id: { Args: never; Returns: number }
+      match_activities: {
+        Args: {
+          athlete_id_in: number
+          match_count?: number
+          query_embedding: string
+        }
+        Returns: {
+          activity_id: number
+          similarity: number
+          summary_text: string
+        }[]
+      }
+      match_knowledge: {
+        Args: { match_count?: number; query_embedding: string }
+        Returns: {
+          category: string
+          content: string
+          similarity: number
+          title: string
+        }[]
+      }
       viewable_athlete_ids: { Args: never; Returns: number[] }
     }
     Enums: {
