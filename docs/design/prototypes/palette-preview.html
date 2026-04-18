@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadence — Color Palette Directions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --page-bg: #FAF7F0;
+      --page-surface: #FFFFFF;
+      --page-border: #E9E2D2;
+      --page-text: #171511;
+      --page-text-muted: #78756F;
+    }
+    .dark {
+      --page-bg: #0E0D0B;
+      --page-surface: #16140F;
+      --page-border: #2E2B25;
+      --page-text: #EDE9DE;
+      --page-text-muted: #8F8B82;
+    }
+    body {
+      background: var(--page-bg);
+      color: var(--page-text);
+      font-family: 'Inter', sans-serif;
+    }
+    .tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Swatch */
+    .swatch {
+      border-radius: 12px;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: flex-end;
+      padding: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), inset 0 0 0 1px rgba(0,0,0,0.04);
+    }
+    .dark .swatch { box-shadow: 0 1px 2px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.04); }
+    .swatch-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    /* Palette section */
+    .palette-section {
+      border: 1px solid var(--page-border);
+      background: var(--page-surface);
+      border-radius: 24px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    /* Accent hero */
+    .accent-hero {
+      border-radius: 22px;
+      aspect-ratio: 1;
+      width: 160px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2);
+      display: flex;
+      align-items: flex-end;
+      padding: 14px;
+    }
+
+    /* Sample UI block */
+    .sample-ui {
+      border-radius: 14px;
+      padding: 18px;
+      border: 1px solid;
+    }
+
+    .sample-btn {
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .sample-tile {
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+  <!-- Header -->
+  <header class="border-b sticky top-0 z-20" style="border-color: var(--page-border); background: var(--page-surface);">
+    <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between gap-4 flex-wrap">
+      <div>
+        <div class="flex items-center gap-2.5 mb-1">
+          <div class="h-7 w-7 rounded-md flex items-center justify-center" style="background: var(--page-text);">
+            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="var(--page-surface)" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <span class="font-semibold text-[15px]">Cadence</span>
+          <span class="text-xs px-2 py-0.5 rounded-full" style="background: rgba(23,21,17,0.06); color: var(--page-text-muted);">Palette Directions</span>
+        </div>
+        <h1 class="text-2xl font-semibold tracking-tight">Which palette feels right?</h1>
+        <p class="text-sm mt-1 max-w-2xl" style="color: var(--page-text-muted);">
+          Four distinct directions. Each section shows shell colors, primary accent, widget palette, and a sample UI using that palette. Pick one or describe a hybrid.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="theme-toggle" class="h-9 px-3 rounded-md border flex items-center gap-2 text-sm" style="border-color: var(--page-border);">
+          <i data-lucide="moon" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Toggle theme</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-10">
+
+    <!-- RECOMMENDATION BANNER -->
+    <div class="rounded-2xl border p-6 mb-10 flex items-center gap-5 flex-wrap" style="border-color: var(--page-border); background: linear-gradient(135deg, #FAF7EF, #F2EDE1); color: #171511;">
+      <div class="accent-hero shrink-0" style="background: linear-gradient(135deg, #D99E3E, #C48A2A, #8A6118); aspect-ratio: 1; width: 88px; height: 88px; border-radius: 16px;">
+        <span class="swatch-label" style="color: #F5E4BC;">#C48A2A</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-[11px] font-semibold uppercase tracking-[0.15em] mb-1" style="color: #8A6118;">Recommended direction</div>
+        <h2 class="text-2xl font-semibold mb-1">Ink + Saffron</h2>
+        <p class="text-sm" style="color: #4C4536;">Old-world editorial. Most coherent with our journal aesthetic, zero overlap with fitness-app competitors, warm without being saccharine.</p>
+      </div>
+      <button class="px-4 py-2 rounded-md text-sm font-medium" style="background: #171511; color: #F4EFE3;">Jump to Ink + Saffron ↓</button>
+    </div>
+
+    <!-- ========== PALETTE 1: GRAPHITE + FOREST ========== -->
+    <section class="palette-section">
+      <div class="flex items-start justify-between gap-4 mb-6 flex-wrap">
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-[0.2em]" style="color: var(--page-text-muted);">Palette 01</div>
+          <h2 class="text-3xl font-semibold mt-1">Graphite + Forest</h2>
+          <p class="text-sm mt-2 max-w-xl" style="color: var(--page-text-muted);">Grounded, endurance-coded, trail-adjacent. Pine forests at dawn, cold mornings, a well-worn trail shoe. Serious but warm.</p>
+        </div>
+        <div class="text-xs px-2 py-1 rounded-md" style="background: rgba(23,21,17,0.05); color: var(--page-text-muted);">
+          Tags: <span class="font-medium" style="color: var(--page-text);">grounded · endurance · trail</span>
+        </div>
+      </div>
+
+      <!-- Shell neutrals -->
+      <div class="mb-6">
+        <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Shell / Chrome</div>
+        <div class="grid grid-cols-6 gap-2">
+          <div class="swatch" style="background: #FAF7F0;"><span class="swatch-label" style="color: #78756F;">#FAF7F0</span></div>
+          <div class="swatch" style="background: #F0ECE1;"><span class="swatch-label" style="color: #57554F;">#F0ECE1</span></div>
+          <div class="swatch" style="background: #D4D0C4;"><span class="swatch-label" style="color: #3E3C37;">#D4D0C4</span></div>
+          <div class="swatch" style="background: #57554F;"><span class="swatch-label" style="color: #E7E5DF;">#57554F</span></div>
+          <div class="swatch" style="background: #26241F;"><span class="swatch-label" style="color: #EDE9DE;">#26241F</span></div>
+          <div class="swatch" style="background: #171511;"><span class="swatch-label" style="color: #F5F5F0;">#171511</span></div>
+        </div>
+      </div>
+
+      <!-- Accent + Sample UI side by side -->
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
+        <div class="md:col-span-2">
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Primary accent</div>
+          <div class="flex items-center gap-4">
+            <div class="accent-hero" style="background: linear-gradient(135deg, #2C6550, #1F4D3B, #103329);">
+              <span class="swatch-label" style="color: #D0E5DA;">#1F4D3B</span>
+            </div>
+            <div class="text-sm" style="color: var(--page-text-muted);">Deep muted forest green. Not Runna-bright, not Alma-wellness. Warm against our neutrals.</div>
+          </div>
+        </div>
+        <div class="md:col-span-3">
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Sample UI</div>
+          <div class="sample-ui" style="background: #FAF7F0; border-color: #E9E2D2; color: #171511;">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm font-semibold">Tuesday Morning Run</div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider" style="background: rgba(31,77,59,0.12); color: #1F4D3B;">Interval</span>
+            </div>
+            <div class="flex items-baseline gap-4 mb-3">
+              <span class="mono text-3xl font-bold tabular">6.93</span>
+              <span class="text-xs" style="color: #78756F;">km · 28:51 · 6:28/mi</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="sample-btn text-white" style="background: #1F4D3B;">Save to plan</button>
+              <button class="sample-btn" style="background: transparent; border: 1px solid #E9E2D2; color: #171511;">Share</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Widget palette -->
+      <div class="mb-6">
+        <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Widget palette</div>
+        <div class="grid grid-cols-3 sm:grid-cols-7 gap-2">
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #5A4A9A, #3E2E7E);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Train Load</div>
+            <div class="swatch-label mt-2" style="color: #DDD4F5;">#3E2E7E</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #2C6550, #1F4D3B);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Volume</div>
+            <div class="swatch-label mt-2" style="color: #D0E5DA;">#1F4D3B</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #B26332, #8A4A1F);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">PR</div>
+            <div class="swatch-label mt-2" style="color: #F2D9BF;">#8A4A1F</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #8E2F2F, #6B1F1F);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">HR Zones</div>
+            <div class="swatch-label mt-2" style="color: #F2C5C5;">#6B1F1F</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #2E5580, #1E3A5F);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Long</div>
+            <div class="swatch-label mt-2" style="color: #C9DAEB;">#1E3A5F</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #555555, #3D3D3D);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Recovery</div>
+            <div class="swatch-label mt-2" style="color: #CFCFCF;">#3D3D3D</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #7A7A3E, #5A5A2E);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Gear</div>
+            <div class="swatch-label mt-2" style="color: #DFE0B8;">#5A5A2E</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Semantic + trade-offs -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Semantic</div>
+          <div class="flex gap-2">
+            <div class="swatch" style="background: #2F6B3C; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">success</span></div>
+            <div class="swatch" style="background: #A16207; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">warn</span></div>
+            <div class="swatch" style="background: #8B1F1F; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">danger</span></div>
+            <div class="swatch" style="background: #1E5079; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">info</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Trade-offs</div>
+          <div class="text-xs space-y-1" style="color: var(--page-text-muted);">
+            <div><span class="font-semibold" style="color: #2F6B3C;">✓ Strong:</span> distinctive, warm, endurance-coded without cliché</div>
+            <div><span class="font-semibold" style="color: #A16207;">⚠ Risk:</span> green can feel environmental/wellness — managed via muted saturation</div>
+            <div><span class="font-semibold" style="color: var(--page-text);">Overlap:</span> mild — deeper than Runna's teal, darker than Alma's green</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PALETTE 2: OBSIDIAN + RUST ========== -->
+    <section class="palette-section">
+      <div class="flex items-start justify-between gap-4 mb-6 flex-wrap">
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-[0.2em]" style="color: var(--page-text-muted);">Palette 02</div>
+          <h2 class="text-3xl font-semibold mt-1">Obsidian + Rust</h2>
+          <p class="text-sm mt-2 max-w-xl" style="color: var(--page-text-muted);">Warm industrial. A forge. Leather, copper, dusty clay. Athletic without being athletic-brand. Explicitly NOT Strava energetic-orange.</p>
+        </div>
+        <div class="text-xs px-2 py-1 rounded-md" style="background: rgba(23,21,17,0.05); color: var(--page-text-muted);">
+          Tags: <span class="font-medium" style="color: var(--page-text);">warm · handcrafted · aged</span>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Shell / Chrome</div>
+        <div class="grid grid-cols-6 gap-2">
+          <div class="swatch" style="background: #FBF7EF;"><span class="swatch-label" style="color: #78756F;">#FBF7EF</span></div>
+          <div class="swatch" style="background: #F1ECDF;"><span class="swatch-label" style="color: #57554F;">#F1ECDF</span></div>
+          <div class="swatch" style="background: #D2CCBC;"><span class="swatch-label" style="color: #3E3C37;">#D2CCBC</span></div>
+          <div class="swatch" style="background: #5B554A;"><span class="swatch-label" style="color: #EFECE2;">#5B554A</span></div>
+          <div class="swatch" style="background: #29241C;"><span class="swatch-label" style="color: #EFECE2;">#29241C</span></div>
+          <div class="swatch" style="background: #15110A;"><span class="swatch-label" style="color: #F7F3E7;">#15110A</span></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
+        <div class="md:col-span-2">
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Primary accent</div>
+          <div class="flex items-center gap-4">
+            <div class="accent-hero" style="background: linear-gradient(135deg, #C97350, #B45A3C, #7E3C22);">
+              <span class="swatch-label" style="color: #F6D6C4;">#B45A3C</span>
+            </div>
+            <div class="text-sm" style="color: var(--page-text-muted);">Dusty rust / terracotta. Old brick, not a highlighter. Earthy warmth distinct from Strava saturated orange.</div>
+          </div>
+        </div>
+        <div class="md:col-span-3">
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Sample UI</div>
+          <div class="sample-ui" style="background: #FBF7EF; border-color: #D2CCBC; color: #15110A;">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm font-semibold">Tuesday Morning Run</div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider" style="background: rgba(180,90,60,0.15); color: #B45A3C;">Interval</span>
+            </div>
+            <div class="flex items-baseline gap-4 mb-3">
+              <span class="mono text-3xl font-bold tabular">6.93</span>
+              <span class="text-xs" style="color: #5B554A;">km · 28:51 · 6:28/mi</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="sample-btn text-white" style="background: #B45A3C;">Save to plan</button>
+              <button class="sample-btn" style="background: transparent; border: 1px solid #D2CCBC; color: #15110A;">Share</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Widget palette</div>
+        <div class="grid grid-cols-3 sm:grid-cols-7 gap-2">
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #9758A8, #7B3F8F);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Train Load</div>
+            <div class="swatch-label mt-2" style="color: #E6D1EB;">#7B3F8F</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #7A9665, #5E7B4E);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Volume</div>
+            <div class="swatch-label mt-2" style="color: #D8E4CA;">#5E7B4E</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #C97350, #B45A3C);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">PR</div>
+            <div class="swatch-label mt-2" style="color: #F6D6C4;">#B45A3C</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #A83040, #8B1F2D);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">HR Zones</div>
+            <div class="swatch-label mt-2" style="color: #F2C6CB;">#8B1F2D</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #415D80, #2E4562);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Long</div>
+            <div class="swatch-label mt-2" style="color: #CBD5E4;">#2E4562</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #605B52, #4A4640);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Recovery</div>
+            <div class="swatch-label mt-2" style="color: #D9D5CD;">#4A4640</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #B08C3E, #8F6E2D);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Gear</div>
+            <div class="swatch-label mt-2" style="color: #EFDFB7;">#8F6E2D</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Semantic</div>
+          <div class="flex gap-2">
+            <div class="swatch" style="background: #4C7340; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">success</span></div>
+            <div class="swatch" style="background: #A16207; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">warn</span></div>
+            <div class="swatch" style="background: #8B1F2D; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">danger</span></div>
+            <div class="swatch" style="background: #2E4562; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">info</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Trade-offs</div>
+          <div class="text-xs space-y-1" style="color: var(--page-text-muted);">
+            <div><span class="font-semibold" style="color: #2F6B3C;">✓ Strong:</span> warmest palette; zero Strava confusion (muted, not saturated)</div>
+            <div><span class="font-semibold" style="color: #A16207;">⚠ Risk:</span> rust can read slightly industrial-Pinterest to some audiences</div>
+            <div><span class="font-semibold" style="color: var(--page-text);">Overlap:</span> pairs perfectly with the journal book paper — almost a continuation</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PALETTE 3: SLATE + COBALT ========== -->
+    <section class="palette-section">
+      <div class="flex items-start justify-between gap-4 mb-6 flex-wrap">
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-[0.2em]" style="color: var(--page-text-muted);">Palette 03</div>
+          <h2 class="text-3xl font-semibold mt-1">Slate + Cobalt</h2>
+          <p class="text-sm mt-2 max-w-xl" style="color: var(--page-text-muted);">Premium SaaS. Linear / Vercel / Arc adjacent. Clean, precise, cool-neutral. Confident and contemporary.</p>
+        </div>
+        <div class="text-xs px-2 py-1 rounded-md" style="background: rgba(23,21,17,0.05); color: var(--page-text-muted);">
+          Tags: <span class="font-medium" style="color: var(--page-text);">modern · precise · cool</span>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Shell / Chrome</div>
+        <div class="grid grid-cols-6 gap-2">
+          <div class="swatch" style="background: #F8F9FA;"><span class="swatch-label" style="color: #64748B;">#F8F9FA</span></div>
+          <div class="swatch" style="background: #EEF0F3;"><span class="swatch-label" style="color: #475569;">#EEF0F3</span></div>
+          <div class="swatch" style="background: #CBD1D9;"><span class="swatch-label" style="color: #1E293B;">#CBD1D9</span></div>
+          <div class="swatch" style="background: #475569;"><span class="swatch-label" style="color: #E2E8F0;">#475569</span></div>
+          <div class="swatch" style="background: #1E293B;"><span class="swatch-label" style="color: #E2E8F0;">#1E293B</span></div>
+          <div class="swatch" style="background: #0F172A;"><span class="swatch-label" style="color: #F1F5F9;">#0F172A</span></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
+        <div class="md:col-span-2">
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Primary accent</div>
+          <div class="flex items-center gap-4">
+            <div class="accent-hero" style="background: linear-gradient(135deg, #5061F5, #2D3FE8, #1B28B3);">
+              <span class="swatch-label" style="color: #D6D9FA;">#2D3FE8</span>
+            </div>
+            <div class="text-sm" style="color: var(--page-text-muted);">Saturated cobalt. Confident, software-serious. Not navy, not royal.</div>
+          </div>
+        </div>
+        <div class="md:col-span-3">
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Sample UI</div>
+          <div class="sample-ui" style="background: #F8F9FA; border-color: #CBD1D9; color: #0F172A;">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm font-semibold">Tuesday Morning Run</div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider" style="background: rgba(45,63,232,0.12); color: #2D3FE8;">Interval</span>
+            </div>
+            <div class="flex items-baseline gap-4 mb-3">
+              <span class="mono text-3xl font-bold tabular">6.93</span>
+              <span class="text-xs" style="color: #64748B;">km · 28:51 · 6:28/mi</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="sample-btn text-white" style="background: #2D3FE8;">Save to plan</button>
+              <button class="sample-btn" style="background: transparent; border: 1px solid #CBD1D9; color: #0F172A;">Share</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Widget palette</div>
+        <div class="grid grid-cols-3 sm:grid-cols-7 gap-2">
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #8851E6, #6D28D9);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Train Load</div>
+            <div class="swatch-label mt-2" style="color: #E5D8FC;">#6D28D9</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #10B981, #059669);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Volume</div>
+            <div class="swatch-label mt-2" style="color: #D0F1E1;">#059669</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #F97316, #EA580C);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">PR</div>
+            <div class="swatch-label mt-2" style="color: #FCE0CA;">#EA580C</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #EF4444, #DC2626);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">HR Zones</div>
+            <div class="swatch-label mt-2" style="color: #FBC8C8;">#DC2626</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #5061F5, #2D3FE8);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Long</div>
+            <div class="swatch-label mt-2" style="color: #D6D9FA;">#2D3FE8</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #94A3B8, #64748B);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Recovery</div>
+            <div class="swatch-label mt-2" style="color: #D6DBE3;">#64748B</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #0EA5E9, #0891B2);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Gear</div>
+            <div class="swatch-label mt-2" style="color: #B4E4F0;">#0891B2</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Semantic</div>
+          <div class="flex gap-2">
+            <div class="swatch" style="background: #16A34A; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">success</span></div>
+            <div class="swatch" style="background: #D97706; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">warn</span></div>
+            <div class="swatch" style="background: #DC2626; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">danger</span></div>
+            <div class="swatch" style="background: #2D3FE8; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">info</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Trade-offs</div>
+          <div class="text-xs space-y-1" style="color: var(--page-text-muted);">
+            <div><span class="font-semibold" style="color: #2F6B3C;">✓ Strong:</span> instantly modern premium software; zero fitness-brand confusion</div>
+            <div><span class="font-semibold" style="color: #DC2626;">⚠ Risk:</span> COOL — moves away from the Alma/Bevel warmth we built toward</div>
+            <div><span class="font-semibold" style="color: var(--page-text);">Overlap:</span> Linear-adjacent (which is a compliment)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PALETTE 4: INK + SAFFRON (RECOMMENDED) ========== -->
+    <section class="palette-section" id="saffron" style="outline: 2px solid #C48A2A; outline-offset: 4px;">
+      <div class="flex items-start justify-between gap-4 mb-6 flex-wrap">
+        <div>
+          <div class="flex items-center gap-2">
+            <div class="text-[11px] font-semibold uppercase tracking-[0.2em]" style="color: var(--page-text-muted);">Palette 04</div>
+            <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded" style="background: #C48A2A; color: #171511;">Recommended</span>
+          </div>
+          <h2 class="text-3xl font-semibold mt-1">Ink + Saffron</h2>
+          <p class="text-sm mt-2 max-w-xl" style="color: var(--page-text-muted);">Old-world editorial. A bound leather journal with a saffron ribbon marker. Warm, sophisticated, slightly academic. Distinctly "not-like-other-fitness-apps."</p>
+        </div>
+        <div class="text-xs px-2 py-1 rounded-md" style="background: rgba(23,21,17,0.05); color: var(--page-text-muted);">
+          Tags: <span class="font-medium" style="color: var(--page-text);">editorial · crafted · timeless</span>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Shell / Chrome</div>
+        <div class="grid grid-cols-6 gap-2">
+          <div class="swatch" style="background: #FAF7EF;"><span class="swatch-label" style="color: #78756F;">#FAF7EF</span></div>
+          <div class="swatch" style="background: #F2EDE1;"><span class="swatch-label" style="color: #57554F;">#F2EDE1</span></div>
+          <div class="swatch" style="background: #D9D0B6;"><span class="swatch-label" style="color: #3E3C37;">#D9D0B6</span></div>
+          <div class="swatch" style="background: #4C4536;"><span class="swatch-label" style="color: #F2EDE1;">#4C4536</span></div>
+          <div class="swatch" style="background: #25201A;"><span class="swatch-label" style="color: #F2EDE1;">#25201A</span></div>
+          <div class="swatch" style="background: #100E08;"><span class="swatch-label" style="color: #F7F3E7;">#100E08</span></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
+        <div class="md:col-span-2">
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Primary accent</div>
+          <div class="flex items-center gap-4">
+            <div class="accent-hero" style="background: linear-gradient(135deg, #D99E3E, #C48A2A, #8A6118);">
+              <span class="swatch-label" style="color: #F5E4BC;">#C48A2A</span>
+            </div>
+            <div class="text-sm" style="color: var(--page-text-muted);">Muted saffron / ochre. Warm gold with earthen weight. Treasured, not branded.</div>
+          </div>
+        </div>
+        <div class="md:col-span-3">
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Sample UI</div>
+          <div class="sample-ui" style="background: #FAF7EF; border-color: #D9D0B6; color: #100E08;">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm font-semibold">Tuesday Morning Run</div>
+              <span class="text-[10px] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider" style="background: rgba(196,138,42,0.18); color: #8A6118;">Interval</span>
+            </div>
+            <div class="flex items-baseline gap-4 mb-3">
+              <span class="mono text-3xl font-bold tabular">6.93</span>
+              <span class="text-xs" style="color: #4C4536;">km · 28:51 · 6:28/mi</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="sample-btn" style="background: #25201A; color: #F2EDE1;">Save to plan</button>
+              <button class="sample-btn" style="background: transparent; border: 1px solid #D9D0B6; color: #100E08;">Share</button>
+              <span class="text-[10px] px-2 py-1 rounded font-semibold" style="background: #C48A2A; color: #25201A;">PR</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Widget palette</div>
+        <div class="grid grid-cols-3 sm:grid-cols-7 gap-2">
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #685399, #4F3D7C);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Train Load</div>
+            <div class="swatch-label mt-2" style="color: #DBD3EF;">#4F3D7C</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #568664, #3F6B4A);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Volume</div>
+            <div class="swatch-label mt-2" style="color: #D1E4D6;">#3F6B4A</div>
+          </div>
+          <div class="sample-tile" style="background: linear-gradient(135deg, #D99E3E, #C48A2A); color: #25201A;">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">PR</div>
+            <div class="swatch-label mt-2" style="color: #4C4536;">#C48A2A</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #9C3D3D, #7E2E2E);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">HR Zones</div>
+            <div class="swatch-label mt-2" style="color: #EACACA;">#7E2E2E</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #2E6285, #1F4A6B);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Long</div>
+            <div class="swatch-label mt-2" style="color: #C2D6E4;">#1F4A6B</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #625948, #4C4536);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Recovery</div>
+            <div class="swatch-label mt-2" style="color: #D8D2BE;">#4C4536</div>
+          </div>
+          <div class="sample-tile text-white" style="background: linear-gradient(135deg, #9C7340, #7B5830);">
+            <div class="text-[9px] uppercase tracking-wider opacity-80">Gear</div>
+            <div class="swatch-label mt-2" style="color: #E3D0B2;">#7B5830</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Semantic</div>
+          <div class="flex gap-2">
+            <div class="swatch" style="background: #3F6B4A; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">success</span></div>
+            <div class="swatch" style="background: #C48A2A; width: 52px; aspect-ratio: 1;"><span class="swatch-label" style="color: #25201A;">warn</span></div>
+            <div class="swatch" style="background: #7E2E2E; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">danger</span></div>
+            <div class="swatch" style="background: #1F4A6B; width: 52px; aspect-ratio: 1;"><span class="swatch-label text-white">info</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-wider mb-3" style="color: var(--page-text-muted);">Trade-offs</div>
+          <div class="text-xs space-y-1" style="color: var(--page-text-muted);">
+            <div><span class="font-semibold" style="color: #2F6B3C;">✓ Strong:</span> most distinctive in fitness app space; perfect journal continuity</div>
+            <div><span class="font-semibold" style="color: #A16207;">⚠ Risk:</span> can read "older" if overdone — resist sepia / parchment decoration</div>
+            <div><span class="font-semibold" style="color: var(--page-text);">Overlap:</span> zero — nobody in running does this</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIDE-BY-SIDE PRIMARY ACCENTS -->
+    <section class="palette-section">
+      <div class="mb-6">
+        <div class="text-[11px] font-semibold uppercase tracking-[0.2em]" style="color: var(--page-text-muted);">Side-by-side</div>
+        <h2 class="text-xl font-semibold mt-1">Primary accents, compared</h2>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="text-center">
+          <div class="w-full aspect-square rounded-2xl shadow-md" style="background: linear-gradient(135deg, #2C6550, #1F4D3B);"></div>
+          <div class="mt-3 text-sm font-medium">Forest</div>
+          <div class="text-[11px] mono" style="color: var(--page-text-muted);">#1F4D3B</div>
+        </div>
+        <div class="text-center">
+          <div class="w-full aspect-square rounded-2xl shadow-md" style="background: linear-gradient(135deg, #C97350, #B45A3C);"></div>
+          <div class="mt-3 text-sm font-medium">Rust</div>
+          <div class="text-[11px] mono" style="color: var(--page-text-muted);">#B45A3C</div>
+        </div>
+        <div class="text-center">
+          <div class="w-full aspect-square rounded-2xl shadow-md" style="background: linear-gradient(135deg, #5061F5, #2D3FE8);"></div>
+          <div class="mt-3 text-sm font-medium">Cobalt</div>
+          <div class="text-[11px] mono" style="color: var(--page-text-muted);">#2D3FE8</div>
+        </div>
+        <div class="text-center">
+          <div class="w-full aspect-square rounded-2xl shadow-md ring-2 ring-offset-4" style="background: linear-gradient(135deg, #D99E3E, #C48A2A); --tw-ring-color: #C48A2A;"></div>
+          <div class="mt-3 text-sm font-medium">Saffron <span class="text-[10px] ml-1 px-1.5 py-0.5 rounded" style="background: #C48A2A; color: #25201A;">rec</span></div>
+          <div class="text-[11px] mono" style="color: var(--page-text-muted);">#C48A2A</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DECISION CTA -->
+    <section class="rounded-2xl border p-6 mt-8" style="border-color: var(--page-border); background: var(--page-surface);">
+      <div class="flex items-start gap-4 flex-wrap">
+        <div class="flex-1 min-w-0">
+          <h3 class="text-lg font-semibold mb-1">Ready to pick?</h3>
+          <p class="text-sm mb-4" style="color: var(--page-text-muted);">
+            Pick a palette or describe a hybrid. Once locked, we apply it across all prototypes and start the full dashboard rebuild with the Gradient Glow treatment.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <button class="sample-btn" style="background: transparent; border: 1px solid var(--page-border); color: var(--page-text);">
+              <span class="inline-block w-2 h-2 rounded-full mr-2" style="background: #1F4D3B;"></span>Forest
+            </button>
+            <button class="sample-btn" style="background: transparent; border: 1px solid var(--page-border); color: var(--page-text);">
+              <span class="inline-block w-2 h-2 rounded-full mr-2" style="background: #B45A3C;"></span>Rust
+            </button>
+            <button class="sample-btn" style="background: transparent; border: 1px solid var(--page-border); color: var(--page-text);">
+              <span class="inline-block w-2 h-2 rounded-full mr-2" style="background: #2D3FE8;"></span>Cobalt
+            </button>
+            <button class="sample-btn" style="background: #C48A2A; color: #25201A; font-weight: 600;">
+              <span class="inline-block w-2 h-2 rounded-full mr-2" style="background: #25201A;"></span>Saffron (recommended)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+    const toggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      html.classList.toggle('light');
+      const icon = toggle.querySelector('i');
+      icon.setAttribute('data-lucide', html.classList.contains('dark') ? 'sun' : 'moon');
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

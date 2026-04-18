@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finn — Your Training Journal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@400;500;600;700&family=Kalam:wght@400;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            saffron: { 50: '#FDF7EB', 100: '#F9EBCE', 200: '#F2D89C', 300: '#E6BE6A', 400: '#D99E3E', 500: '#C48A2A', 600: '#A6731F', 700: '#8A6118' },
+            parchment: {
+              50: '#FDFAF2', 100: '#FBF6EC', 200: '#F5EDD9', 300: '#EDE0BF', 400: '#D9C7A0', 500: '#B8A67E',
+            },
+            ink: { DEFAULT: '#2D1F14', light: '#4A3628', muted: '#8B7355' },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+            hand: ['Caveat', 'cursive'],
+            handalt: ['Kalam', 'cursive'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      --paper: #FBF6EC;
+      --paper-darker: #F5EDD9;
+      --paper-edge: #EDE0BF;
+      --ink: #2D1F14;
+      --ink-light: #4A3628;
+      --ink-muted: #8B7355;
+      --ember: #C48A2A;
+      --ember-soft: rgba(196, 138, 42, 0.12);
+      --rule-line: rgba(139, 115, 85, 0.18);
+      --border: #E7DFC9;
+      --card-bg: #FFFFFF;
+    }
+    .dark {
+      --paper: #1A1612;
+      --paper-darker: #221C16;
+      --paper-edge: #2E2620;
+      --ink: #F0E6D2;
+      --ink-light: #D4C4A3;
+      --ink-muted: #9A8869;
+      --ember: #D99E3E;
+      --ember-soft: rgba(217, 158, 62, 0.18);
+      --rule-line: rgba(154, 136, 105, 0.2);
+      --border: #3A3026;
+      --card-bg: #22201A;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Paper texture — subtle noise + faint ruled lines */
+    .paper-bg {
+      background-color: var(--paper);
+      background-image:
+        /* subtle noise */
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0 0.1 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+        /* faint horizontal ruled lines */
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 31px,
+          var(--rule-line) 31px,
+          var(--rule-line) 32px
+        );
+      background-attachment: local;
+    }
+
+    .dark .paper-bg {
+      background-color: var(--paper);
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.95 0 0 0 0 0.85 0 0 0 0 0.65 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 31px,
+          var(--rule-line) 31px,
+          var(--rule-line) 32px
+        );
+    }
+
+    .tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+    /* Scrollbar */
+    .scrollbar-slim::-webkit-scrollbar { width: 6px; height: 6px; }
+    .scrollbar-slim::-webkit-scrollbar-thumb { background: var(--paper-edge); border-radius: 3px; }
+    .scrollbar-slim::-webkit-scrollbar-track { background: transparent; }
+
+    /* Handwriting treatments */
+    .handwriting {
+      font-family: 'Caveat', cursive;
+      font-weight: 500;
+      font-size: 22px;
+      line-height: 1.5;
+      color: var(--ink);
+      letter-spacing: 0.01em;
+    }
+
+    .handwriting-sm {
+      font-family: 'Caveat', cursive;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .handwriting-lg {
+      font-family: 'Caveat', cursive;
+      font-weight: 600;
+      font-size: 28px;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+
+    /* Signature / label style */
+    .label-hand {
+      font-family: 'Caveat', cursive;
+      font-weight: 600;
+      font-size: 20px;
+      color: var(--ember);
+      letter-spacing: 0.02em;
+    }
+
+    /* Coach "signature" mark */
+    .signature {
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
+      color: var(--ember);
+    }
+
+    /* Streaming cursor for handwriting */
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .cursor-pen::after {
+      content: '▏';
+      margin-left: 1px;
+      animation: blink 0.8s step-end infinite;
+      color: var(--ember);
+      font-weight: 700;
+    }
+
+    /* Fade-in for new entries */
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fade-in-up 0.4s ease-out; }
+
+    /* Hand-drawn separator */
+    .hand-separator {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10'%3E%3Cpath d='M0,5 Q25,2 50,5 T100,5 T150,5 T200,5' stroke='%238B7355' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.4'/%3E%3C/svg%3E");
+      background-repeat: repeat-x;
+      background-position: center;
+      height: 10px;
+    }
+
+    .dark .hand-separator {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10'%3E%3Cpath d='M0,5 Q25,2 50,5 T100,5 T150,5 T200,5' stroke='%239A8869' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.5'/%3E%3C/svg%3E");
+    }
+
+    /* User message — typed / cleaner */
+    .user-msg {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+    }
+
+    /* Embedded activity card — like a clipping pasted in */
+    .clipping {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      box-shadow: 2px 2px 0 rgba(139, 115, 85, 0.08), 4px 4px 12px rgba(139, 115, 85, 0.06);
+      transform: rotate(-0.3deg);
+    }
+
+    .clipping-straight {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      box-shadow: 2px 2px 0 rgba(139, 115, 85, 0.08);
+    }
+
+    /* Tape detail */
+    .tape-top::before {
+      content: '';
+      position: absolute;
+      top: -10px; left: 50%;
+      transform: translateX(-50%) rotate(-2deg);
+      width: 64px; height: 18px;
+      background: rgba(233, 78, 27, 0.2);
+      border-left: 1px dashed rgba(233, 78, 27, 0.3);
+      border-right: 1px dashed rgba(233, 78, 27, 0.3);
+    }
+
+    /* Entry date header */
+    .date-header {
+      font-family: 'Caveat', cursive;
+      font-weight: 600;
+      font-size: 26px;
+      color: var(--ember);
+      letter-spacing: 0.02em;
+    }
+
+    /* Fox icon for coach signature */
+    .fox-badge {
+      background: var(--ember);
+      color: white;
+    }
+
+    /* Highlight effect — handwritten marker */
+    .marker-highlight {
+      background: linear-gradient(180deg, transparent 50%, rgba(249, 191, 48, 0.35) 50%);
+      padding: 0 2px;
+    }
+
+    .dark .marker-highlight {
+      background: linear-gradient(180deg, transparent 50%, rgba(249, 191, 48, 0.2) 50%);
+    }
+
+    /* Underline hand-drawn */
+    .hand-underline {
+      text-decoration: none;
+      background-image: linear-gradient(to right, var(--ember) 50%, transparent 50%);
+      background-size: 8px 1.5px;
+      background-repeat: repeat-x;
+      background-position: 0 100%;
+      padding-bottom: 2px;
+    }
+
+    /* Sticky note */
+    .sticky-note {
+      background: #FFF3B8;
+      box-shadow: 2px 2px 6px rgba(139, 115, 85, 0.2);
+      transform: rotate(1.5deg);
+    }
+
+    .dark .sticky-note {
+      background: #3A3520;
+      color: #F5E9B0;
+    }
+
+    /* Disable layer blending issues on paper */
+    .no-paper {
+      background: var(--card-bg) !important;
+      background-image: none !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased paper-bg">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar — still "binder" themed, keeps clean chrome -->
+    <aside class="hidden md:flex md:w-64 lg:w-72 flex-col border-r no-paper" style="border-color: var(--border);">
+      <!-- Logo / App name -->
+      <div class="flex items-center justify-between px-5 py-5 border-b" style="border-color: var(--border);">
+        <div class="flex items-center gap-2">
+          <!-- Fox silhouette logo -->
+          <div class="h-8 w-8 rounded-md flex items-center justify-center" style="background: var(--ember);">
+            <svg viewBox="0 0 24 24" class="w-5 h-5" fill="white">
+              <path d="M12 3c-1.5 0-3 1-4 2.5L5 4l1 3.5C4.5 9 4 11 4 13c0 4.5 3.5 8 8 8s8-3.5 8-8c0-2-0.5-4-2-5.5L19 4l-3 1.5C15 4 13.5 3 12 3zm-3 9a1 1 0 110-2 1 1 0 010 2zm6 0a1 1 0 110-2 1 1 0 010 2zm-3 5c-1 0-2-0.5-2.5-1h5c-0.5 0.5-1.5 1-2.5 1z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="font-semibold text-[15px]" style="color: var(--ink);">Finn</div>
+            <div class="text-[10px] tracking-wider uppercase" style="color: var(--ink-muted);">Your training partner</div>
+          </div>
+        </div>
+        <button id="theme-toggle" class="h-8 w-8 rounded-md hover:bg-parchment-100 dark:hover:bg-parchment-200 flex items-center justify-center transition-colors" aria-label="Toggle theme">
+          <i data-lucide="moon" class="w-4 h-4" style="color: var(--ink-muted);"></i>
+        </button>
+      </div>
+
+      <!-- New entry button -->
+      <div class="px-3 pt-3">
+        <button class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white transition-colors" style="background: var(--ember);">
+          <i data-lucide="feather" class="w-4 h-4"></i>
+          New entry
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="px-3 pt-3">
+        <div class="relative">
+          <i data-lucide="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4" style="color: var(--ink-muted);"></i>
+          <input type="text" placeholder="Search your journal" class="w-full pl-8 pr-3 py-2 text-sm rounded-md border focus:outline-none focus:ring-2 transition-all" style="background: var(--paper); border-color: var(--border); color: var(--ink);" />
+        </div>
+      </div>
+
+      <!-- Entry list — like a table of contents -->
+      <div class="flex-1 overflow-y-auto px-3 pt-4 scrollbar-slim">
+        <div class="text-xs uppercase tracking-wider font-semibold mb-2 px-2" style="color: var(--ink-muted);">This week</div>
+        <button class="w-full text-left px-2 py-2 rounded-md mb-0.5" style="background: var(--ember-soft);">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="w-1.5 h-1.5 rounded-full" style="background: var(--ember);"></span>
+            <span class="text-sm font-medium" style="color: var(--ink);">Tuesday track</span>
+          </div>
+          <div class="handwriting-sm truncate pl-3.5" style="color: var(--ink-muted); font-size: 16px;">post-run thoughts</div>
+        </button>
+        <button class="w-full text-left px-2 py-2 rounded-md hover:bg-parchment-100 dark:hover:bg-parchment-200 mt-0.5 transition-colors">
+          <div class="text-sm font-medium" style="color: var(--ink);">Monday shakeout</div>
+          <div class="text-xs pl-0" style="color: var(--ink-muted);">Yesterday</div>
+        </button>
+        <button class="w-full text-left px-2 py-2 rounded-md hover:bg-parchment-100 dark:hover:bg-parchment-200 mt-0.5 transition-colors">
+          <div class="text-sm font-medium" style="color: var(--ink);">Sunday long run</div>
+          <div class="text-xs" style="color: var(--ink-muted);">Apr 13</div>
+        </button>
+
+        <div class="text-xs uppercase tracking-wider font-semibold mb-2 px-2 mt-6" style="color: var(--ink-muted);">Earlier</div>
+        <button class="w-full text-left px-2 py-2 rounded-md hover:bg-parchment-100 dark:hover:bg-parchment-200 transition-colors">
+          <div class="text-sm font-medium" style="color: var(--ink);">Weekly review — Apr 7</div>
+          <div class="text-xs" style="color: var(--ink-muted);">Apr 7</div>
+        </button>
+        <button class="w-full text-left px-2 py-2 rounded-md hover:bg-parchment-100 dark:hover:bg-parchment-200 mt-0.5 transition-colors">
+          <div class="text-sm font-medium" style="color: var(--ink);">Shoe question</div>
+          <div class="text-xs" style="color: var(--ink-muted);">Apr 5</div>
+        </button>
+        <button class="w-full text-left px-2 py-2 rounded-md hover:bg-parchment-100 dark:hover:bg-parchment-200 mt-0.5 transition-colors">
+          <div class="text-sm font-medium" style="color: var(--ink);">Goal race planning</div>
+          <div class="text-xs" style="color: var(--ink-muted);">Apr 2</div>
+        </button>
+      </div>
+
+      <!-- Profile footer -->
+      <div class="border-t p-3" style="border-color: var(--border);">
+        <button class="w-full flex items-center gap-3 px-2 py-2 rounded-md hover:bg-parchment-100 dark:hover:bg-parchment-200 transition-colors">
+          <div class="h-8 w-8 rounded-full flex items-center justify-center text-white font-semibold text-xs" style="background: var(--ink-light);">ZC</div>
+          <div class="flex-1 text-left min-w-0">
+            <div class="text-sm font-medium truncate" style="color: var(--ink);">Zach Chasse</div>
+            <div class="text-xs truncate" style="color: var(--ink-muted);">Tampa, FL</div>
+          </div>
+          <i data-lucide="chevron-up-down" class="w-4 h-4" style="color: var(--ink-muted);"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main chat area -->
+    <main class="flex-1 flex flex-col min-w-0">
+      <!-- Chat header — kept clean, no paper -->
+      <header class="flex items-center justify-between px-4 md:px-6 py-4 border-b no-paper" style="border-color: var(--border);">
+        <div class="flex items-center gap-3 min-w-0">
+          <button class="md:hidden h-8 w-8 rounded-md hover:bg-parchment-100 flex items-center justify-center" aria-label="Menu">
+            <i data-lucide="menu" class="w-4 h-4" style="color: var(--ink);"></i>
+          </button>
+          <div class="min-w-0">
+            <div class="date-header">Tuesday, April 14</div>
+            <div class="text-xs flex items-center gap-1.5 mt-0.5" style="color: var(--ink-muted);">
+              <span class="inline-block h-1.5 w-1.5 rounded-full" style="background: #10B981;"></span>
+              Finn reviewed your run · 3 minutes ago
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1">
+          <nav class="hidden md:flex items-center gap-1 mr-2">
+            <a href="#" class="px-3 py-1.5 text-sm rounded-md font-medium text-white" style="background: var(--ember);">Coach</a>
+            <a href="#" class="px-3 py-1.5 text-sm rounded-md hover:bg-parchment-100 dark:hover:bg-parchment-200" style="color: var(--ink-muted);">Activities</a>
+            <a href="#" class="px-3 py-1.5 text-sm rounded-md hover:bg-parchment-100 dark:hover:bg-parchment-200" style="color: var(--ink-muted);">Dashboard</a>
+            <a href="#" class="px-3 py-1.5 text-sm rounded-md hover:bg-parchment-100 dark:hover:bg-parchment-200" style="color: var(--ink-muted);">Plan</a>
+          </nav>
+          <button class="h-8 w-8 rounded-md hover:bg-parchment-100 flex items-center justify-center" aria-label="More">
+            <i data-lucide="more-horizontal" class="w-4 h-4" style="color: var(--ink);"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Journal pages -->
+      <div id="messages" class="flex-1 overflow-y-auto scrollbar-slim paper-bg">
+        <div class="max-w-3xl mx-auto px-6 md:px-12 py-8 md:py-12 space-y-8">
+
+          <!-- Date header + small separator -->
+          <div class="fade-in">
+            <div class="flex items-baseline gap-3 mb-2">
+              <div class="date-header">Tuesday, April 14</div>
+              <div class="text-sm font-sans" style="color: var(--ink-muted);">· week 15, day 2</div>
+            </div>
+            <div class="hand-separator"></div>
+          </div>
+
+          <!-- Coach entry 1: Proactive post-run analysis -->
+          <article class="fade-in">
+            <div class="flex items-baseline gap-2 mb-3">
+              <div class="fox-badge w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 24 24" class="w-4 h-4" fill="white">
+                  <path d="M12 3c-1.5 0-3 1-4 2.5L5 4l1 3.5C4.5 9 4 11 4 13c0 4.5 3.5 8 8 8s8-3.5 8-8c0-2-0.5-4-2-5.5L19 4l-3 1.5C15 4 13.5 3 12 3zm-3 9a1 1 0 110-2 1 1 0 010 2zm6 0a1 1 0 110-2 1 1 0 010 2zm-3 5c-1 0-2-0.5-2.5-1h5c-0.5 0.5-1.5 1-2.5 1z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="signature text-lg">— Finn</div>
+                <div class="text-xs font-sans" style="color: var(--ink-muted);">7:12 AM</div>
+              </div>
+            </div>
+
+            <!-- Handwritten entry -->
+            <div class="pl-9 space-y-3">
+              <p class="handwriting">
+                Good morning. Saw your track session — 10 laps, alternating fast/recovery, 6.93 km. Let's talk about it.
+              </p>
+
+              <!-- Embedded activity clipping -->
+              <div class="clipping rounded-md overflow-hidden my-4 no-paper">
+                <div class="flex">
+                  <div class="w-24 h-24 md:w-28 md:h-28 shrink-0 flex items-center justify-center" style="background: var(--parchment-200); border-right: 1px dashed var(--border);">
+                    <svg viewBox="0 0 100 100" class="w-full h-full p-2" fill="none" stroke="var(--ember)" stroke-width="1.5">
+                      <path d="M20,80 C25,75 30,70 35,60 C40,50 30,40 35,30 C40,20 55,15 65,20 C75,25 85,35 80,50 C75,65 60,75 50,80 C40,85 25,85 20,80 Z" stroke-linejoin="round" />
+                      <circle cx="20" cy="80" r="2" fill="#10B981" stroke="none" />
+                      <circle cx="22" cy="82" r="2" fill="#EF4444" stroke="none" />
+                    </svg>
+                  </div>
+                  <div class="flex-1 p-3 md:p-4 min-w-0" style="color: var(--ink);">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="min-w-0">
+                        <div class="font-sans font-medium text-sm truncate">Tuesday Morning Run</div>
+                        <div class="text-xs mt-0.5 font-sans" style="color: var(--ink-muted);">6:36 AM · Tampa, FL</div>
+                      </div>
+                      <span class="font-sans text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0" style="background: rgba(245, 158, 11, 0.15); color: #B45309;">Interval</span>
+                    </div>
+                    <div class="mt-2 md:mt-3 grid grid-cols-4 gap-2 font-sans">
+                      <div>
+                        <div class="text-[10px] uppercase tracking-wider" style="color: var(--ink-muted);">Dist</div>
+                        <div class="font-mono font-medium text-sm tabular">6.93 km</div>
+                      </div>
+                      <div>
+                        <div class="text-[10px] uppercase tracking-wider" style="color: var(--ink-muted);">Time</div>
+                        <div class="font-mono font-medium text-sm tabular">28:51</div>
+                      </div>
+                      <div>
+                        <div class="text-[10px] uppercase tracking-wider" style="color: var(--ink-muted);">Pace</div>
+                        <div class="font-mono font-medium text-sm tabular">6:28/mi</div>
+                      </div>
+                      <div>
+                        <div class="text-[10px] uppercase tracking-wider" style="color: var(--ink-muted);">HR</div>
+                        <div class="font-mono font-medium text-sm tabular">172</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p class="handwriting">
+                A few things worth noting <span style="color: var(--ember);">↓</span>
+              </p>
+              <ul class="space-y-2">
+                <li class="flex gap-3 items-baseline">
+                  <span style="color: #10B981;" class="handwriting-lg leading-none">+</span>
+                  <span class="handwriting">Your 800m reps averaged <span class="font-mono font-medium tabular text-base" style="color: var(--ink);">3:05</span> — 4 seconds faster than two weeks ago at similar HR. <span class="marker-highlight">Real progress.</span></span>
+                </li>
+                <li class="flex gap-3 items-baseline">
+                  <span style="color: #10B981;" class="handwriting-lg leading-none">+</span>
+                  <span class="handwriting">Cadence stayed at <span class="font-mono font-medium tabular text-base" style="color: var(--ink);">174 spm</span> through all 10 laps. Form held under fatigue.</span>
+                </li>
+                <li class="flex gap-3 items-baseline">
+                  <span style="color: #F59E0B;" class="handwriting-lg leading-none">·</span>
+                  <span class="handwriting">Max HR hit <span class="font-mono font-medium tabular text-base" style="color: var(--ink);">187</span> on the last interval — above your usual ceiling. How did those last two feel?</span>
+                </li>
+              </ul>
+              <p class="handwriting mt-3">
+                Also: your OTRA 800 segment hit <span class="hand-underline">PR rank #2</span>. Just 3 seconds off your best. Nice.
+              </p>
+            </div>
+          </article>
+
+          <!-- User entry -->
+          <article class="fade-in">
+            <div class="flex items-baseline gap-2 mb-3 justify-end">
+              <div class="text-right">
+                <div class="text-sm font-semibold font-sans" style="color: var(--ink);">Zach</div>
+                <div class="text-xs font-sans" style="color: var(--ink-muted);">7:15 AM</div>
+              </div>
+              <div class="w-7 h-7 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0" style="background: var(--ink-light);">ZC</div>
+            </div>
+            <div class="user-msg rounded-lg px-4 py-3 ml-auto max-w-2xl font-sans no-paper" style="color: var(--ink);">
+              <p class="text-[15px] leading-relaxed">
+                The last two felt rough. Legs were heavy from Monday's weight session. I think I pushed harder than I should have on rep 9 and just gritted through 10.
+              </p>
+            </div>
+          </article>
+
+          <!-- Coach entry 2: Response + pattern recognition -->
+          <article class="fade-in">
+            <div class="flex items-baseline gap-2 mb-3">
+              <div class="fox-badge w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 24 24" class="w-4 h-4" fill="white">
+                  <path d="M12 3c-1.5 0-3 1-4 2.5L5 4l1 3.5C4.5 9 4 11 4 13c0 4.5 3.5 8 8 8s8-3.5 8-8c0-2-0.5-4-2-5.5L19 4l-3 1.5C15 4 13.5 3 12 3z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="signature text-lg">— Finn</div>
+                <div class="text-xs font-sans" style="color: var(--ink-muted);">7:16 AM</div>
+              </div>
+            </div>
+            <div class="pl-9 space-y-3">
+              <p class="handwriting">
+                That matches the data — HR climbed 6 bpm on rep 9, pace dropped 8 seconds. Your body was telling you.
+              </p>
+              <p class="handwriting">
+                Something I noticed: <span class="marker-highlight">third time this month</span> a Tuesday run has come with a "heavy legs from Monday weights" note. Pattern worth looking at.
+              </p>
+              <!-- Sticky note style inline suggestion -->
+              <div class="sticky-note rounded-sm p-3 my-4 max-w-sm relative ml-4" style="color: var(--ink);">
+                <div class="handwriting-sm" style="line-height: 1.4;">
+                  Want to try shifting weights to Thursday for a week or two and see how Tuesdays respond?
+                </div>
+              </div>
+
+              <!-- Tool-call footer -->
+              <details class="mt-2">
+                <summary class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-sans" style="color: var(--ink-muted);">
+                  <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                  <span>Used 3 tools: activity_detail, similar_notes, training_load</span>
+                </summary>
+                <div class="mt-2 pl-4 border-l-2 space-y-1 text-xs font-mono" style="border-color: var(--rule-line); color: var(--ink-muted);">
+                  <div>→ query_activity_detail(18102907919)</div>
+                  <div>→ query_similar_notes("heavy legs Tuesday weights")</div>
+                  <div>→ query_training_load(days=14)</div>
+                </div>
+              </details>
+            </div>
+          </article>
+
+          <!-- User entry -->
+          <article class="fade-in">
+            <div class="flex items-baseline gap-2 mb-3 justify-end">
+              <div class="text-right">
+                <div class="text-sm font-semibold font-sans" style="color: var(--ink);">Zach</div>
+                <div class="text-xs font-sans" style="color: var(--ink-muted);">7:18 AM</div>
+              </div>
+              <div class="w-7 h-7 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0" style="background: var(--ink-light);">ZC</div>
+            </div>
+            <div class="user-msg rounded-lg px-4 py-3 ml-auto max-w-2xl font-sans no-paper" style="color: var(--ink);">
+              <p class="text-[15px] leading-relaxed">
+                Let's try shifting lifting to Thursday. What should I do today?
+              </p>
+            </div>
+          </article>
+
+          <!-- Coach entry 3: Recommendation with workout clipping -->
+          <article class="fade-in">
+            <div class="flex items-baseline gap-2 mb-3">
+              <div class="fox-badge w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 24 24" class="w-4 h-4" fill="white">
+                  <path d="M12 3c-1.5 0-3 1-4 2.5L5 4l1 3.5C4.5 9 4 11 4 13c0 4.5 3.5 8 8 8s8-3.5 8-8c0-2-0.5-4-2-5.5L19 4l-3 1.5C15 4 13.5 3 12 3z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="signature text-lg">— Finn</div>
+                <div class="text-xs font-sans" style="color: var(--ink-muted);">7:18 AM</div>
+              </div>
+            </div>
+            <div class="pl-9 space-y-3">
+              <p class="handwriting">
+                Good call. After yesterday's weights + today's hard effort, let's keep today truly easy. Here's what I'd do <span style="color: var(--ember);">↓</span>
+              </p>
+
+              <!-- Workout clipping -->
+              <div class="clipping-straight rounded-md overflow-hidden my-4 no-paper">
+                <div class="px-4 py-3 border-b flex items-center justify-between" style="border-color: var(--border);">
+                  <div class="flex items-center gap-2 font-sans">
+                    <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded" style="background: rgba(148, 163, 184, 0.25); color: #64748B;">Easy · Recovery</span>
+                    <span class="text-sm font-medium" style="color: var(--ink);">Afternoon shakeout</span>
+                  </div>
+                  <span class="text-xs font-mono tabular" style="color: var(--ink-muted);">~35 min</span>
+                </div>
+                <div class="p-4 space-y-2 font-sans">
+                  <div class="flex items-center gap-3 text-sm" style="color: var(--ink);">
+                    <div class="h-6 w-6 rounded flex items-center justify-center text-xs font-semibold shrink-0" style="background: var(--parchment-200); color: var(--ink);">1</div>
+                    <div class="flex-1">5km at conversational pace</div>
+                    <div class="font-mono tabular text-xs" style="color: var(--ink-muted);">8:30–9:00/mi</div>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm" style="color: var(--ink);">
+                    <div class="h-6 w-6 rounded flex items-center justify-center text-xs font-semibold shrink-0" style="background: var(--parchment-200); color: var(--ink);">2</div>
+                    <div class="flex-1">4 × 20s strides, full recovery</div>
+                    <div class="font-mono tabular text-xs" style="color: var(--ink-muted);">optional</div>
+                  </div>
+                </div>
+                <div class="px-4 py-3 border-t flex items-center justify-between gap-2 font-sans" style="border-color: var(--border); background: var(--paper-darker);">
+                  <div class="text-xs" style="color: var(--ink-muted);">Target HR under 140</div>
+                  <div class="flex gap-2">
+                    <button class="px-3 py-1.5 text-sm rounded-md border hover:bg-white dark:hover:bg-neutral-100 transition-colors" style="border-color: var(--border); color: var(--ink);">Edit</button>
+                    <button class="px-3 py-1.5 text-sm rounded-md text-white transition-colors font-medium" style="background: var(--ember);">Save to plan</button>
+                  </div>
+                </div>
+              </div>
+
+              <p class="handwriting">
+                Skip the strides if your legs still feel heavy. <span class="marker-highlight">The 5K easy alone is the real work today.</span>
+              </p>
+            </div>
+          </article>
+
+          <!-- Separator -->
+          <div class="py-2">
+            <div class="hand-separator"></div>
+          </div>
+
+          <!-- Coach entry 4: Currently being written (streaming) -->
+          <article class="fade-in">
+            <div class="flex items-baseline gap-2 mb-3">
+              <div class="fox-badge w-7 h-7 rounded-full flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 24 24" class="w-4 h-4" fill="white">
+                  <path d="M12 3c-1.5 0-3 1-4 2.5L5 4l1 3.5C4.5 9 4 11 4 13c0 4.5 3.5 8 8 8s8-3.5 8-8c0-2-0.5-4-2-5.5L19 4l-3 1.5C15 4 13.5 3 12 3z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="signature text-lg">— Finn</div>
+                <div class="text-xs font-sans" style="color: var(--ink-muted);">Now</div>
+              </div>
+            </div>
+            <div class="pl-9">
+              <p class="handwriting">
+                One more thing — your Endorphin Pros are at <span class="font-mono font-medium tabular text-base" style="color: var(--ink);">340 miles</span>. They have another 80-100 miles of quality in them, but you'll want to start breaking in a new race pair soon<span class="cursor-pen"></span>
+              </p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- Composer — like writing a new entry -->
+      <div class="border-t no-paper" style="border-color: var(--border);">
+        <div class="max-w-3xl mx-auto px-4 md:px-6 py-4">
+          <div class="rounded-xl border focus-within:ring-2 transition-all" style="border-color: var(--border); background: var(--card-bg);">
+            <textarea rows="1" placeholder="Write to Finn…" class="w-full resize-none px-4 pt-3 pb-2 text-[15px] bg-transparent outline-none font-sans" style="color: var(--ink);"></textarea>
+            <div class="flex items-center justify-between px-2 pb-2">
+              <div class="flex items-center gap-1">
+                <button class="h-8 w-8 rounded-md hover:bg-parchment-100 flex items-center justify-center" aria-label="Attach">
+                  <i data-lucide="paperclip" class="w-4 h-4" style="color: var(--ink-muted);"></i>
+                </button>
+                <button class="h-8 w-8 rounded-md hover:bg-parchment-100 flex items-center justify-center opacity-50 cursor-not-allowed" aria-label="Voice (coming soon)" disabled>
+                  <i data-lucide="mic" class="w-4 h-4" style="color: var(--ink-muted);"></i>
+                </button>
+                <button class="h-8 w-8 rounded-md hover:bg-parchment-100 flex items-center justify-center" aria-label="Link activity">
+                  <i data-lucide="activity" class="w-4 h-4" style="color: var(--ink-muted);"></i>
+                </button>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs hidden sm:inline font-sans" style="color: var(--ink-muted);">Press Enter to send</span>
+                <button class="h-8 px-3 rounded-md text-white text-sm font-medium flex items-center gap-1.5 transition-colors font-sans" style="background: var(--ember);">
+                  <span>Send</span>
+                  <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="mt-2 flex items-center gap-2 text-xs font-sans" style="color: var(--ink-muted);">
+            <i data-lucide="shield-check" class="w-3 h-3"></i>
+            <span>Private journal — only you and Finn.</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    const toggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      html.classList.toggle('light');
+      const icon = toggle.querySelector('i');
+      icon.setAttribute('data-lucide', html.classList.contains('dark') ? 'sun' : 'moon');
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

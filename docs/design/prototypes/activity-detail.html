@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadence — Tuesday Morning Run</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Shantell+Sans:wght@400..700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {
+        colors: {
+          graphite: { 500: '#57554F', 700: '#26241F', 900: '#171511', 950: '#0B0A08' },
+          cream: { 50: '#FDF7F1', 100: '#FAF4EC', 200: '#F2EDE2', 300: '#E9E2D2' },
+          zone: { recovery: '#94A3B8', aerobic: '#3B82F6', tempo: '#10B981', threshold: '#F59E0B', vo2max: '#EF4444' },
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'], hand: ['Shantell Sans', 'sans-serif'] },
+      } },
+    };
+  </script>
+  <style>
+    :root {
+      --bg: #FAF7F0; --bg-elevated: #FFFFFF; --border: #E9E2D2;
+      --text: #171511; --text-muted: #78756F; --text-strong: #26241F;
+      --graphite: #171511; --graphite-soft: rgba(23,21,17,0.06);
+    }
+    .dark {
+      --bg: #0E0D0B; --bg-elevated: #16140F; --border: #2E2B25;
+      --text: #EDE9DE; --text-muted: #8F8B82; --text-strong: #D4D0C6;
+      --graphite: #EDE9DE; --graphite-soft: rgba(237,233,222,0.06);
+    }
+    body { background: var(--bg); color: var(--text); }
+    .tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+    .btn-graphite { background: var(--graphite); color: var(--bg-elevated); }
+    .dark .btn-graphite { color: var(--bg); }
+    .tab-active { border-bottom: 2px solid var(--graphite); color: var(--text-strong); }
+  </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="hidden md:flex md:w-60 lg:w-64 flex-col border-r" style="border-color: var(--border); background: var(--bg-elevated);">
+      <div class="flex items-center justify-between px-5 py-5 border-b" style="border-color: var(--border);">
+        <div class="flex items-center gap-2.5">
+          <div class="h-8 w-8 rounded-md flex items-center justify-center" style="background: var(--graphite);">
+            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="var(--bg-elevated)" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <span class="font-semibold text-[15px]">Cadence</span>
+        </div>
+        <button id="theme-toggle" class="h-8 w-8 rounded-md hover:bg-black/5 dark:hover:bg-white/5 flex items-center justify-center" aria-label="Theme">
+          <i data-lucide="moon" class="w-4 h-4" style="color: var(--text-muted);"></i>
+        </button>
+      </div>
+      <nav class="flex-1 p-3 space-y-0.5">
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-black/[.03] dark:hover:bg-white/[.03] text-sm" style="color: var(--text-muted);">
+          <i data-lucide="message-circle" class="w-4 h-4"></i><span>Coach</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium" style="background: var(--graphite-soft); color: var(--text-strong);">
+          <i data-lucide="list" class="w-4 h-4"></i><span>Activities</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-black/[.03] dark:hover:bg-white/[.03] text-sm" style="color: var(--text-muted);">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i><span>Dashboard</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-black/[.03] dark:hover:bg-white/[.03] text-sm" style="color: var(--text-muted);">
+          <i data-lucide="calendar-days" class="w-4 h-4"></i><span>Plan</span>
+        </a>
+      </nav>
+      <div class="border-t p-3" style="border-color: var(--border);">
+        <button class="w-full flex items-center gap-3 px-2 py-2 rounded-md hover:bg-black/[.03] dark:hover:bg-white/[.03]">
+          <div class="h-8 w-8 rounded-full flex items-center justify-center font-semibold text-xs" style="background: var(--graphite); color: var(--bg-elevated);">ZC</div>
+          <div class="flex-1 text-left min-w-0">
+            <div class="text-sm font-medium truncate">Zach Chasse</div>
+            <div class="text-xs truncate" style="color: var(--text-muted);">Tampa, FL</div>
+          </div>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 flex flex-col overflow-y-auto">
+      <!-- Back bar -->
+      <div class="sticky top-0 z-10 border-b px-6 py-3 flex items-center justify-between" style="border-color: var(--border); background: var(--bg-elevated);">
+        <button class="flex items-center gap-2 text-sm hover:opacity-70" style="color: var(--text-muted);">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i>
+          <span>Back to activities</span>
+        </button>
+        <div class="flex items-center gap-2">
+          <button class="h-8 px-3 rounded-md border hover:bg-black/[.03] dark:hover:bg-white/[.03] text-sm" style="border-color: var(--border);">
+            <i data-lucide="share-2" class="w-3.5 h-3.5 inline"></i>
+          </button>
+          <button class="h-8 px-3 rounded-md border hover:bg-black/[.03] dark:hover:bg-white/[.03] text-sm" style="border-color: var(--border);">Edit</button>
+          <button class="h-8 w-8 rounded-md border hover:bg-black/[.03] dark:hover:bg-white/[.03] flex items-center justify-center" style="border-color: var(--border);">
+            <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="max-w-5xl mx-auto px-6 md:px-8 py-6 md:py-8 w-full">
+        <!-- Title + meta -->
+        <div class="mb-6">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded" style="background: rgba(245,158,11,0.15); color: #B45309;">Interval</span>
+            <span class="text-xs" style="color: var(--text-muted);">Run · Apr 14 · 6:36 AM</span>
+          </div>
+          <h1 class="text-3xl font-semibold tracking-tight">Tuesday Morning Run</h1>
+          <div class="mt-1 text-sm" style="color: var(--text-muted);">Tampa, FL · 72°F · Nike Pegasus 40</div>
+        </div>
+
+        <!-- Hero metrics -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+          <div class="rounded-xl border p-4" style="border-color: var(--border); background: var(--bg-elevated);">
+            <div class="text-[10px] uppercase tracking-wider font-semibold" style="color: var(--text-muted);">Distance</div>
+            <div class="mt-1 flex items-baseline gap-1">
+              <div class="text-2xl font-bold tabular">6.93</div>
+              <div class="text-xs" style="color: var(--text-muted);">km</div>
+            </div>
+          </div>
+          <div class="rounded-xl border p-4" style="border-color: var(--border); background: var(--bg-elevated);">
+            <div class="text-[10px] uppercase tracking-wider font-semibold" style="color: var(--text-muted);">Time</div>
+            <div class="mt-1 flex items-baseline gap-1">
+              <div class="text-2xl font-bold tabular font-mono">28:51</div>
+            </div>
+          </div>
+          <div class="rounded-xl border p-4" style="border-color: var(--border); background: var(--bg-elevated);">
+            <div class="text-[10px] uppercase tracking-wider font-semibold" style="color: var(--text-muted);">Pace</div>
+            <div class="mt-1 flex items-baseline gap-1">
+              <div class="text-2xl font-bold tabular font-mono">6:28</div>
+              <div class="text-xs" style="color: var(--text-muted);">/mi</div>
+            </div>
+          </div>
+          <div class="rounded-xl border p-4" style="border-color: var(--border); background: var(--bg-elevated);">
+            <div class="text-[10px] uppercase tracking-wider font-semibold" style="color: var(--text-muted);">Avg HR</div>
+            <div class="mt-1 flex items-baseline gap-1">
+              <div class="text-2xl font-bold tabular">172</div>
+              <div class="text-xs" style="color: var(--text-muted);">bpm</div>
+            </div>
+          </div>
+          <div class="rounded-xl border p-4" style="border-color: var(--border); background: var(--bg-elevated);">
+            <div class="text-[10px] uppercase tracking-wider font-semibold" style="color: var(--text-muted);">Avg Power</div>
+            <div class="mt-1 flex items-baseline gap-1">
+              <div class="text-2xl font-bold tabular">395</div>
+              <div class="text-xs" style="color: var(--text-muted);">W</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map + Coach's take -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
+          <!-- Map -->
+          <div class="lg:col-span-3 rounded-xl border overflow-hidden" style="border-color: var(--border); background: var(--bg-elevated);">
+            <div class="aspect-[16/10] relative" style="background: linear-gradient(135deg, #F2EDE2, #E9E2D2);">
+              <svg viewBox="0 0 600 375" class="w-full h-full" fill="none">
+                <!-- Fake road/map lines -->
+                <path d="M50,340 C80,300 120,260 160,220 C200,180 240,190 280,160 C320,130 370,140 410,110 C450,80 500,90 540,70" stroke="#D4D2CB" stroke-width="2" opacity="0.6" stroke-linecap="round" />
+                <path d="M120,350 L120,40" stroke="#D4D2CB" stroke-width="1.5" opacity="0.4" />
+                <path d="M30,180 L570,180" stroke="#D4D2CB" stroke-width="1.5" opacity="0.4" />
+                <!-- Route polyline -->
+                <path d="M80,320 Q120,280 150,240 T220,180 T290,150 T370,170 T450,140 T520,130 T520,170 Q500,220 430,250 T320,270 T200,280 T80,320 Z" stroke="var(--graphite)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" fill="rgba(23,21,17,0.03)" />
+                <!-- Start marker -->
+                <circle cx="80" cy="320" r="8" fill="#10B981" stroke="white" stroke-width="3" />
+                <!-- End marker -->
+                <circle cx="82" cy="318" r="8" fill="#EF4444" stroke="white" stroke-width="3" />
+                <!-- Mile markers -->
+                <circle cx="220" cy="185" r="3" fill="var(--graphite)" />
+                <circle cx="370" cy="170" r="3" fill="var(--graphite)" />
+                <circle cx="450" cy="140" r="3" fill="var(--graphite)" />
+              </svg>
+              <div class="absolute top-3 right-3 flex gap-1">
+                <button class="h-8 w-8 rounded-md bg-white/90 backdrop-blur border hover:bg-white flex items-center justify-center" style="border-color: var(--border);">
+                  <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+              <div class="absolute bottom-3 left-3 bg-white/90 backdrop-blur rounded-md px-2.5 py-1.5 text-[10px] font-medium flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Start
+                <span class="mx-1" style="color: var(--text-muted);">·</span>
+                <span class="w-2 h-2 rounded-full bg-red-500"></span> End
+              </div>
+            </div>
+          </div>
+
+          <!-- Coach's take -->
+          <div class="lg:col-span-2 rounded-xl border p-5" style="border-color: var(--border); background: var(--bg-elevated);">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="h-6 w-6 rounded-full flex items-center justify-center" style="background: var(--graphite);">
+                <svg viewBox="0 0 8 8" class="w-1.5 h-1.5" fill="var(--bg-elevated)"><circle cx="4" cy="4" r="3"/></svg>
+              </div>
+              <span class="text-xs uppercase tracking-wider font-semibold" style="color: var(--text-muted);">Cadence's take</span>
+            </div>
+            <p class="text-sm leading-relaxed mb-3">
+              Strong session. Your 800m reps averaged <span class="font-mono font-medium tabular">3:05</span> — 4 seconds faster than two weeks ago at similar HR. Cadence held under fatigue. Max HR on the last rep hit <span class="font-mono font-medium tabular">187</span>, above your usual ceiling.
+            </p>
+            <p class="text-sm leading-relaxed mb-4" style="color: var(--text-muted);">
+              Also hit PR rank #2 on the OTRA 800 segment — 3 seconds off your best.
+            </p>
+            <button class="btn-graphite w-full py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              Continue in chat
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="border-b mb-6" style="border-color: var(--border);">
+          <div class="flex items-center gap-6 overflow-x-auto">
+            <button class="tab-active pb-3 text-sm font-medium" style="color: var(--text-strong);">Overview</button>
+            <button class="pb-3 text-sm hover:text-neutral-900 transition-colors" style="color: var(--text-muted);">Splits</button>
+            <button class="pb-3 text-sm hover:text-neutral-900 transition-colors" style="color: var(--text-muted);">Laps <span class="ml-1 text-[10px] px-1 py-0.5 rounded tabular" style="background: var(--graphite-soft);">10</span></button>
+            <button class="pb-3 text-sm hover:text-neutral-900 transition-colors" style="color: var(--text-muted);">Streams</button>
+            <button class="pb-3 text-sm hover:text-neutral-900 transition-colors" style="color: var(--text-muted);">Segments <span class="ml-1 text-[10px] px-1 py-0.5 rounded tabular" style="background: var(--graphite-soft);">24</span></button>
+            <button class="pb-3 text-sm hover:text-neutral-900 transition-colors" style="color: var(--text-muted);">Notes</button>
+          </div>
+        </div>
+
+        <!-- HR + Pace stream chart -->
+        <div class="rounded-xl border p-5 mb-4" style="border-color: var(--border); background: var(--bg-elevated);">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <div class="text-sm font-semibold">Heart rate & pace over time</div>
+              <div class="text-xs mt-0.5" style="color: var(--text-muted);">1,814 data points · 30:13 duration</div>
+            </div>
+            <div class="flex gap-1 text-xs">
+              <button class="px-2 py-1 rounded bg-neutral-100 dark:bg-neutral-800 font-medium">HR</button>
+              <button class="px-2 py-1 rounded" style="color: var(--text-muted);">Pace</button>
+              <button class="px-2 py-1 rounded" style="color: var(--text-muted);">Elev</button>
+              <button class="px-2 py-1 rounded" style="color: var(--text-muted);">Cad</button>
+              <button class="px-2 py-1 rounded" style="color: var(--text-muted);">Watts</button>
+            </div>
+          </div>
+          <svg viewBox="0 0 900 240" class="w-full h-48" preserveAspectRatio="none">
+            <!-- HR zone bands -->
+            <rect x="0" y="0" width="900" height="40" fill="#EF4444" opacity="0.05"/>
+            <rect x="0" y="40" width="900" height="50" fill="#F59E0B" opacity="0.05"/>
+            <rect x="0" y="90" width="900" height="60" fill="#10B981" opacity="0.05"/>
+            <rect x="0" y="150" width="900" height="50" fill="#3B82F6" opacity="0.05"/>
+            <rect x="0" y="200" width="900" height="40" fill="#94A3B8" opacity="0.05"/>
+            <!-- Gridlines -->
+            <line x1="0" y1="60" x2="900" y2="60" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+            <line x1="0" y1="120" x2="900" y2="120" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+            <line x1="0" y1="180" x2="900" y2="180" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+            <!-- HR waveform — intervals visible -->
+            <path d="M0,180 L20,165 L40,100 L80,70 L120,60 L160,55 L180,95 L200,130 L220,70 L260,60 L300,55 L320,95 L340,130 L360,60 L400,50 L440,55 L460,100 L480,135 L500,55 L540,50 L580,55 L600,100 L620,135 L640,55 L680,48 L720,50 L740,95 L760,130 L780,55 L820,50 L860,55 L880,180 L900,220"
+                  stroke="var(--graphite)" stroke-width="2" fill="none" stroke-linejoin="round"/>
+            <!-- Lap markers -->
+            <line x1="90" y1="20" x2="90" y2="230" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="2,3" opacity="0.3"/>
+            <line x1="230" y1="20" x2="230" y2="230" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="2,3" opacity="0.3"/>
+            <line x1="370" y1="20" x2="370" y2="230" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="2,3" opacity="0.3"/>
+            <line x1="510" y1="20" x2="510" y2="230" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="2,3" opacity="0.3"/>
+            <line x1="650" y1="20" x2="650" y2="230" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="2,3" opacity="0.3"/>
+            <!-- X axis -->
+            <text x="0" y="238" fill="var(--text-muted)" font-size="9" font-family="Inter">0:00</text>
+            <text x="220" y="238" fill="var(--text-muted)" font-size="9" font-family="Inter">8:00</text>
+            <text x="440" y="238" fill="var(--text-muted)" font-size="9" font-family="Inter">16:00</text>
+            <text x="660" y="238" fill="var(--text-muted)" font-size="9" font-family="Inter">24:00</text>
+            <text x="870" y="238" fill="var(--text-muted)" font-size="9" font-family="Inter">30:13</text>
+            <!-- Y axis labels -->
+            <text x="4" y="14" fill="var(--text-muted)" font-size="9" font-family="Inter">190</text>
+            <text x="4" y="64" fill="var(--text-muted)" font-size="9" font-family="Inter">170</text>
+            <text x="4" y="124" fill="var(--text-muted)" font-size="9" font-family="Inter">150</text>
+            <text x="4" y="184" fill="var(--text-muted)" font-size="9" font-family="Inter">130</text>
+            <text x="4" y="224" fill="var(--text-muted)" font-size="9" font-family="Inter">110</text>
+          </svg>
+          <div class="mt-3 flex flex-wrap items-center gap-3 text-[11px]" style="color: var(--text-muted);">
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm" style="background: #EF4444; opacity: 0.2;"></span>Z5 VO2</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm" style="background: #F59E0B; opacity: 0.2;"></span>Z4 Threshold</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm" style="background: #10B981; opacity: 0.2;"></span>Z3 Tempo</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm" style="background: #3B82F6; opacity: 0.2;"></span>Z2 Aerobic</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm" style="background: #94A3B8; opacity: 0.2;"></span>Z1 Recovery</span>
+          </div>
+        </div>
+
+        <!-- HR zone distribution + Splits -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+          <!-- Zone distribution -->
+          <div class="md:col-span-2 rounded-xl border p-5" style="border-color: var(--border); background: var(--bg-elevated);">
+            <div class="text-sm font-semibold mb-1">Time in HR zones</div>
+            <div class="text-xs mb-4" style="color: var(--text-muted);">of moving time</div>
+            <div class="space-y-2.5">
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="font-medium">Z5 VO2max</span>
+                  <span class="tabular font-mono" style="color: var(--text-muted);">4:28 · 15%</span>
+                </div>
+                <div class="h-2 rounded-full" style="background: var(--border);"><div class="h-full rounded-full" style="width: 15%; background: #EF4444;"></div></div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="font-medium">Z4 Threshold</span>
+                  <span class="tabular font-mono" style="color: var(--text-muted);">11:33 · 40%</span>
+                </div>
+                <div class="h-2 rounded-full" style="background: var(--border);"><div class="h-full rounded-full" style="width: 40%; background: #F59E0B;"></div></div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="font-medium">Z3 Tempo</span>
+                  <span class="tabular font-mono" style="color: var(--text-muted);">8:04 · 28%</span>
+                </div>
+                <div class="h-2 rounded-full" style="background: var(--border);"><div class="h-full rounded-full" style="width: 28%; background: #10B981;"></div></div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="font-medium">Z2 Aerobic</span>
+                  <span class="tabular font-mono" style="color: var(--text-muted);">3:27 · 12%</span>
+                </div>
+                <div class="h-2 rounded-full" style="background: var(--border);"><div class="h-full rounded-full" style="width: 12%; background: #3B82F6;"></div></div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="font-medium">Z1 Recovery</span>
+                  <span class="tabular font-mono" style="color: var(--text-muted);">1:19 · 5%</span>
+                </div>
+                <div class="h-2 rounded-full" style="background: var(--border);"><div class="h-full rounded-full" style="width: 5%; background: #94A3B8;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Splits -->
+          <div class="md:col-span-3 rounded-xl border p-5" style="border-color: var(--border); background: var(--bg-elevated);">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <div class="text-sm font-semibold">Mile splits</div>
+                <div class="text-xs mt-0.5" style="color: var(--text-muted);">Grade-adjusted pace in parens</div>
+              </div>
+              <div class="inline-flex rounded-md border text-xs" style="border-color: var(--border);">
+                <button class="px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-l-md font-medium">mi</button>
+                <button class="px-2 py-1 rounded-r-md" style="color: var(--text-muted);">km</button>
+              </div>
+            </div>
+            <div class="text-xs">
+              <div class="grid grid-cols-5 gap-2 pb-2 mb-1 border-b uppercase tracking-wider" style="border-color: var(--border); color: var(--text-muted);">
+                <div>Mile</div><div class="text-right">Time</div><div class="text-right">Pace</div><div class="text-right">Avg HR</div><div class="text-right">Elev Δ</div>
+              </div>
+              <div class="grid grid-cols-5 gap-2 py-2 border-b items-center" style="border-color: var(--border);">
+                <div class="font-medium">1</div>
+                <div class="text-right font-mono tabular">6:45</div>
+                <div class="text-right font-mono tabular">6:43 <span class="opacity-50">(6:44)</span></div>
+                <div class="text-right font-mono tabular">168</div>
+                <div class="text-right font-mono tabular" style="color: var(--text-muted);">−0.2m</div>
+              </div>
+              <div class="grid grid-cols-5 gap-2 py-2 border-b items-center" style="border-color: var(--border);">
+                <div class="font-medium">2</div>
+                <div class="text-right font-mono tabular">6:33</div>
+                <div class="text-right font-mono tabular">6:34 <span class="opacity-50">(6:33)</span></div>
+                <div class="text-right font-mono tabular">176</div>
+                <div class="text-right font-mono tabular" style="color: var(--text-muted);">+0.1m</div>
+              </div>
+              <div class="grid grid-cols-5 gap-2 py-2 border-b items-center" style="border-color: var(--border);">
+                <div class="font-medium">3</div>
+                <div class="text-right font-mono tabular">6:38</div>
+                <div class="text-right font-mono tabular">6:37 <span class="opacity-50">(6:38)</span></div>
+                <div class="text-right font-mono tabular">174</div>
+                <div class="text-right font-mono tabular" style="color: var(--text-muted);">+0.1m</div>
+              </div>
+              <div class="grid grid-cols-5 gap-2 py-2 border-b items-center" style="border-color: var(--border); background: var(--graphite-soft);">
+                <div class="font-medium flex items-center gap-1">4 <i data-lucide="star" class="w-3 h-3 fill-current" style="color: #F59E0B;"></i></div>
+                <div class="text-right font-mono tabular font-semibold">6:21</div>
+                <div class="text-right font-mono tabular font-semibold">6:21 <span class="opacity-50">(6:20)</span></div>
+                <div class="text-right font-mono tabular font-semibold">177</div>
+                <div class="text-right font-mono tabular" style="color: var(--text-muted);">+0.2m</div>
+              </div>
+              <div class="grid grid-cols-5 gap-2 py-2 items-center">
+                <div class="font-medium">5*</div>
+                <div class="text-right font-mono tabular">2:34</div>
+                <div class="text-right font-mono tabular">8:21 <span class="opacity-50">(8:21)</span></div>
+                <div class="text-right font-mono tabular">153</div>
+                <div class="text-right font-mono tabular" style="color: var(--text-muted);">0.0m</div>
+              </div>
+            </div>
+            <div class="mt-3 text-[11px]" style="color: var(--text-muted);">*partial · fastest mile highlighted</div>
+          </div>
+        </div>
+
+        <!-- Best efforts + Context -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <!-- Best efforts -->
+          <div class="rounded-xl border p-5" style="border-color: var(--border); background: var(--bg-elevated);">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm font-semibold">Best efforts from this run</div>
+              <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded" style="background: rgba(16,185,129,0.15); color: #059669;">1 PR</span>
+            </div>
+            <div class="space-y-2">
+              <div class="flex items-center justify-between py-1.5 border-b" style="border-color: var(--border);">
+                <span class="text-sm">400m</span>
+                <div class="flex items-center gap-3">
+                  <span class="font-mono tabular text-sm font-medium">1:23</span>
+                  <span class="text-[10px] font-medium text-emerald-600">-4s</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-1.5 border-b" style="border-color: var(--border);">
+                <span class="text-sm">½ mile</span>
+                <div class="flex items-center gap-3">
+                  <span class="font-mono tabular text-sm font-medium">2:52</span>
+                  <span class="text-[10px]" style="color: var(--text-muted);">—</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-1.5 border-b" style="border-color: var(--border);">
+                <span class="text-sm">1K</span>
+                <div class="flex items-center gap-3">
+                  <span class="font-mono tabular text-sm font-medium">3:34</span>
+                  <span class="text-[10px]" style="color: var(--text-muted);">—</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-1.5 border-b" style="border-color: var(--border);">
+                <span class="text-sm font-medium flex items-center gap-1">1 mile <i data-lucide="award" class="w-3 h-3" style="color: #10B981;"></i></span>
+                <div class="flex items-center gap-3">
+                  <span class="font-mono tabular text-sm font-semibold">6:22</span>
+                  <span class="text-[10px] font-medium text-emerald-600">PR −8s</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-1.5 border-b" style="border-color: var(--border);">
+                <span class="text-sm">2 mile</span>
+                <div class="flex items-center gap-3">
+                  <span class="font-mono tabular text-sm font-medium">12:59</span>
+                  <span class="text-[10px]" style="color: var(--text-muted);">—</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-1.5">
+                <span class="text-sm">5K</span>
+                <div class="flex items-center gap-3">
+                  <span class="font-mono tabular text-sm font-medium">20:30</span>
+                  <span class="text-[10px]" style="color: var(--text-muted);">=</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Context factors -->
+          <div class="rounded-xl border p-5" style="border-color: var(--border); background: var(--bg-elevated);">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-sm font-semibold">Context</div>
+              <button class="text-[11px] hover:underline" style="color: var(--text-muted);">+ Add factor</button>
+            </div>
+            <div class="space-y-3 text-sm">
+              <div class="flex items-center gap-3">
+                <div class="h-7 w-7 rounded-md flex items-center justify-center" style="background: var(--graphite-soft);">
+                  <i data-lucide="sun" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-xs font-medium">Weather</div>
+                  <div class="text-xs" style="color: var(--text-muted);">72°F · 68% humidity · light breeze</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-7 w-7 rounded-md flex items-center justify-center" style="background: var(--graphite-soft);">
+                  <i data-lucide="package" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-xs font-medium">Shoes</div>
+                  <div class="text-xs" style="color: var(--text-muted);">Nike Pegasus 40 · 340 mi</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-7 w-7 rounded-md flex items-center justify-center" style="background: var(--graphite-soft);">
+                  <i data-lucide="moon" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-xs font-medium">Sleep (prior night)</div>
+                  <div class="text-xs" style="color: var(--text-muted);">5h 42m · below baseline</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-7 w-7 rounded-md flex items-center justify-center" style="background: var(--graphite-soft);">
+                  <i data-lucide="dumbbell" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-xs font-medium">Day-before load</div>
+                  <div class="text-xs" style="color: var(--text-muted);">Weight training · 56 min · HR 121 avg</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="h-7 w-7 rounded-md flex items-center justify-center" style="background: var(--graphite-soft);">
+                  <i data-lucide="headphones" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="text-xs font-medium">Audio</div>
+                  <div class="text-xs" style="color: var(--text-muted);">No music</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="rounded-xl border p-5 mb-6" style="border-color: var(--border); background: var(--bg-elevated);">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <div class="text-sm font-semibold">Your notes</div>
+              <div class="text-xs mt-0.5" style="color: var(--text-muted);">7:15 AM · right after the run</div>
+            </div>
+            <button class="text-xs hover:underline" style="color: var(--text-muted);">Edit</button>
+          </div>
+          <p class="font-mono text-sm leading-relaxed" style="color: var(--text-strong);">
+            The last two felt rough. Legs were heavy from Monday's weight session. I think I pushed harder than I should have on rep 9 and just gritted through 10.
+          </p>
+          <div class="mt-3 pt-3 border-t flex flex-wrap gap-1.5" style="border-color: var(--border);">
+            <span class="text-[10px] px-2 py-1 rounded-md" style="background: var(--graphite-soft); color: var(--text-strong);">heavy legs</span>
+            <span class="text-[10px] px-2 py-1 rounded-md" style="background: var(--graphite-soft); color: var(--text-strong);">monday weights</span>
+            <span class="text-[10px] px-2 py-1 rounded-md" style="background: var(--graphite-soft); color: var(--text-strong);">pushed hard</span>
+            <span class="text-[10px] px-2 py-1 rounded-md" style="background: var(--graphite-soft); color: var(--text-strong);">RPE 8</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    const toggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      html.classList.toggle('light');
+      const icon = toggle.querySelector('i');
+      icon.setAttribute('data-lucide', html.classList.contains('dark') ? 'sun' : 'moon');
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

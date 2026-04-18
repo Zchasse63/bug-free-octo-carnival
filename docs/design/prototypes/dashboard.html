@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadence — Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #FAF7EF;
+      --surface: #FFFFFF;
+      --surface-alt: #F2EDE1;
+      --border: #E5DCCA;
+      --border-soft: rgba(76, 69, 54, 0.08);
+      --text: #100E08;
+      --text-muted: #78756F;
+      --text-strong: #25201A;
+      --ink: #100E08;
+      --ink-soft: rgba(16, 14, 8, 0.06);
+      --saffron: #C48A2A;
+      --saffron-soft: rgba(196, 138, 42, 0.12);
+      --saffron-ring: rgba(196, 138, 42, 0.4);
+    }
+    .dark {
+      --bg: #0A0806;
+      --surface: #15110A;
+      --surface-alt: #25201A;
+      --border: #362E22;
+      --border-soft: rgba(242, 237, 225, 0.08);
+      --text: #F2EDE1;
+      --text-muted: #9A8F7A;
+      --text-strong: #F2EDE1;
+      --ink: #F2EDE1;
+      --ink-soft: rgba(242, 237, 225, 0.06);
+      --saffron: #D99E3E;
+      --saffron-soft: rgba(217, 158, 62, 0.15);
+      --saffron-ring: rgba(217, 158, 62, 0.45);
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; }
+    .tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .btn-saffron { background: var(--saffron); color: var(--ink); font-weight: 600; }
+    .dark .btn-saffron { color: #15110A; }
+    .btn-saffron:hover { filter: brightness(0.96); }
+    .btn-ink { background: var(--ink); color: var(--bg); }
+    .btn-ink:hover { opacity: 0.92; }
+
+    /* Gradient Glow tiles */
+    .glow-tile {
+      position: relative;
+      border-radius: 22px;
+      padding: 22px;
+      overflow: hidden;
+      isolation: isolate;
+      cursor: pointer;
+      transition: transform 260ms cubic-bezier(0.2, 0, 0, 1), box-shadow 260ms cubic-bezier(0.2, 0, 0, 1);
+      box-shadow:
+        0 10px 30px -10px rgba(16, 14, 8, 0.12),
+        0 4px 12px -4px rgba(16, 14, 8, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+    .dark .glow-tile {
+      box-shadow:
+        0 16px 40px -10px rgba(0, 0, 0, 0.55),
+        0 6px 16px -4px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+    .glow-tile::before {
+      content: '';
+      position: absolute;
+      top: -35%; left: -20%;
+      width: 80%; height: 80%;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.35), transparent 60%);
+      filter: blur(10px);
+      pointer-events: none;
+      z-index: 0;
+      transition: opacity 260ms;
+    }
+    .dark .glow-tile::before {
+      background: radial-gradient(circle at center, rgba(255,255,255,0.12), transparent 60%);
+    }
+    .glow-tile::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -150%;
+      width: 75%; height: 100%;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.22) 50%, transparent 70%);
+      transform: skewX(-20deg);
+      pointer-events: none;
+      z-index: 2;
+      transition: left 900ms cubic-bezier(0.2, 0, 0, 1);
+    }
+    .dark .glow-tile::after {
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.10) 50%, transparent 70%);
+    }
+    .glow-tile:hover { transform: translateY(-3px); }
+    .glow-tile:hover::after { left: 150%; }
+    .glow-tile .tile-content { position: relative; z-index: 1; }
+
+    .glow-tile.tile-purple:hover { box-shadow: 0 20px 50px -12px rgba(109,40,217,0.4), 0 8px 20px -4px rgba(109,40,217,0.2), inset 0 1px 0 rgba(255,255,255,0.25); }
+    .glow-tile.tile-emerald:hover { box-shadow: 0 20px 50px -12px rgba(5,150,105,0.4), 0 8px 20px -4px rgba(5,150,105,0.2), inset 0 1px 0 rgba(255,255,255,0.25); }
+    .glow-tile.tile-saffron:hover { box-shadow: 0 20px 50px -12px rgba(196,138,42,0.45), 0 8px 20px -4px rgba(196,138,42,0.25), inset 0 1px 0 rgba(255,255,255,0.25); }
+    .glow-tile.tile-rose:hover { box-shadow: 0 20px 50px -12px rgba(190,24,93,0.4), 0 8px 20px -4px rgba(190,24,93,0.2), inset 0 1px 0 rgba(255,255,255,0.25); }
+    .glow-tile.tile-cyan:hover { box-shadow: 0 20px 50px -12px rgba(8,145,178,0.4), 0 8px 20px -4px rgba(8,145,178,0.2), inset 0 1px 0 rgba(255,255,255,0.25); }
+
+    /* Gradient backgrounds — Ink + Saffron widget palette */
+    .bg-purple { background: linear-gradient(135deg, #F4ECFD 0%, #D9C6F6 45%, #A487E0 100%); }
+    .dark .bg-purple { background: linear-gradient(135deg, #3E2A6B 0%, #2F1F55 50%, #1C113A 100%); }
+    .bg-emerald { background: linear-gradient(130deg, #E4F8ED 0%, #A8E0C3 45%, #4FA580 100%); }
+    .dark .bg-emerald { background: linear-gradient(130deg, #0D4A32 0%, #0B3A27 50%, #07261A 100%); }
+    .bg-saffron { background: linear-gradient(140deg, #FDF2D4 0%, #F2D89C 45%, #C48A2A 100%); }
+    .dark .bg-saffron { background: linear-gradient(140deg, #5E3C0D 0%, #4A2D09 50%, #2F1B05 100%); }
+    .bg-rose { background: linear-gradient(125deg, #FCE3ED 0%, #F3A8C1 45%, #CE5886 100%); }
+    .dark .bg-rose { background: linear-gradient(125deg, #5A1634 0%, #45112B 50%, #2C091C 100%); }
+    .bg-cyan { background: linear-gradient(145deg, #E0F4F9 0%, #A2D9E4 45%, #459CB3 100%); }
+    .dark .bg-cyan { background: linear-gradient(145deg, #0A4659 0%, #07384A 50%, #03202C 100%); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .glow-tile, .glow-tile::before, .glow-tile::after { transition: none !important; }
+      .glow-tile:hover { transform: none; }
+      .glow-tile:hover::after { left: -150%; }
+    }
+
+    .big-num { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 0.92; letter-spacing: -0.025em; }
+    .tile-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="hidden md:flex md:w-60 lg:w-64 flex-col border-r" style="border-color: var(--border); background: var(--surface);">
+      <div class="flex items-center justify-between px-5 py-5 border-b" style="border-color: var(--border);">
+        <div class="flex items-center gap-2.5">
+          <div class="h-8 w-8 rounded-md flex items-center justify-center" style="background: var(--ink);">
+            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="var(--surface)" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <span class="font-semibold text-[15px]">Cadence</span>
+        </div>
+        <button id="theme-toggle" class="h-8 w-8 rounded-md hover:bg-black/5 dark:hover:bg-white/5 flex items-center justify-center">
+          <i data-lucide="moon" class="w-4 h-4" style="color: var(--text-muted);"></i>
+        </button>
+      </div>
+      <nav class="flex-1 p-3 space-y-0.5">
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-black/[.03] dark:hover:bg-white/[.03] text-sm" style="color: var(--text-muted);">
+          <i data-lucide="message-circle" class="w-4 h-4"></i><span>Coach</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-black/[.03] dark:hover:bg-white/[.03] text-sm" style="color: var(--text-muted);">
+          <i data-lucide="list" class="w-4 h-4"></i><span>Activities</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium" style="background: var(--saffron-soft); color: var(--text-strong);">
+          <i data-lucide="layout-dashboard" class="w-4 h-4" style="color: var(--saffron);"></i><span>Dashboard</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-black/[.03] dark:hover:bg-white/[.03] text-sm" style="color: var(--text-muted);">
+          <i data-lucide="calendar-days" class="w-4 h-4"></i><span>Plan</span>
+        </a>
+      </nav>
+      <div class="border-t p-3" style="border-color: var(--border);">
+        <button class="w-full flex items-center gap-3 px-2 py-2 rounded-md hover:bg-black/[.03] dark:hover:bg-white/[.03]">
+          <div class="h-8 w-8 rounded-full flex items-center justify-center font-semibold text-xs" style="background: var(--ink); color: var(--surface);">ZC</div>
+          <div class="flex-1 text-left min-w-0">
+            <div class="text-sm font-medium truncate">Zach Chasse</div>
+            <div class="text-xs truncate" style="color: var(--text-muted);">Tampa, FL</div>
+          </div>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 flex flex-col overflow-y-auto">
+      <div class="max-w-7xl mx-auto px-6 md:px-8 py-6 md:py-8 w-full">
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+          <div>
+            <h1 class="text-3xl font-semibold tracking-tight">Your training</h1>
+            <p class="text-sm mt-1" style="color: var(--text-muted);">Week 15 of 2026 · Marathon build phase</p>
+          </div>
+          <div class="inline-flex rounded-md border text-xs" style="border-color: var(--border); background: var(--surface);">
+            <button class="px-3 py-1.5 rounded-l-md font-medium" style="background: var(--saffron-soft); color: var(--text-strong);">Week</button>
+            <button class="px-3 py-1.5" style="color: var(--text-muted);">Month</button>
+            <button class="px-3 py-1.5 rounded-r-md" style="color: var(--text-muted);">Year</button>
+          </div>
+        </div>
+
+        <!-- Hero metrics row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="rounded-xl border p-5" style="border-color: var(--border); background: var(--surface);">
+            <div class="text-[11px] font-semibold uppercase tracking-[0.1em]" style="color: var(--text-muted);">This week</div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="big-num text-5xl" style="color: var(--text-strong);">42.3</span>
+              <span class="text-lg" style="color: var(--text-muted);">km</span>
+            </div>
+            <div class="mt-2 flex items-center gap-2">
+              <span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-medium">
+                <i data-lucide="trending-up" class="w-3 h-3"></i>
+                <span class="tabular">+8.2</span>
+              </span>
+              <span class="text-xs" style="color: var(--text-muted);">vs last week · 77% of 55km target</span>
+            </div>
+            <div class="mt-3 h-1 rounded-full" style="background: var(--border);">
+              <div class="h-full rounded-full" style="width: 77%; background: var(--saffron);"></div>
+            </div>
+          </div>
+
+          <div class="rounded-xl border p-5" style="border-color: var(--border); background: var(--surface);">
+            <div class="text-[11px] font-semibold uppercase tracking-[0.1em]" style="color: var(--text-muted);">Readiness</div>
+            <div class="mt-2 flex items-baseline gap-3">
+              <span class="text-3xl font-bold text-emerald-600 dark:text-emerald-400">Fresh</span>
+              <span class="big-num text-xl" style="color: var(--text-strong);">+4</span>
+            </div>
+            <div class="mt-2 text-xs" style="color: var(--text-muted);">TSB positive · CTL 68 · ATL 64</div>
+            <div class="mt-3 flex items-center gap-1.5 text-[11px]" style="color: var(--text-muted);">
+              <span class="inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Low injury risk</span>
+              <span>·</span>
+              <span class="tabular">ACWR 1.12</span>
+            </div>
+          </div>
+
+          <div class="rounded-xl border p-5" style="border-color: var(--border); background: var(--surface);">
+            <div class="text-[11px] font-semibold uppercase tracking-[0.1em]" style="color: var(--text-muted);">Fitness · CTL</div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="big-num text-5xl" style="color: var(--text-strong);">68</span>
+              <span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-medium tabular">
+                <i data-lucide="trending-up" class="w-3 h-3"></i>+3
+              </span>
+            </div>
+            <div class="mt-2 text-xs" style="color: var(--text-muted);">Target by race: 72 · 9 weeks to go</div>
+            <svg viewBox="0 0 100 18" class="w-full h-5 mt-3" preserveAspectRatio="none">
+              <path d="M0,15 L10,14 L20,13 L30,12 L40,10 L50,9 L60,7 L70,6 L80,4 L90,3 L100,2" stroke="var(--saffron)" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- INSIGHTS — moved up per feedback -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h2 class="text-base font-semibold">Cadence noticed</h2>
+              <p class="text-xs" style="color: var(--text-muted);">Three observations from your last 4 weeks</p>
+            </div>
+            <a href="#" class="text-xs font-medium" style="color: var(--saffron);">View all →</a>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="rounded-xl border p-4 hover:shadow-sm transition-shadow cursor-pointer" style="border-color: var(--border); background: var(--surface);">
+              <div class="flex items-start gap-2 mb-2">
+                <div class="h-6 w-6 rounded flex items-center justify-center shrink-0" style="background: rgba(22,163,74,0.15);">
+                  <i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>
+                </div>
+                <div class="text-[10px] font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Progress</div>
+              </div>
+              <div class="text-sm font-medium mb-1">800m pace improved 4 seconds</div>
+              <div class="text-xs" style="color: var(--text-muted);">Your reps average <span class="mono tabular">3:05</span>, down from <span class="mono tabular">3:09</span> two weeks ago at similar HR.</div>
+            </div>
+
+            <div class="rounded-xl border p-4 hover:shadow-sm transition-shadow cursor-pointer" style="border-color: var(--border); background: var(--surface);">
+              <div class="flex items-start gap-2 mb-2">
+                <div class="h-6 w-6 rounded flex items-center justify-center shrink-0" style="background: var(--saffron-soft);">
+                  <i data-lucide="activity" class="w-3.5 h-3.5" style="color: var(--saffron);"></i>
+                </div>
+                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--saffron);">Pattern</div>
+              </div>
+              <div class="text-sm font-medium mb-1">Tuesday fatigue, 3× this month</div>
+              <div class="text-xs" style="color: var(--text-muted);">All three Tuesdays came with "heavy legs from Monday weights." Consider shifting lifting day.</div>
+            </div>
+
+            <div class="rounded-xl border p-4 hover:shadow-sm transition-shadow cursor-pointer" style="border-color: var(--border); background: var(--surface);">
+              <div class="flex items-start gap-2 mb-2">
+                <div class="h-6 w-6 rounded flex items-center justify-center shrink-0" style="background: rgba(31,74,107,0.15);">
+                  <i data-lucide="lightbulb" class="w-3.5 h-3.5" style="color: #1F4A6B;"></i>
+                </div>
+                <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: #1F4A6B;">Recommendation</div>
+              </div>
+              <div class="text-sm font-medium mb-1">Try a feel run this week</div>
+              <div class="text-xs" style="color: var(--text-muted);">You've tracked every run for 3 weeks. A feel run Thursday could help recalibrate.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BENTO GRID — Gradient Glow -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-base font-semibold">This week at a glance</h2>
+            <span class="text-xs" style="color: var(--text-muted);">Hover any tile</span>
+          </div>
+          <div class="grid grid-cols-12 gap-4">
+
+            <!-- Fitness CTL — wide -->
+            <div class="col-span-12 md:col-span-5">
+              <article class="glow-tile tile-purple bg-purple h-full">
+                <div class="tile-content">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="tile-label" style="color: #3B1D70;">Fitness · CTL</div>
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold tabular" style="background: rgba(59,29,112,0.22); color: #2D1154;">
+                      <i data-lucide="trending-up" class="w-2.5 h-2.5"></i>+3 this week
+                    </span>
+                  </div>
+                  <div class="big-num mt-4" style="font-size: 72px; color: #1B0940;">68</div>
+                  <div class="text-xs mt-2 font-medium" style="color: #3B1D70;">42-day training load average</div>
+                  <svg viewBox="0 0 100 20" class="w-full h-6 mt-4" preserveAspectRatio="none">
+                    <path d="M0,15 L10,14 L20,13 L30,12 L40,10 L50,9 L60,7 L70,6 L80,4 L90,3 L100,2" stroke="#3B1D70" stroke-width="2" fill="none" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </article>
+            </div>
+
+            <!-- Weekly Volume — wide -->
+            <div class="col-span-12 md:col-span-7">
+              <article class="glow-tile tile-emerald bg-emerald h-full">
+                <div class="tile-content">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="tile-label" style="color: #0B3A27;">Week Volume</div>
+                    <span class="text-[11px] font-semibold tabular" style="color: #0D4A32;">77% of target</span>
+                  </div>
+                  <div class="flex items-baseline gap-2 mt-4">
+                    <span class="big-num" style="font-size: 64px; color: #052618;">42</span>
+                    <span class="font-sans font-semibold text-xl tabular" style="color: #0B3A27;">/ 55 km</span>
+                  </div>
+                  <div class="mt-4 flex items-end gap-1.5 h-12">
+                    <div class="flex-1 rounded-t-md" style="height: 40%; background: linear-gradient(180deg,#4FA580,#0D4A32);"></div>
+                    <div class="flex-1 rounded-t-md" style="height: 55%; background: linear-gradient(180deg,#4FA580,#0D4A32);"></div>
+                    <div class="flex-1 rounded-t-md" style="height: 45%; background: linear-gradient(180deg,#4FA580,#0D4A32);"></div>
+                    <div class="flex-1 rounded-t-md" style="height: 60%; background: linear-gradient(180deg,#4FA580,#0D4A32);"></div>
+                    <div class="flex-1 rounded-t-md opacity-40" style="height: 10%; background: #0D4A32;"></div>
+                    <div class="flex-1 rounded-t-md" style="height: 50%; background: linear-gradient(180deg,#4FA580,#0D4A32);"></div>
+                    <div class="flex-1 rounded-t-md" style="height: 85%; background: linear-gradient(180deg,rgba(79,165,128,0.4),transparent); outline: 1.5px dashed #0B3A27; outline-offset: -2px;"></div>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between text-[10px] font-semibold tabular" style="color: #0B3A27;">
+                    <span>M</span><span>T</span><span>W</span><span>Th</span><span>F</span><span>Sa</span><span>Su*</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <!-- Training Mix donut -->
+            <div class="col-span-12 md:col-span-4">
+              <article class="glow-tile tile-saffron bg-saffron h-full">
+                <div class="tile-content">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="tile-label" style="color: #5E3C0D;">Training Mix</div>
+                    <span class="text-[10px] font-semibold tabular" style="color: #3E2708;">last 4 wks</span>
+                  </div>
+                  <div class="flex items-center gap-4 mt-2">
+                    <svg viewBox="0 0 80 80" class="w-20 h-20 shrink-0">
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="rgba(94,60,13,0.2)" stroke-width="12"/>
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="#94A3B8" stroke-width="12" stroke-dasharray="122 188" transform="rotate(-90 40 40)"/>
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="#3B82F6" stroke-width="12" stroke-dasharray="24 188" stroke-dashoffset="-122" transform="rotate(-90 40 40)"/>
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="#10B981" stroke-width="12" stroke-dasharray="22 188" stroke-dashoffset="-146" transform="rotate(-90 40 40)"/>
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="#DB923A" stroke-width="12" stroke-dasharray="20 188" stroke-dashoffset="-168" transform="rotate(-90 40 40)"/>
+                      <text x="40" y="44" text-anchor="middle" class="mono" font-size="13" font-weight="700" fill="#3E2708">168</text>
+                      <text x="40" y="54" text-anchor="middle" font-size="6" fill="#5E3C0D">km</text>
+                    </svg>
+                    <div class="flex-1 space-y-1">
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="flex items-center gap-1.5 font-medium" style="color: #3E2708;"><span class="w-1.5 h-1.5 rounded-full" style="background: #94A3B8;"></span>Easy</span>
+                        <span class="mono font-bold tabular" style="color: #3E2708;">65%</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="flex items-center gap-1.5 font-medium" style="color: #3E2708;"><span class="w-1.5 h-1.5 rounded-full" style="background: #3B82F6;"></span>Long</span>
+                        <span class="mono font-bold tabular" style="color: #3E2708;">13%</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="flex items-center gap-1.5 font-medium" style="color: #3E2708;"><span class="w-1.5 h-1.5 rounded-full" style="background: #10B981;"></span>Tempo</span>
+                        <span class="mono font-bold tabular" style="color: #3E2708;">12%</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="flex items-center gap-1.5 font-medium" style="color: #3E2708;"><span class="w-1.5 h-1.5 rounded-full" style="background: #DB923A;"></span>Interval</span>
+                        <span class="mono font-bold tabular" style="color: #3E2708;">10%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <!-- PR Progress -->
+            <div class="col-span-12 md:col-span-5">
+              <article class="glow-tile tile-rose bg-rose h-full">
+                <div class="tile-content">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="tile-label" style="color: #45112B;">Personal Records</div>
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold" style="background: rgba(69,17,43,0.22); color: #2C091C;">
+                      <i data-lucide="award" class="w-2.5 h-2.5"></i>2 PRs this month
+                    </span>
+                  </div>
+                  <div class="space-y-2">
+                    <div class="flex items-center gap-3 pl-3" style="border-left: 3px solid #CE5886;">
+                      <div class="flex-1">
+                        <div class="text-sm font-bold" style="color: #2C091C;">1 mile</div>
+                        <div class="text-[10px] mono tabular" style="color: #45112B;">Apr 14 · prev 6:30</div>
+                      </div>
+                      <div class="flex items-center gap-1.5">
+                        <span class="big-num" style="font-size: 20px; color: #2C091C;">6:22</span>
+                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold" style="background: rgba(44,9,28,0.8); color: #FCE3ED;">
+                          <i data-lucide="arrow-down-right" class="w-2 h-2"></i>-8s
+                        </span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3 pl-3" style="border-left: 3px solid #CE5886;">
+                      <div class="flex-1">
+                        <div class="text-sm font-bold" style="color: #2C091C;">5K</div>
+                        <div class="text-[10px] mono tabular" style="color: #45112B;">Apr 14 · same</div>
+                      </div>
+                      <div class="flex items-center gap-1.5">
+                        <span class="big-num" style="font-size: 20px; color: #2C091C;">20:30</span>
+                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold" style="background: rgba(69,17,43,0.15); color: #45112B;">=</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3 pl-3 opacity-75" style="border-left: 3px solid #CE5886;">
+                      <div class="flex-1">
+                        <div class="text-sm font-bold" style="color: #2C091C;">10K</div>
+                        <div class="text-[10px] mono tabular" style="color: #45112B;">Nov 22 · slower trend</div>
+                      </div>
+                      <div class="flex items-center gap-1.5">
+                        <span class="big-num" style="font-size: 20px; color: #2C091C;">43:12</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <!-- Readiness gauge -->
+            <div class="col-span-12 md:col-span-3">
+              <article class="glow-tile tile-cyan bg-cyan h-full">
+                <div class="tile-content items-center text-center flex flex-col justify-between h-full">
+                  <div>
+                    <div class="tile-label mb-2" style="color: #07384A;">Readiness</div>
+                    <svg viewBox="0 0 120 75" class="w-32 mx-auto">
+                      <path d="M 12 65 A 48 48 0 0 1 108 65" stroke="rgba(7,56,74,0.18)" stroke-width="9" fill="none" stroke-linecap="round"/>
+                      <path d="M 12 65 A 48 48 0 0 1 108 65" stroke="url(#gGrad)" stroke-width="9" fill="none" stroke-linecap="round" stroke-dasharray="150" stroke-dashoffset="38"/>
+                      <defs><linearGradient id="gGrad" x1="0" x2="1"><stop offset="0" stop-color="#459CB3"/><stop offset="1" stop-color="#0A4659"/></linearGradient></defs>
+                      <circle cx="95" cy="35" r="4" fill="#03202C"/>
+                    </svg>
+                    <div class="mt-1 big-num" style="font-size: 28px; color: #03202C; line-height: 1;">Fresh</div>
+                    <div class="text-[10px] mt-1 font-semibold tabular" style="color: #07384A;">TSB +4</div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Training load chart -->
+        <div class="rounded-xl border p-5 mb-6" style="border-color: var(--border); background: var(--surface);">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <div class="text-base font-semibold">Training load trend</div>
+              <div class="text-xs mt-0.5" style="color: var(--text-muted);">Fitness · Fatigue · Form — last 6 months</div>
+            </div>
+            <div class="inline-flex items-center gap-1 text-xs rounded-md border p-0.5" style="border-color: var(--border);">
+              <button class="px-2 py-0.5 rounded" style="color: var(--text-muted);">1M</button>
+              <button class="px-2 py-0.5 rounded" style="color: var(--text-muted);">3M</button>
+              <button class="px-2 py-0.5 rounded font-medium" style="background: var(--saffron-soft); color: var(--saffron);">6M</button>
+              <button class="px-2 py-0.5 rounded" style="color: var(--text-muted);">1Y</button>
+            </div>
+          </div>
+          <svg viewBox="0 0 900 240" class="w-full h-44" preserveAspectRatio="none">
+            <line x1="0" y1="50" x2="900" y2="50" stroke="var(--border)" stroke-dasharray="3,3" opacity="0.5"/>
+            <line x1="0" y1="100" x2="900" y2="100" stroke="var(--border)" stroke-dasharray="3,3" opacity="0.5"/>
+            <line x1="0" y1="150" x2="900" y2="150" stroke="var(--border)" stroke-dasharray="3,3" opacity="0.5"/>
+            <line x1="0" y1="180" x2="900" y2="180" stroke="#D9D0B6" stroke-width="1"/>
+            <path d="M 0,210 C 50,205 100,198 150,195 C 200,192 250,185 300,175 C 350,165 400,150 450,138 C 500,128 550,115 600,100 C 650,88 700,80 750,72 C 800,65 850,60 900,60" stroke="#3B82F6" stroke-width="2.5" fill="none"/>
+            <path d="M 0,230 C 50,220 100,215 150,200 C 200,185 250,175 300,170 C 350,165 400,160 450,150 C 500,140 550,125 600,95 C 650,85 700,75 750,70 C 800,65 850,62 900,72" stroke="#EF4444" stroke-width="2" fill="none"/>
+            <path d="M 0,200 C 50,195 100,203 150,215 C 200,213 250,200 300,180 C 350,178 400,180 450,175 C 500,170 550,172 600,185 C 650,183 700,175 750,168 C 800,170 850,175 900,168" stroke="#3F6B4A" stroke-width="2" fill="none" stroke-dasharray="4,3"/>
+            <line x1="810" y1="30" x2="810" y2="230" stroke="var(--saffron)" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.7"/>
+            <circle cx="810" cy="62" r="4" fill="#3B82F6" stroke="var(--surface)" stroke-width="2"/>
+            <circle cx="810" cy="67" r="4" fill="#EF4444" stroke="var(--surface)" stroke-width="2"/>
+            <circle cx="810" cy="170" r="4" fill="#3F6B4A" stroke="var(--surface)" stroke-width="2"/>
+            <text x="0" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Nov</text>
+            <text x="150" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Dec</text>
+            <text x="300" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Jan</text>
+            <text x="450" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Feb</text>
+            <text x="600" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Mar</text>
+            <text x="750" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Apr</text>
+            <text x="810" y="24" fill="var(--saffron)" font-size="10" font-family="Inter" text-anchor="middle" font-weight="600">Today</text>
+          </svg>
+          <div class="mt-3 flex flex-wrap items-center gap-4 text-xs">
+            <span class="inline-flex items-center gap-1.5"><span class="w-4 h-0.5" style="background: #3B82F6;"></span>Fitness (CTL) <span class="mono tabular font-medium" style="color: var(--text-strong);">68</span></span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-4 h-0.5" style="background: #EF4444;"></span>Fatigue (ATL) <span class="mono tabular font-medium" style="color: var(--text-strong);">64</span></span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-4 border-t border-dashed" style="border-color: #3F6B4A;"></span>Form (TSB) <span class="mono tabular font-medium text-emerald-700 dark:text-emerald-400">+4</span></span>
+          </div>
+        </div>
+
+        <!-- Recent + Gear -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+          <div class="md:col-span-3 rounded-xl border p-5" style="border-color: var(--border); background: var(--surface);">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-base font-semibold">Recent activities</div>
+              <a href="#" class="text-xs font-medium" style="color: var(--saffron);">View all →</a>
+            </div>
+            <div class="divide-y" style="border-color: var(--border);">
+              <div class="py-2.5 flex items-center gap-3 hover:bg-black/[.02] dark:hover:bg-white/[.02] -mx-2 px-2 rounded cursor-pointer">
+                <div class="h-8 w-8 rounded-md bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center shrink-0">
+                  <i data-lucide="footprints" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <div class="text-sm font-medium truncate">Tuesday Morning Run</div>
+                    <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded" style="background: rgba(245,158,11,0.15); color: #B45309;">Interval</span>
+                  </div>
+                  <div class="text-xs tabular mt-0.5" style="color: var(--text-muted);">Apr 14 · 6.93 km · 28:51 · 6:28/mi</div>
+                </div>
+                <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded" style="background: var(--saffron-soft); color: var(--saffron);">PR #2</span>
+              </div>
+              <div class="py-2.5 flex items-center gap-3 hover:bg-black/[.02] dark:hover:bg-white/[.02] -mx-2 px-2 rounded cursor-pointer">
+                <div class="h-8 w-8 rounded-md bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center shrink-0">
+                  <i data-lucide="footprints" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <div class="text-sm font-medium truncate">Monday Shakeout</div>
+                    <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded" style="background: rgba(148,163,184,0.2); color: #475569;">Easy</span>
+                  </div>
+                  <div class="text-xs tabular mt-0.5" style="color: var(--text-muted);">Apr 13 · 5.0 km · 26:15 · 8:28/mi</div>
+                </div>
+              </div>
+              <div class="py-2.5 flex items-center gap-3 hover:bg-black/[.02] dark:hover:bg-white/[.02] -mx-2 px-2 rounded cursor-pointer">
+                <div class="h-8 w-8 rounded-md bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center shrink-0">
+                  <i data-lucide="footprints" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <div class="text-sm font-medium truncate">Sunday Long Run</div>
+                    <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded" style="background: rgba(59,130,246,0.15); color: #2563EB;">Long</span>
+                  </div>
+                  <div class="text-xs tabular mt-0.5" style="color: var(--text-muted);">Apr 12 · 18.5 km · 1:32:40 · 8:02/mi</div>
+                </div>
+              </div>
+              <div class="py-2.5 flex items-center gap-3 hover:bg-black/[.02] dark:hover:bg-white/[.02] -mx-2 px-2 rounded cursor-pointer">
+                <div class="h-8 w-8 rounded-md bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center shrink-0">
+                  <i data-lucide="footprints" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <div class="text-sm font-medium truncate">Thursday Tempo</div>
+                    <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded" style="background: rgba(16,185,129,0.15); color: #059669;">Tempo</span>
+                  </div>
+                  <div class="text-xs tabular mt-0.5" style="color: var(--text-muted);">Apr 10 · 8.0 km · 40:12 · 8:04/mi</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="md:col-span-2 rounded-xl border p-5" style="border-color: var(--border); background: var(--surface);">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-base font-semibold">Active shoes</div>
+              <a href="#" class="text-xs font-medium" style="color: var(--saffron);">Manage →</a>
+            </div>
+            <div class="space-y-3">
+              <div class="rounded-md border p-3" style="border-color: var(--border);">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="package" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                    <div>
+                      <div class="text-sm font-medium">Nike Pegasus 40</div>
+                      <div class="flex gap-1 mt-0.5">
+                        <span class="text-[10px] px-1.5 py-0.5 rounded" style="background: rgba(148,163,184,0.2); color: #475569;">Easy</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded" style="background: rgba(148,163,184,0.2); color: #475569;">Daily</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-xs tabular" style="color: var(--text-muted);">340/500</div>
+                </div>
+                <div class="h-1 rounded-full" style="background: var(--border);">
+                  <div class="h-full rounded-full bg-emerald-500" style="width: 68%;"></div>
+                </div>
+              </div>
+              <div class="rounded-md border p-3" style="border-color: var(--border);">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="package" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                    <div>
+                      <div class="text-sm font-medium">Saucony Endorphin Pro 3</div>
+                      <div class="flex gap-1 mt-0.5">
+                        <span class="text-[10px] px-1.5 py-0.5 rounded" style="background: var(--saffron-soft); color: var(--saffron);">Race</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded" style="background: rgba(245,158,11,0.15); color: #B45309;">Interval</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-xs tabular" style="color: var(--text-muted);">128/400</div>
+                </div>
+                <div class="h-1 rounded-full" style="background: var(--border);">
+                  <div class="h-full rounded-full bg-emerald-500" style="width: 32%;"></div>
+                </div>
+              </div>
+              <div class="rounded-md border p-3" style="border-color: var(--border);">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="package" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                    <div>
+                      <div class="text-sm font-medium">Hoka Bondi 8</div>
+                      <div class="flex gap-1 mt-0.5">
+                        <span class="text-[10px] px-1.5 py-0.5 rounded" style="background: rgba(59,130,246,0.15); color: #2563EB;">Long</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-xs tabular" style="color: var(--text-muted);">420/500</div>
+                </div>
+                <div class="h-1 rounded-full" style="background: var(--border);">
+                  <div class="h-full rounded-full bg-amber-500" style="width: 84%;"></div>
+                </div>
+                <div class="mt-2 text-[11px] inline-flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                  <i data-lucide="alert-triangle" class="w-3 h-3"></i>Retirement approaching
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    const toggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      html.classList.toggle('light');
+      const icon = toggle.querySelector('i');
+      icon.setAttribute('data-lucide', html.classList.contains('dark') ? 'sun' : 'moon');
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadence — Let's Get Started</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Shantell+Sans:wght@400..700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {
+        colors: {
+          graphite: { 500: '#57554F', 700: '#26241F', 900: '#171511' },
+          cream: { 50: '#FDF7F1', 100: '#FAF4EC', 200: '#F2EDE2', 300: '#E9E2D2' },
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'], hand: ['"Shantell Sans"', 'sans-serif'] },
+      } },
+    };
+  </script>
+  <style>
+    :root {
+      --bg: #FAF7F0; --bg-elevated: #FFFFFF; --border: #E9E2D2; --border-soft: rgba(74,54,40,0.08);
+      --text: #171511; --text-muted: #78756F; --text-strong: #26241F;
+      --graphite: #171511; --graphite-soft: rgba(23,21,17,0.06);
+    }
+    .dark {
+      --bg: #0E0D0B; --bg-elevated: #16140F; --border: #2E2B25; --border-soft: rgba(240,230,210,0.1);
+      --text: #EDE9DE; --text-muted: #8F8B82; --text-strong: #D4D0C6;
+      --graphite: #EDE9DE; --graphite-soft: rgba(237,233,222,0.06);
+    }
+    body { background: var(--bg); color: var(--text); }
+    .tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+    .btn-graphite { background: var(--graphite); color: var(--bg-elevated); transition: opacity .15s ease; }
+    .dark .btn-graphite { color: var(--bg); }
+    .btn-graphite:hover { opacity: 0.9; }
+    .btn-outline { border: 1px solid var(--border); }
+    .btn-outline:hover { background: var(--graphite-soft); }
+
+    .handwriting { font-family: 'Shantell Sans', sans-serif; font-variation-settings: "wght" 480, "BNCE" 450; }
+
+    @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fade-in 0.4s ease-out both; }
+    .stagger-1 { animation-delay: 60ms; }
+    .stagger-2 { animation-delay: 120ms; }
+    .stagger-3 { animation-delay: 180ms; }
+  </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+  <!-- Top bar -->
+  <header class="border-b" style="border-color: var(--border); background: var(--bg-elevated);">
+    <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="h-8 w-8 rounded-md flex items-center justify-center" style="background: var(--graphite);">
+          <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="var(--bg-elevated)" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <span class="font-semibold text-[15px]">Cadence</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="text-xs tabular" style="color: var(--text-muted);">Step <span class="font-medium" style="color: var(--text-strong);">1</span> of 5</div>
+        <button id="theme-toggle" class="h-8 w-8 rounded-md hover:bg-black/5 dark:hover:bg-white/5 flex items-center justify-center" aria-label="Theme">
+          <i data-lucide="moon" class="w-4 h-4" style="color: var(--text-muted);"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Progress bar -->
+    <div class="h-0.5" style="background: var(--border);">
+      <div class="h-full" style="width: 20%; background: var(--graphite); transition: width .3s ease;"></div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-6 py-12 md:py-16">
+    <!-- Welcome + data source choice -->
+    <section class="fade-in">
+      <div class="mb-10 text-center">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border mb-4" style="border-color: var(--border); background: var(--bg-elevated);">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5" style="color: var(--graphite);"></i>
+          <span class="text-xs font-medium">Welcome, Zach</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-semibold tracking-tight mb-3">Let's get you set up.</h1>
+        <p class="text-lg max-w-xl mx-auto" style="color: var(--text-muted);">
+          First — how would you like to bring your training data in? Pick the option that fits you. You can add more sources later.
+        </p>
+      </div>
+
+      <!-- Data source choices -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-8">
+        <!-- Strava -->
+        <button class="fade-in stagger-1 text-left rounded-xl border p-5 hover:shadow-md transition-all group relative overflow-hidden" style="border-color: var(--graphite); background: var(--bg-elevated);">
+          <div class="absolute top-3 right-3">
+            <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded" style="background: var(--graphite-soft); color: var(--text-strong);">Recommended</span>
+          </div>
+          <div class="h-10 w-10 rounded-lg flex items-center justify-center mb-3" style="background: var(--graphite);">
+            <i data-lucide="link-2" class="w-5 h-5" style="color: var(--bg-elevated);"></i>
+          </div>
+          <div class="text-base font-semibold mb-1">Connect Strava</div>
+          <div class="text-sm mb-4" style="color: var(--text-muted);">
+            Import your entire history in one click. Activities sync automatically going forward.
+          </div>
+          <div class="text-[11px] font-medium flex items-center gap-1 group-hover:gap-2 transition-all" style="color: var(--graphite);">
+            <span>Connect account</span>
+            <i data-lucide="arrow-right" class="w-3 h-3"></i>
+          </div>
+        </button>
+
+        <!-- Upload -->
+        <button class="fade-in stagger-2 text-left rounded-xl border p-5 hover:shadow-md hover:border-neutral-400 dark:hover:border-neutral-500 transition-all group" style="border-color: var(--border); background: var(--bg-elevated);">
+          <div class="h-10 w-10 rounded-lg flex items-center justify-center mb-3" style="background: var(--graphite-soft);">
+            <i data-lucide="upload" class="w-5 h-5" style="color: var(--text-strong);"></i>
+          </div>
+          <div class="text-base font-semibold mb-1">Upload files</div>
+          <div class="text-sm mb-4" style="color: var(--text-muted);">
+            Have FIT, GPX, TCX, or a CSV export from Garmin / Apple Health? Drop them in — we'll figure out the rest.
+          </div>
+          <div class="text-[11px] font-medium flex items-center gap-1 group-hover:gap-2 transition-all" style="color: var(--text-strong);">
+            <span>Choose files</span>
+            <i data-lucide="arrow-right" class="w-3 h-3"></i>
+          </div>
+        </button>
+
+        <!-- Start fresh -->
+        <button class="fade-in stagger-3 text-left rounded-xl border p-5 hover:shadow-md hover:border-neutral-400 dark:hover:border-neutral-500 transition-all group" style="border-color: var(--border); background: var(--bg-elevated);">
+          <div class="h-10 w-10 rounded-lg flex items-center justify-center mb-3" style="background: var(--graphite-soft);">
+            <i data-lucide="feather" class="w-5 h-5" style="color: var(--text-strong);"></i>
+          </div>
+          <div class="text-base font-semibold mb-1">Start fresh</div>
+          <div class="text-sm mb-4" style="color: var(--text-muted);">
+            No history yet? No problem. We'll build from your first run and learn as you go.
+          </div>
+          <div class="text-[11px] font-medium flex items-center gap-1 group-hover:gap-2 transition-all" style="color: var(--text-strong);">
+            <span>Begin</span>
+            <i data-lucide="arrow-right" class="w-3 h-3"></i>
+          </div>
+        </button>
+      </div>
+
+      <!-- Privacy note -->
+      <div class="flex items-start gap-2 text-xs p-3 rounded-lg" style="color: var(--text-muted); background: var(--graphite-soft);">
+        <i data-lucide="shield-check" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
+        <div>
+          Your training data stays yours. We use it to coach you — nothing else. No ads, no selling, no sharing without your explicit consent.
+        </div>
+      </div>
+
+      <!-- Divider before questionnaire preview -->
+      <div class="my-16 flex items-center gap-4">
+        <div class="flex-1 h-px" style="background: var(--border);"></div>
+        <div class="text-xs uppercase tracking-widest" style="color: var(--text-muted);">Then a few quick questions</div>
+        <div class="flex-1 h-px" style="background: var(--border);"></div>
+      </div>
+
+      <!-- Preview: conversational questionnaire -->
+      <section class="rounded-2xl border p-6 md:p-8" style="border-color: var(--border); background: var(--bg-elevated);">
+        <div class="mb-5">
+          <div class="flex items-center gap-2 mb-1">
+            <div class="h-6 w-6 rounded-full flex items-center justify-center" style="background: var(--graphite);">
+              <svg viewBox="0 0 8 8" class="w-1.5 h-1.5" fill="var(--bg-elevated)"><circle cx="4" cy="4" r="3"/></svg>
+            </div>
+            <span class="text-xs uppercase tracking-wider font-semibold" style="color: var(--text-muted);">Cadence will ask</span>
+          </div>
+        </div>
+
+        <div class="space-y-5">
+          <!-- Q1 -->
+          <div>
+            <p class="handwriting text-lg mb-3" style="color: var(--text-strong);">
+              How long have you been running regularly?
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <button class="btn-outline px-3 py-1.5 rounded-full text-sm">Less than 6 months</button>
+              <button class="btn-outline px-3 py-1.5 rounded-full text-sm">6–24 months</button>
+              <button class="btn-outline px-3 py-1.5 rounded-full text-sm" style="background: var(--graphite); color: var(--bg-elevated); border-color: var(--graphite);">2–5 years ✓</button>
+              <button class="btn-outline px-3 py-1.5 rounded-full text-sm">5+ years</button>
+            </div>
+          </div>
+
+          <div class="h-px" style="background: var(--border);"></div>
+
+          <!-- Q2 -->
+          <div>
+            <p class="handwriting text-lg mb-3" style="color: var(--text-strong);">
+              What's your current goal?
+            </p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <button class="btn-outline text-left p-3 rounded-lg">
+                <i data-lucide="flag" class="w-4 h-4 mb-1.5" style="color: var(--text-muted);"></i>
+                <div class="text-sm font-medium">Train for a race</div>
+              </button>
+              <button class="btn-outline text-left p-3 rounded-lg">
+                <i data-lucide="trending-up" class="w-4 h-4 mb-1.5" style="color: var(--text-muted);"></i>
+                <div class="text-sm font-medium">Get faster</div>
+              </button>
+              <button class="btn-outline text-left p-3 rounded-lg">
+                <i data-lucide="activity" class="w-4 h-4 mb-1.5" style="color: var(--text-muted);"></i>
+                <div class="text-sm font-medium">Build fitness</div>
+              </button>
+              <button class="btn-outline text-left p-3 rounded-lg">
+                <i data-lucide="heart" class="w-4 h-4 mb-1.5" style="color: var(--text-muted);"></i>
+                <div class="text-sm font-medium">Stay healthy</div>
+              </button>
+            </div>
+          </div>
+
+          <div class="h-px" style="background: var(--border);"></div>
+
+          <!-- Q3 -->
+          <div>
+            <p class="handwriting text-lg mb-3" style="color: var(--text-strong);">
+              How many days a week can you realistically run?
+            </p>
+            <div class="flex items-center gap-2">
+              <button class="btn-outline h-10 w-10 rounded-full text-sm font-medium">2</button>
+              <button class="btn-outline h-10 w-10 rounded-full text-sm font-medium">3</button>
+              <button class="btn-outline h-10 w-10 rounded-full text-sm font-medium">4</button>
+              <button class="btn-outline h-10 w-10 rounded-full text-sm font-medium" style="background: var(--graphite); color: var(--bg-elevated); border-color: var(--graphite);">5</button>
+              <button class="btn-outline h-10 w-10 rounded-full text-sm font-medium">6</button>
+              <button class="btn-outline h-10 w-10 rounded-full text-sm font-medium">7</button>
+            </div>
+          </div>
+
+          <div class="h-px" style="background: var(--border);"></div>
+
+          <!-- Q4 with free-text -->
+          <div>
+            <p class="handwriting text-lg mb-3" style="color: var(--text-strong);">
+              Anything I should know before we start? Injuries, preferences, races on the calendar?
+            </p>
+            <textarea rows="3" placeholder="Type here, or just skip — you can always tell me later in chat." class="w-full p-3 rounded-lg border text-sm outline-none resize-none focus:ring-2" style="border-color: var(--border); background: var(--bg); color: var(--text);"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer CTAs -->
+      <div class="mt-8 flex items-center justify-between">
+        <button class="text-sm hover:underline" style="color: var(--text-muted);">Skip for now</button>
+        <button class="btn-graphite px-5 py-2.5 rounded-md text-sm font-medium flex items-center gap-1.5">
+          Continue
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    lucide.createIcons();
+    const toggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      html.classList.toggle('light');
+      const icon = toggle.querySelector('i');
+      icon.setAttribute('data-lucide', html.classList.contains('dark') ? 'sun' : 'moon');
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

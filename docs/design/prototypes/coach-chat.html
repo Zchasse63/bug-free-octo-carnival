@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stride AI — Coach</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            ember: {
+              50: '#FFF7ED', 100: '#FFEDD5', 200: '#FED7AA', 300: '#FDBA74',
+              400: '#D99E3E', 500: '#C48A2A', 600: '#A6731F', 700: '#8A6118',
+              800: '#8F2906', 900: '#6E2005',
+            },
+            neutral: {
+              0: '#FFFFFF', 50: '#FAFAF7', 100: '#F5F5F0', 200: '#E7E5DF',
+              300: '#D4D2CB', 400: '#A8A6A0', 500: '#78756F', 600: '#57554F',
+              700: '#3E3C37', 800: '#26241F', 900: '#171511', 950: '#0B0A08',
+            },
+            zone: {
+              recovery: '#94A3B8', aerobic: '#3B82F6', tempo: '#10B981',
+              threshold: '#F59E0B', vo2max: '#EF4444', rep: '#A855F7',
+            },
+            workout: {
+              easy: '#94A3B8', long: '#3B82F6', tempo: '#10B981',
+              interval: '#F59E0B', race: '#C48A2A', fartlek: '#8B5CF6',
+              rest: '#D4D2CB', crosstrain: '#06B6D4', feel: '#EC4899',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      --bg: #FAFAF7;
+      --bg-elevated: #FFFFFF;
+      --border: #E7E5DF;
+      --text: #171511;
+      --text-muted: #78756F;
+    }
+    .dark {
+      --bg: #0E0D0B;
+      --bg-elevated: #16140F;
+      --border: #2E2B25;
+      --text: #EDE9DE;
+      --text-muted: #8F8B82;
+    }
+    body { background: var(--bg); color: var(--text); font-feature-settings: "cv11"; }
+    .tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+    .scrollbar-slim::-webkit-scrollbar { width: 6px; height: 6px; }
+    .scrollbar-slim::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    .scrollbar-slim::-webkit-scrollbar-track { background: transparent; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .cursor-blink::after {
+      content: '▊'; margin-left: 2px; animation: blink 0.8s step-end infinite;
+      color: #C48A2A; font-weight: bold;
+    }
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fade-in-up 0.3s ease-out; }
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
+  </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="hidden md:flex md:w-64 lg:w-72 flex-col border-r" style="border-color: var(--border); background: var(--bg-elevated);">
+      <!-- Logo -->
+      <div class="flex items-center justify-between px-5 py-5 border-b" style="border-color: var(--border);">
+        <div class="flex items-center gap-2">
+          <div class="h-7 w-7 rounded-md bg-ember-500 flex items-center justify-center">
+            <i data-lucide="activity" class="w-4 h-4 text-white"></i>
+          </div>
+          <span class="font-semibold text-[15px]">Stride AI</span>
+        </div>
+        <button id="theme-toggle" class="h-8 w-8 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 flex items-center justify-center transition-colors" aria-label="Toggle theme">
+          <i data-lucide="moon" class="w-4 h-4" style="color: var(--text-muted);"></i>
+        </button>
+      </div>
+
+      <!-- New chat button -->
+      <div class="px-3 pt-3">
+        <button class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white bg-ember-500 hover:bg-ember-600 transition-colors">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          New conversation
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="px-3 pt-3">
+        <div class="relative">
+          <i data-lucide="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4" style="color: var(--text-muted);"></i>
+          <input type="text" placeholder="Search conversations" class="w-full pl-8 pr-3 py-2 text-sm rounded-md border focus:outline-none focus:ring-2 focus:ring-ember-500 focus:border-transparent" style="background: var(--bg); border-color: var(--border); color: var(--text);" />
+        </div>
+      </div>
+
+      <!-- Conversation list -->
+      <div class="flex-1 overflow-y-auto px-3 pt-4 scrollbar-slim">
+        <div class="text-xs uppercase tracking-wider font-semibold mb-2 px-2" style="color: var(--text-muted);">Recent</div>
+        <button class="w-full text-left px-2 py-2 rounded-md bg-ember-50 dark:bg-neutral-100 border border-transparent">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <div class="text-sm font-medium truncate">Tuesday track workout</div>
+              <div class="text-xs truncate mt-0.5" style="color: var(--text-muted);">How'd you feel about the 800 repeats?</div>
+            </div>
+          </div>
+        </button>
+        <button class="w-full text-left px-2 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 mt-0.5 transition-colors">
+          <div class="text-sm font-medium truncate">Sunday long run recap</div>
+          <div class="text-xs truncate mt-0.5" style="color: var(--text-muted);">Yesterday</div>
+        </button>
+        <button class="w-full text-left px-2 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 mt-0.5 transition-colors">
+          <div class="text-sm font-medium truncate">Plan for marathon build</div>
+          <div class="text-xs truncate mt-0.5" style="color: var(--text-muted);">3 days ago</div>
+        </button>
+        <button class="w-full text-left px-2 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 mt-0.5 transition-colors">
+          <div class="text-sm font-medium truncate">Shoe rotation question</div>
+          <div class="text-xs truncate mt-0.5" style="color: var(--text-muted);">Last week</div>
+        </button>
+
+        <div class="text-xs uppercase tracking-wider font-semibold mb-2 px-2 mt-6" style="color: var(--text-muted);">Earlier</div>
+        <button class="w-full text-left px-2 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 mt-0.5 transition-colors">
+          <div class="text-sm font-medium truncate">Weekly summary — Apr 7</div>
+          <div class="text-xs truncate mt-0.5" style="color: var(--text-muted);">Apr 7</div>
+        </button>
+        <button class="w-full text-left px-2 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 mt-0.5 transition-colors">
+          <div class="text-sm font-medium truncate">5K race strategy</div>
+          <div class="text-xs truncate mt-0.5" style="color: var(--text-muted);">Apr 2</div>
+        </button>
+      </div>
+
+      <!-- Profile footer -->
+      <div class="border-t p-3" style="border-color: var(--border);">
+        <button class="w-full flex items-center gap-3 px-2 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 transition-colors">
+          <div class="h-8 w-8 rounded-full bg-ember-500 flex items-center justify-center text-white font-semibold text-xs">ZC</div>
+          <div class="flex-1 text-left min-w-0">
+            <div class="text-sm font-medium truncate">Zach Chasse</div>
+            <div class="text-xs truncate" style="color: var(--text-muted);">Tampa, FL</div>
+          </div>
+          <i data-lucide="chevron-up-down" class="w-4 h-4" style="color: var(--text-muted);"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main chat area -->
+    <main class="flex-1 flex flex-col min-w-0">
+      <!-- Chat header -->
+      <header class="flex items-center justify-between px-4 md:px-6 py-4 border-b" style="border-color: var(--border); background: var(--bg-elevated);">
+        <div class="flex items-center gap-3 min-w-0">
+          <button class="md:hidden h-8 w-8 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 flex items-center justify-center" aria-label="Menu">
+            <i data-lucide="menu" class="w-4 h-4"></i>
+          </button>
+          <div class="min-w-0">
+            <div class="font-semibold text-[15px] truncate">Tuesday track workout</div>
+            <div class="text-xs flex items-center gap-1.5 mt-0.5" style="color: var(--text-muted);">
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+              Coach is reviewing your run
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1">
+          <nav class="hidden md:flex items-center gap-1 mr-2">
+            <a href="#" class="px-3 py-1.5 text-sm rounded-md bg-ember-500 text-white font-medium">Coach</a>
+            <a href="#" class="px-3 py-1.5 text-sm rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100" style="color: var(--text-muted);">Activities</a>
+            <a href="#" class="px-3 py-1.5 text-sm rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100" style="color: var(--text-muted);">Dashboard</a>
+            <a href="#" class="px-3 py-1.5 text-sm rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100" style="color: var(--text-muted);">Plan</a>
+          </nav>
+          <button class="h-8 w-8 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 flex items-center justify-center" aria-label="More">
+            <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Messages -->
+      <div id="messages" class="flex-1 overflow-y-auto scrollbar-slim">
+        <div class="max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-8 space-y-6">
+
+          <!-- Coach — Proactive post-run analysis -->
+          <div class="flex gap-3 fade-in">
+            <div class="h-8 w-8 rounded-full bg-ember-500 flex items-center justify-center text-white shrink-0 mt-0.5">
+              <i data-lucide="activity" class="w-4 h-4"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-sm font-semibold">Coach</span>
+                <span class="text-xs" style="color: var(--text-muted);">Post-run analysis · 7:12 AM</span>
+              </div>
+              <div class="text-[15px] leading-relaxed" style="color: var(--text);">
+                Good morning. I just looked at your Tuesday morning run — 6.93km, 10 laps with alternating effort. Let me share what I see.
+              </div>
+
+              <!-- Embedded activity card -->
+              <div class="mt-4 rounded-lg border overflow-hidden" style="border-color: var(--border); background: var(--bg-elevated);">
+                <div class="flex">
+                  <div class="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-br from-neutral-200 to-neutral-100 dark:from-neutral-300 dark:to-neutral-200 shrink-0 flex items-center justify-center relative">
+                    <!-- Fake polyline SVG -->
+                    <svg viewBox="0 0 100 100" class="w-full h-full p-2" fill="none" stroke="#C48A2A" stroke-width="1.5">
+                      <path d="M20,80 C25,75 30,70 35,60 C40,50 30,40 35,30 C40,20 55,15 65,20 C75,25 85,35 80,50 C75,65 60,75 50,80 C40,85 25,85 20,80 Z" stroke-linejoin="round" />
+                      <circle cx="20" cy="80" r="2" fill="#10B981" stroke="none" />
+                      <circle cx="22" cy="82" r="2" fill="#EF4444" stroke="none" />
+                    </svg>
+                  </div>
+                  <div class="flex-1 p-3 md:p-4 min-w-0">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="min-w-0">
+                        <div class="font-medium text-sm truncate">Tuesday Morning Run</div>
+                        <div class="text-xs mt-0.5" style="color: var(--text-muted);">Apr 14 · 6:36 AM · Tampa, FL</div>
+                      </div>
+                      <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0" style="background: rgba(245, 158, 11, 0.12); color: #D97706;">Interval</span>
+                    </div>
+                    <div class="mt-2 md:mt-3 grid grid-cols-4 gap-2">
+                      <div>
+                        <div class="text-[10px] uppercase tracking-wider" style="color: var(--text-muted);">Distance</div>
+                        <div class="font-mono font-medium text-sm tabular">6.93 km</div>
+                      </div>
+                      <div>
+                        <div class="text-[10px] uppercase tracking-wider" style="color: var(--text-muted);">Time</div>
+                        <div class="font-mono font-medium text-sm tabular">28:51</div>
+                      </div>
+                      <div>
+                        <div class="text-[10px] uppercase tracking-wider" style="color: var(--text-muted);">Pace</div>
+                        <div class="font-mono font-medium text-sm tabular">6:28/mi</div>
+                      </div>
+                      <div>
+                        <div class="text-[10px] uppercase tracking-wider" style="color: var(--text-muted);">Avg HR</div>
+                        <div class="font-mono font-medium text-sm tabular">172</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 text-[15px] leading-relaxed space-y-3" style="color: var(--text);">
+                <p>A few things worth noting:</p>
+                <ul class="space-y-2 pl-1">
+                  <li class="flex gap-2"><span class="text-emerald-600 dark:text-emerald-400 font-bold">+</span> Your 800m reps averaged <span class="font-mono tabular font-medium">3:05</span> — 4 seconds faster than two weeks ago at similar HR. That's real progress.</li>
+                  <li class="flex gap-2"><span class="text-emerald-600 dark:text-emerald-400 font-bold">+</span> Cadence stayed consistent at 174 spm through all 10 laps. Form held up under fatigue.</li>
+                  <li class="flex gap-2"><span class="text-amber-600 dark:text-amber-400 font-bold">·</span> Your max HR hit 187 on the last interval — above your usual ceiling. How did those last two feel?</li>
+                </ul>
+                <p>Also: your <span class="font-medium">OTRA 800 segment hit PR rank #2</span> — just 3 seconds off your best. Nice.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- User message -->
+          <div class="flex gap-3 justify-end fade-in">
+            <div class="flex-1 min-w-0 max-w-2xl ml-auto">
+              <div class="flex items-center gap-2 mb-1.5 justify-end">
+                <span class="text-xs" style="color: var(--text-muted);">7:15 AM</span>
+                <span class="text-sm font-semibold">You</span>
+              </div>
+              <div class="rounded-2xl rounded-tr-sm px-4 py-3 inline-block float-right" style="background: #C48A2A; color: white;">
+                <div class="text-[15px] leading-relaxed">
+                  The last two felt rough. Legs were heavy from Monday's weight session. I think I pushed harder than I should have on rep 9 and just gritted through 10.
+                </div>
+              </div>
+              <div class="clear-both"></div>
+            </div>
+            <div class="h-8 w-8 rounded-full bg-neutral-300 dark:bg-neutral-400 flex items-center justify-center text-xs font-semibold shrink-0 mt-0.5">ZC</div>
+          </div>
+
+          <!-- Coach response -->
+          <div class="flex gap-3 fade-in">
+            <div class="h-8 w-8 rounded-full bg-ember-500 flex items-center justify-center text-white shrink-0 mt-0.5">
+              <i data-lucide="activity" class="w-4 h-4"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-sm font-semibold">Coach</span>
+                <span class="text-xs" style="color: var(--text-muted);">7:16 AM</span>
+              </div>
+              <div class="text-[15px] leading-relaxed space-y-3" style="color: var(--text);">
+                <p>That matches what I saw in your data — HR climbed 6 bpm on rep 9 compared to your average, and your pace dropped 8 seconds. Your body was telling you. Gritting through rep 10 explains the 187 max.</p>
+                <p>For your history: this is the third time this month a Tuesday run has come with a "heavy legs from Monday weights" comment. Pattern worth noting.</p>
+                <p>Want to try shifting your lifting to Thursday for a week or two and see how Tuesday quality responds? Or keep the current schedule and accept that Tuesdays may not be your sharpest day?</p>
+              </div>
+
+              <!-- Tool call transparency -->
+              <details class="mt-3 text-xs">
+                <summary class="inline-flex items-center gap-1.5 hover:underline" style="color: var(--text-muted);">
+                  <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                  <span>Used 3 tools: activity_detail, similar_notes, training_load</span>
+                </summary>
+                <div class="mt-2 pl-4 border-l-2 space-y-1" style="border-color: var(--border); color: var(--text-muted);">
+                  <div>→ <span class="font-mono">query_activity_detail(18102907919)</span></div>
+                  <div>→ <span class="font-mono">query_similar_notes("heavy legs Tuesday weights")</span></div>
+                  <div>→ <span class="font-mono">query_training_load(days=14)</span></div>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <!-- User quick response -->
+          <div class="flex gap-3 justify-end fade-in">
+            <div class="flex-1 min-w-0 max-w-2xl ml-auto">
+              <div class="flex items-center gap-2 mb-1.5 justify-end">
+                <span class="text-xs" style="color: var(--text-muted);">7:18 AM</span>
+                <span class="text-sm font-semibold">You</span>
+              </div>
+              <div class="rounded-2xl rounded-tr-sm px-4 py-3 inline-block float-right" style="background: #C48A2A; color: white;">
+                <div class="text-[15px] leading-relaxed">
+                  Let's try shifting lifting to Thursday. What should I do today?
+                </div>
+              </div>
+              <div class="clear-both"></div>
+            </div>
+            <div class="h-8 w-8 rounded-full bg-neutral-300 dark:bg-neutral-400 flex items-center justify-center text-xs font-semibold shrink-0 mt-0.5">ZC</div>
+          </div>
+
+          <!-- Coach recommendation -->
+          <div class="flex gap-3 fade-in">
+            <div class="h-8 w-8 rounded-full bg-ember-500 flex items-center justify-center text-white shrink-0 mt-0.5">
+              <i data-lucide="activity" class="w-4 h-4"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-sm font-semibold">Coach</span>
+                <span class="text-xs" style="color: var(--text-muted);">7:18 AM</span>
+              </div>
+              <div class="text-[15px] leading-relaxed mb-3" style="color: var(--text);">
+                Good call. Let's schedule Thursday weights starting this week. For today — after a hard interval session, you'd normally get an easy 5-7K. But given yesterday's weights + today's hard effort, I'd keep it truly easy. Here's what I'd suggest:
+              </div>
+
+              <!-- Workout proposal card -->
+              <div class="rounded-lg border overflow-hidden" style="border-color: var(--border); background: var(--bg-elevated);">
+                <div class="px-4 py-3 border-b flex items-center justify-between" style="border-color: var(--border);">
+                  <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded" style="background: rgba(148, 163, 184, 0.2); color: #64748B;">Easy · Recovery</span>
+                    <span class="text-sm font-medium">Afternoon shakeout</span>
+                  </div>
+                  <span class="text-xs font-mono tabular" style="color: var(--text-muted);">~35 min</span>
+                </div>
+                <div class="p-4 space-y-2">
+                  <div class="flex items-center gap-3 text-sm">
+                    <div class="h-6 w-6 rounded bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center text-xs font-semibold shrink-0">1</div>
+                    <div class="flex-1">5km at conversational pace</div>
+                    <div class="font-mono tabular text-xs" style="color: var(--text-muted);">8:30–9:00/mi</div>
+                  </div>
+                  <div class="flex items-center gap-3 text-sm">
+                    <div class="h-6 w-6 rounded bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center text-xs font-semibold shrink-0">2</div>
+                    <div class="flex-1">4 × 20s strides, full recovery</div>
+                    <div class="font-mono tabular text-xs" style="color: var(--text-muted);">optional</div>
+                  </div>
+                </div>
+                <div class="px-4 py-3 border-t flex items-center justify-between gap-2" style="border-color: var(--border); background: var(--bg);">
+                  <div class="text-xs" style="color: var(--text-muted);">Target HR under 140 bpm</div>
+                  <div class="flex gap-2">
+                    <button class="px-3 py-1.5 text-sm rounded-md border hover:bg-neutral-100 dark:hover:bg-neutral-100 transition-colors" style="border-color: var(--border);">Edit</button>
+                    <button class="px-3 py-1.5 text-sm rounded-md text-white bg-ember-500 hover:bg-ember-600 transition-colors font-medium">Save to Plan</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 text-[15px] leading-relaxed" style="color: var(--text);">
+                Feel free to skip the strides if your legs still feel heavy. The 5K easy alone is the real work today.
+              </div>
+            </div>
+          </div>
+
+          <!-- Coach thinking / streaming example -->
+          <div class="flex gap-3 fade-in">
+            <div class="h-8 w-8 rounded-full bg-ember-500 flex items-center justify-center text-white shrink-0 mt-0.5">
+              <i data-lucide="activity" class="w-4 h-4"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-sm font-semibold">Coach</span>
+                <span class="text-xs" style="color: var(--text-muted);">Now</span>
+              </div>
+              <div class="text-[15px] leading-relaxed" style="color: var(--text);">
+                One more thing — your Endorphin Pros are at 340 miles. They have another 80-100 miles of quality in them, but<span class="cursor-blink"> </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Composer -->
+      <div class="border-t" style="border-color: var(--border); background: var(--bg-elevated);">
+        <div class="max-w-3xl mx-auto px-4 md:px-6 py-4">
+          <div class="rounded-xl border focus-within:ring-2 focus-within:ring-ember-500 focus-within:border-transparent" style="border-color: var(--border); background: var(--bg);">
+            <textarea rows="1" placeholder="Reply to your coach…" class="w-full resize-none px-4 pt-3 pb-2 text-[15px] bg-transparent outline-none" style="color: var(--text);"></textarea>
+            <div class="flex items-center justify-between px-2 pb-2">
+              <div class="flex items-center gap-1">
+                <button class="h-8 w-8 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 flex items-center justify-center" aria-label="Attach">
+                  <i data-lucide="paperclip" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </button>
+                <button class="h-8 w-8 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 flex items-center justify-center opacity-50 cursor-not-allowed" aria-label="Voice (coming soon)" disabled>
+                  <i data-lucide="mic" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </button>
+                <button class="h-8 w-8 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 flex items-center justify-center" aria-label="Link activity">
+                  <i data-lucide="activity" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </button>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs hidden sm:inline" style="color: var(--text-muted);">Press Enter to send</span>
+                <button class="h-8 px-3 rounded-md bg-ember-500 hover:bg-ember-600 text-white text-sm font-medium flex items-center gap-1.5 transition-colors">
+                  <span>Send</span>
+                  <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="mt-2 flex items-center gap-2 text-xs" style="color: var(--text-muted);">
+            <i data-lucide="shield-check" class="w-3 h-3"></i>
+            <span>Your conversations are private. Only you can see them.</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // Theme toggle
+    const toggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      html.classList.toggle('light');
+      const icon = toggle.querySelector('i');
+      icon.setAttribute('data-lucide', html.classList.contains('dark') ? 'sun' : 'moon');
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

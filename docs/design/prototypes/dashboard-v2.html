@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stride AI — Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {
+        colors: {
+          ember: { 50: '#FFF7ED', 100: '#FFEDD5', 200: '#FED7AA', 300: '#FDBA74', 400: '#FB923C', 500: '#E94E1B', 600: '#D4400F' },
+          zone: { recovery: '#94A3B8', aerobic: '#3B82F6', tempo: '#10B981', threshold: '#F59E0B', vo2max: '#EF4444' },
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+      } },
+    };
+  </script>
+  <style>
+    :root { --bg: #FAFAF7; --bg-elevated: #FFFFFF; --border: #E7E5DF; --text: #171511; --text-muted: #78756F; --text-strong: #26241F; }
+    .dark { --bg: #0E0D0B; --bg-elevated: #16140F; --border: #2E2B25; --text: #EDE9DE; --text-muted: #8F8B82; --text-strong: #D4D0C6; }
+    body { background: var(--bg); color: var(--text); }
+    .tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+  </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+  <!-- Top nav -->
+  <header class="border-b sticky top-0 z-20" style="border-color: var(--border); background: var(--bg-elevated);">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <div class="h-7 w-7 rounded-md bg-ember-500 flex items-center justify-center">
+            <i data-lucide="activity" class="w-4 h-4 text-white"></i>
+          </div>
+          <span class="font-semibold text-[15px]">Stride AI</span>
+        </div>
+        <nav class="hidden md:flex items-center gap-1">
+          <a href="#" class="px-3 py-1.5 text-sm rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 transition-colors" style="color: var(--text-muted);">Coach</a>
+          <a href="#" class="px-3 py-1.5 text-sm rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 transition-colors" style="color: var(--text-muted);">Activities</a>
+          <a href="#" class="px-3 py-1.5 text-sm rounded-md bg-ember-500 text-white font-medium">Dashboard</a>
+          <a href="#" class="px-3 py-1.5 text-sm rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 transition-colors" style="color: var(--text-muted);">Plan</a>
+        </nav>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="theme-toggle" class="h-8 w-8 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-100 flex items-center justify-center" aria-label="Theme">
+          <i data-lucide="moon" class="w-4 h-4" style="color: var(--text-muted);"></i>
+        </button>
+        <button class="h-8 w-8 rounded-full bg-ember-500 text-white text-xs font-semibold flex items-center justify-center">ZC</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
+    <!-- Page header -->
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-semibold">Your training</h1>
+        <p class="text-sm mt-1" style="color: var(--text-muted);">Week 15 of 2026 · Marathon build phase</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="inline-flex rounded-md border" style="border-color: var(--border); background: var(--bg-elevated);">
+          <button class="px-3 py-1.5 text-sm rounded-l-md bg-neutral-100 dark:bg-neutral-100 font-medium">Week</button>
+          <button class="px-3 py-1.5 text-sm hover:bg-neutral-50 dark:hover:bg-neutral-50" style="color: var(--text-muted);">Month</button>
+          <button class="px-3 py-1.5 text-sm rounded-r-md hover:bg-neutral-50 dark:hover:bg-neutral-50" style="color: var(--text-muted);">Year</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero row: Week summary + Readiness -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <!-- Week summary -->
+      <div class="md:col-span-2 rounded-lg border p-5 md:p-6" style="border-color: var(--border); background: var(--bg-elevated);">
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="text-xs uppercase tracking-wider font-semibold" style="color: var(--text-muted);">This week</div>
+            <div class="mt-2 flex items-baseline gap-3">
+              <div class="text-4xl md:text-5xl font-bold tabular" style="color: var(--text-strong);">42.3</div>
+              <div class="text-lg" style="color: var(--text-muted);">km</div>
+            </div>
+            <div class="mt-1 flex items-center gap-3 text-sm">
+              <span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+                <span class="tabular">+8.2 km</span>
+              </span>
+              <span style="color: var(--text-muted);">vs last week</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs uppercase tracking-wider font-semibold mb-1" style="color: var(--text-muted);">Progress</div>
+            <div class="text-sm font-medium tabular">42.3 / 55 km</div>
+            <div class="mt-2 w-32 h-1.5 rounded-full" style="background: var(--border);">
+              <div class="h-full rounded-full bg-ember-500" style="width: 77%;"></div>
+            </div>
+            <div class="mt-1.5 text-xs tabular" style="color: var(--text-muted);">77% of target</div>
+          </div>
+        </div>
+
+        <!-- Week days bar chart -->
+        <div class="mt-6 flex items-end gap-1.5 h-24">
+          <!-- Mon -->
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-full rounded-sm" style="height: 40%; background: #94A3B8;" title="Easy 5K"></div>
+            <div class="mt-1.5 text-[10px] font-medium" style="color: var(--text-muted);">M</div>
+            <div class="text-[10px] tabular" style="color: var(--text-muted);">5</div>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-full rounded-sm" style="height: 55%; background: #F59E0B;" title="Intervals 6.9K"></div>
+            <div class="mt-1.5 text-[10px] font-medium">T</div>
+            <div class="text-[10px] tabular">6.9</div>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-full rounded-sm" style="height: 45%; background: #94A3B8;" title="Easy 5.5K"></div>
+            <div class="mt-1.5 text-[10px] font-medium" style="color: var(--text-muted);">W</div>
+            <div class="text-[10px] tabular" style="color: var(--text-muted);">5.5</div>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-full rounded-sm" style="height: 60%; background: #10B981;" title="Tempo 8K"></div>
+            <div class="mt-1.5 text-[10px] font-medium">Th</div>
+            <div class="text-[10px] tabular">8</div>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-full rounded-sm" style="height: 0;"></div>
+            <div class="mt-1.5 text-[10px] font-medium" style="color: var(--text-muted);">F</div>
+            <div class="text-[10px] tabular" style="color: var(--text-muted);">rest</div>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-full rounded-sm" style="height: 50%; background: #94A3B8;" title="Easy 6K"></div>
+            <div class="mt-1.5 text-[10px] font-medium">Sa</div>
+            <div class="text-[10px] tabular">6</div>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-full rounded-sm border-2 border-dashed" style="height: 85%; border-color: #3B82F6; background: transparent;" title="Long 22K — planned"></div>
+            <div class="mt-1.5 text-[10px] font-medium" style="color: var(--text-muted);">Su</div>
+            <div class="text-[10px] tabular" style="color: var(--text-muted);">22*</div>
+          </div>
+        </div>
+        <div class="mt-3 flex items-center gap-4 text-[11px]" style="color: var(--text-muted);">
+          <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-sm" style="background: #94A3B8;"></span>Easy</span>
+          <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-sm" style="background: #10B981;"></span>Tempo</span>
+          <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-sm" style="background: #F59E0B;"></span>Interval</span>
+          <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-sm" style="background: #3B82F6;"></span>Long</span>
+          <span class="inline-flex items-center gap-1"><span class="w-2 h-2 rounded-sm border border-dashed" style="border-color: #3B82F6;"></span>Planned</span>
+        </div>
+      </div>
+
+      <!-- Readiness -->
+      <div class="rounded-lg border p-5 md:p-6" style="border-color: var(--border); background: var(--bg-elevated);">
+        <div class="text-xs uppercase tracking-wider font-semibold" style="color: var(--text-muted);">Readiness</div>
+        <div class="mt-3 flex items-center gap-3">
+          <div class="h-12 w-12 rounded-full flex items-center justify-center" style="background: rgba(22, 163, 74, 0.15);">
+            <i data-lucide="activity" class="w-6 h-6 text-emerald-600 dark:text-emerald-400"></i>
+          </div>
+          <div>
+            <div class="text-xl font-semibold text-emerald-700 dark:text-emerald-400">Fresh</div>
+            <div class="text-xs" style="color: var(--text-muted);">Ready to push</div>
+          </div>
+        </div>
+
+        <div class="mt-5 space-y-3 text-sm">
+          <div class="flex items-center justify-between">
+            <span style="color: var(--text-muted);">Training balance (TSB)</span>
+            <span class="font-mono tabular font-medium text-emerald-600 dark:text-emerald-400">+4</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span style="color: var(--text-muted);">Fitness (CTL)</span>
+            <span class="font-mono tabular font-medium">68</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span style="color: var(--text-muted);">Fatigue (ATL)</span>
+            <span class="font-mono tabular font-medium">64</span>
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t" style="border-color: var(--border);">
+            <span style="color: var(--text-muted);">Injury risk</span>
+            <span class="inline-flex items-center gap-1 font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span>Low</span>
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span style="color: var(--text-muted);">ACWR</span>
+            <span class="font-mono tabular font-medium">1.12</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Training load chart -->
+    <div class="rounded-lg border p-5 md:p-6 mb-6" style="border-color: var(--border); background: var(--bg-elevated);">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <div class="text-base font-semibold">Training load</div>
+          <div class="text-xs mt-0.5" style="color: var(--text-muted);">Fitness, fatigue, and form over time</div>
+        </div>
+        <div class="inline-flex items-center gap-1 text-xs rounded-md border p-0.5" style="border-color: var(--border);">
+          <button class="px-2 py-0.5 rounded" style="color: var(--text-muted);">1M</button>
+          <button class="px-2 py-0.5 rounded" style="color: var(--text-muted);">3M</button>
+          <button class="px-2 py-0.5 rounded bg-neutral-100 dark:bg-neutral-100 font-medium">6M</button>
+          <button class="px-2 py-0.5 rounded" style="color: var(--text-muted);">1Y</button>
+          <button class="px-2 py-0.5 rounded" style="color: var(--text-muted);">All</button>
+        </div>
+      </div>
+
+      <!-- SVG chart -->
+      <svg viewBox="0 0 900 260" class="w-full h-48 md:h-64" preserveAspectRatio="none">
+        <!-- Grid lines -->
+        <line x1="0" y1="50" x2="900" y2="50" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" opacity="0.6" />
+        <line x1="0" y1="100" x2="900" y2="100" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" opacity="0.6" />
+        <line x1="0" y1="150" x2="900" y2="150" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" opacity="0.6" />
+        <line x1="0" y1="200" x2="900" y2="200" stroke="var(--border)" stroke-width="1" stroke-dasharray="3,3" opacity="0.6" />
+
+        <!-- Zero line for TSB -->
+        <line x1="0" y1="180" x2="900" y2="180" stroke="#D4D2CB" stroke-width="1" />
+
+        <!-- CTL (Fitness) line -->
+        <path d="M 0,210 C 50,205 100,198 150,195 C 200,192 250,185 300,175 C 350,165 400,150 450,138 C 500,128 550,115 600,100 C 650,88 700,80 750,72 C 800,65 850,60 900,60"
+              stroke="#3B82F6" stroke-width="2.5" fill="none" />
+
+        <!-- ATL (Fatigue) line -->
+        <path d="M 0,230 C 50,220 100,215 150,200 C 200,185 250,175 300,170 C 350,165 400,160 450,150 C 500,140 550,125 600,95 C 650,85 700,75 750,70 C 800,65 850,62 900,72"
+              stroke="#EF4444" stroke-width="2" fill="none" />
+
+        <!-- TSB (Form) line -->
+        <path d="M 0,200 C 50,195 100,203 150,215 C 200,213 250,200 300,180 C 350,178 400,180 450,175 C 500,170 550,172 600,185 C 650,183 700,175 750,168 C 800,170 850,175 900,168"
+              stroke="#16A34A" stroke-width="2" fill="none" stroke-dasharray="4,3" />
+
+        <!-- Today marker -->
+        <line x1="810" y1="30" x2="810" y2="230" stroke="#E94E1B" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.6" />
+        <circle cx="810" cy="62" r="4" fill="#3B82F6" stroke="#FAFAF7" stroke-width="2" />
+        <circle cx="810" cy="67" r="4" fill="#EF4444" stroke="#FAFAF7" stroke-width="2" />
+        <circle cx="810" cy="170" r="4" fill="#16A34A" stroke="#FAFAF7" stroke-width="2" />
+
+        <!-- X axis labels -->
+        <text x="0" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Nov</text>
+        <text x="150" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Dec</text>
+        <text x="300" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Jan</text>
+        <text x="450" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Feb</text>
+        <text x="600" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Mar</text>
+        <text x="750" y="254" fill="var(--text-muted)" font-size="10" font-family="Inter">Apr</text>
+        <text x="810" y="24" fill="#E94E1B" font-size="10" font-family="Inter" text-anchor="middle" font-weight="600">Today</text>
+      </svg>
+
+      <div class="mt-3 flex flex-wrap items-center gap-4 text-xs">
+        <span class="inline-flex items-center gap-1.5"><span class="w-4 h-0.5" style="background: #3B82F6;"></span>Fitness (CTL) <span class="font-mono tabular font-medium" style="color: var(--text-strong);">68</span></span>
+        <span class="inline-flex items-center gap-1.5"><span class="w-4 h-0.5" style="background: #EF4444;"></span>Fatigue (ATL) <span class="font-mono tabular font-medium" style="color: var(--text-strong);">64</span></span>
+        <span class="inline-flex items-center gap-1.5"><span class="w-4 border-t border-dashed" style="border-color: #16A34A;"></span>Form (TSB) <span class="font-mono tabular font-medium text-emerald-600 dark:text-emerald-400">+4</span></span>
+      </div>
+    </div>
+
+    <!-- Grid row 2: Recent runs + Distribution -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+      <!-- Recent runs -->
+      <div class="md:col-span-3 rounded-lg border p-5 md:p-6" style="border-color: var(--border); background: var(--bg-elevated);">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div class="text-base font-semibold">Recent activities</div>
+            <div class="text-xs mt-0.5" style="color: var(--text-muted);">Last 5 runs</div>
+          </div>
+          <a href="#" class="text-xs font-medium text-ember-600 hover:underline">View all →</a>
+        </div>
+        <div class="divide-y" style="border-color: var(--border);">
+          <!-- Activity row -->
+          <div class="py-3 flex items-center gap-3 hover:bg-neutral-50 dark:hover:bg-neutral-100 -mx-2 px-2 rounded cursor-pointer transition-colors">
+            <div class="h-10 w-10 rounded-md bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#E94E1B" stroke-width="2">
+                <path d="M5,19 C7,17 9,15 10,12 C11,9 9,7 10,5 C11,3 14,2 17,4 C20,6 21,10 19,13 C17,16 13,18 10,19 C7,20 5,19 5,19 Z" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <div class="text-sm font-medium truncate">Tuesday Morning Run</div>
+                <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0" style="background: rgba(245, 158, 11, 0.12); color: #D97706;">Interval</span>
+              </div>
+              <div class="text-xs tabular mt-0.5" style="color: var(--text-muted);">Apr 14 · 6.93 km · 28:51 · 6:28/mi · 172 HR</div>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="text-xs font-medium inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                <i data-lucide="award" class="w-3 h-3"></i>
+                PR #2
+              </div>
+            </div>
+          </div>
+          <div class="py-3 flex items-center gap-3 hover:bg-neutral-50 dark:hover:bg-neutral-100 -mx-2 px-2 rounded cursor-pointer transition-colors">
+            <div class="h-10 w-10 rounded-md bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#94A3B8" stroke-width="2">
+                <path d="M5,19 C7,15 11,13 14,13 C17,13 20,16 19,19 C18,22 13,20 11,18 C9,16 5,19 5,19 Z" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <div class="text-sm font-medium truncate">Monday Shakeout</div>
+                <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0" style="background: rgba(148, 163, 184, 0.2); color: #64748B;">Easy</span>
+              </div>
+              <div class="text-xs tabular mt-0.5" style="color: var(--text-muted);">Apr 13 · 5.0 km · 26:15 · 8:28/mi · 138 HR</div>
+            </div>
+          </div>
+          <div class="py-3 flex items-center gap-3 hover:bg-neutral-50 dark:hover:bg-neutral-100 -mx-2 px-2 rounded cursor-pointer transition-colors">
+            <div class="h-10 w-10 rounded-md bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#3B82F6" stroke-width="2">
+                <path d="M3,17 C5,12 8,10 12,10 C16,10 19,13 21,17 C19,20 15,21 12,20 C9,19 5,20 3,17 Z" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <div class="text-sm font-medium truncate">Sunday Long Run</div>
+                <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0" style="background: rgba(59, 130, 246, 0.15); color: #2563EB;">Long</span>
+              </div>
+              <div class="text-xs tabular mt-0.5" style="color: var(--text-muted);">Apr 12 · 18.5 km · 1:32:40 · 8:02/mi · 158 HR</div>
+            </div>
+          </div>
+          <div class="py-3 flex items-center gap-3 hover:bg-neutral-50 dark:hover:bg-neutral-100 -mx-2 px-2 rounded cursor-pointer transition-colors">
+            <div class="h-10 w-10 rounded-md bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#10B981" stroke-width="2">
+                <path d="M4,18 C6,15 9,12 12,13 C15,14 17,17 20,16 C18,20 14,21 10,20 C7,19 4,18 4,18 Z" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <div class="text-sm font-medium truncate">Thursday Tempo</div>
+                <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0" style="background: rgba(16, 185, 129, 0.15); color: #059669;">Tempo</span>
+              </div>
+              <div class="text-xs tabular mt-0.5" style="color: var(--text-muted);">Apr 10 · 8.0 km · 40:12 · 8:04/mi · 168 HR</div>
+            </div>
+          </div>
+          <div class="py-3 flex items-center gap-3 hover:bg-neutral-50 dark:hover:bg-neutral-100 -mx-2 px-2 rounded cursor-pointer transition-colors">
+            <div class="h-10 w-10 rounded-md bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="#EC4899" stroke-width="2">
+                <circle cx="12" cy="12" r="8" stroke-dasharray="3 2" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <div class="text-sm font-medium truncate">Wednesday Feel Run</div>
+                <span class="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0" style="background: rgba(236, 72, 153, 0.15); color: #DB2777;">Feel</span>
+              </div>
+              <div class="text-xs tabular mt-0.5" style="color: var(--text-muted);">Apr 9 · ~6 km · 32 min · no metrics tracked</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Training distribution -->
+      <div class="md:col-span-2 rounded-lg border p-5 md:p-6" style="border-color: var(--border); background: var(--bg-elevated);">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <div class="text-base font-semibold">Training mix</div>
+            <div class="text-xs mt-0.5" style="color: var(--text-muted);">Last 4 weeks</div>
+          </div>
+        </div>
+
+        <!-- Donut -->
+        <div class="flex items-center justify-center my-4">
+          <svg viewBox="0 0 160 160" class="w-40 h-40">
+            <circle cx="80" cy="80" r="60" stroke="var(--border)" stroke-width="20" fill="none" />
+            <!-- Easy 65% -->
+            <circle cx="80" cy="80" r="60" stroke="#94A3B8" stroke-width="20" fill="none" stroke-dasharray="245 377" transform="rotate(-90 80 80)" />
+            <!-- Tempo 12% -->
+            <circle cx="80" cy="80" r="60" stroke="#10B981" stroke-width="20" fill="none" stroke-dasharray="45 377" stroke-dashoffset="-245" transform="rotate(-90 80 80)" />
+            <!-- Interval 10% -->
+            <circle cx="80" cy="80" r="60" stroke="#F59E0B" stroke-width="20" fill="none" stroke-dasharray="38 377" stroke-dashoffset="-290" transform="rotate(-90 80 80)" />
+            <!-- Long 13% -->
+            <circle cx="80" cy="80" r="60" stroke="#3B82F6" stroke-width="20" fill="none" stroke-dasharray="49 377" stroke-dashoffset="-328" transform="rotate(-90 80 80)" />
+            <!-- Center label -->
+            <text x="80" y="75" text-anchor="middle" font-size="22" font-weight="700" fill="var(--text-strong)" font-family="Inter" class="tabular">168</text>
+            <text x="80" y="94" text-anchor="middle" font-size="10" fill="var(--text-muted)" font-family="Inter">km total</text>
+          </svg>
+        </div>
+
+        <!-- Legend -->
+        <div class="space-y-2 text-sm">
+          <div class="flex items-center justify-between">
+            <span class="inline-flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background: #94A3B8;"></span>Easy</span>
+            <span class="font-mono tabular" style="color: var(--text-muted);">65% <span style="color: var(--text-strong);" class="font-medium">109 km</span></span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="inline-flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background: #3B82F6;"></span>Long</span>
+            <span class="font-mono tabular" style="color: var(--text-muted);">13% <span style="color: var(--text-strong);" class="font-medium">22 km</span></span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="inline-flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background: #10B981;"></span>Tempo</span>
+            <span class="font-mono tabular" style="color: var(--text-muted);">12% <span style="color: var(--text-strong);" class="font-medium">20 km</span></span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="inline-flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background: #F59E0B;"></span>Interval</span>
+            <span class="font-mono tabular" style="color: var(--text-muted);">10% <span style="color: var(--text-strong);" class="font-medium">17 km</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid row 3: Best efforts + Gear -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <!-- Best efforts -->
+      <div class="rounded-lg border p-5 md:p-6" style="border-color: var(--border); background: var(--bg-elevated);">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div class="text-base font-semibold">Personal records</div>
+            <div class="text-xs mt-0.5" style="color: var(--text-muted);">Current PRs and trends</div>
+          </div>
+        </div>
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b" style="border-color: var(--border);">
+              <th class="text-left font-medium text-xs uppercase tracking-wider py-2" style="color: var(--text-muted);">Distance</th>
+              <th class="text-right font-medium text-xs uppercase tracking-wider py-2" style="color: var(--text-muted);">PR</th>
+              <th class="text-right font-medium text-xs uppercase tracking-wider py-2" style="color: var(--text-muted);">Date</th>
+              <th class="text-right font-medium text-xs uppercase tracking-wider py-2" style="color: var(--text-muted);">Trend</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y" style="border-color: var(--border);">
+            <tr>
+              <td class="py-2.5">400m</td>
+              <td class="py-2.5 text-right font-mono tabular">1:23</td>
+              <td class="py-2.5 text-right text-xs" style="color: var(--text-muted);">Apr 14</td>
+              <td class="py-2.5 text-right">
+                <span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-medium"><i data-lucide="trending-up" class="w-3 h-3"></i>-4s</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-2.5">1 mile</td>
+              <td class="py-2.5 text-right font-mono tabular">6:22</td>
+              <td class="py-2.5 text-right text-xs" style="color: var(--text-muted);">Apr 14</td>
+              <td class="py-2.5 text-right">
+                <span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-medium"><i data-lucide="trending-up" class="w-3 h-3"></i>-8s</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-2.5">5K</td>
+              <td class="py-2.5 text-right font-mono tabular">20:30</td>
+              <td class="py-2.5 text-right text-xs" style="color: var(--text-muted);">Apr 14</td>
+              <td class="py-2.5 text-right">
+                <span class="inline-flex items-center gap-1 text-xs font-medium" style="color: var(--text-muted);"><i data-lucide="minus" class="w-3 h-3"></i>same</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-2.5">10K</td>
+              <td class="py-2.5 text-right font-mono tabular">43:12</td>
+              <td class="py-2.5 text-right text-xs" style="color: var(--text-muted);">Nov 22</td>
+              <td class="py-2.5 text-right">
+                <span class="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 text-xs font-medium"><i data-lucide="trending-down" class="w-3 h-3"></i>+6s</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="py-2.5">Half</td>
+              <td class="py-2.5 text-right font-mono tabular">1:35:22</td>
+              <td class="py-2.5 text-right text-xs" style="color: var(--text-muted);">Oct 8</td>
+              <td class="py-2.5 text-right">
+                <span class="inline-flex items-center gap-1 text-xs font-medium" style="color: var(--text-muted);">—</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Gear -->
+      <div class="rounded-lg border p-5 md:p-6" style="border-color: var(--border); background: var(--bg-elevated);">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div class="text-base font-semibold">Gear</div>
+            <div class="text-xs mt-0.5" style="color: var(--text-muted);">Active shoes</div>
+          </div>
+          <a href="#" class="text-xs font-medium text-ember-600 hover:underline">Manage →</a>
+        </div>
+
+        <div class="space-y-3">
+          <!-- Shoe 1 -->
+          <div class="rounded-md border p-3" style="border-color: var(--border);">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <div class="h-8 w-8 rounded bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center">
+                  <i data-lucide="package" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-medium">Nike Pegasus 40</div>
+                  <div class="flex items-center gap-1 mt-0.5">
+                    <span class="text-[10px] px-1.5 py-0.5 rounded" style="background: rgba(148, 163, 184, 0.2); color: #64748B;">Easy</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded" style="background: rgba(148, 163, 184, 0.2); color: #64748B;">Daily</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs tabular" style="color: var(--text-muted);">340 / 500 mi</div>
+              </div>
+            </div>
+            <div class="h-1 rounded-full" style="background: var(--border);">
+              <div class="h-full rounded-full bg-emerald-500" style="width: 68%;"></div>
+            </div>
+          </div>
+
+          <!-- Shoe 2 -->
+          <div class="rounded-md border p-3" style="border-color: var(--border);">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <div class="h-8 w-8 rounded bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center">
+                  <i data-lucide="package" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-medium">Saucony Endorphin Pro 3</div>
+                  <div class="flex items-center gap-1 mt-0.5">
+                    <span class="text-[10px] px-1.5 py-0.5 rounded" style="background: rgba(233, 78, 27, 0.15); color: #D4400F;">Race</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded" style="background: rgba(245, 158, 11, 0.15); color: #D97706;">Interval</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs tabular" style="color: var(--text-muted);">128 / 400 mi</div>
+              </div>
+            </div>
+            <div class="h-1 rounded-full" style="background: var(--border);">
+              <div class="h-full rounded-full bg-emerald-500" style="width: 32%;"></div>
+            </div>
+          </div>
+
+          <!-- Shoe 3 -->
+          <div class="rounded-md border p-3" style="border-color: var(--border);">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <div class="h-8 w-8 rounded bg-neutral-100 dark:bg-neutral-200 flex items-center justify-center">
+                  <i data-lucide="package" class="w-4 h-4" style="color: var(--text-muted);"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-medium">Hoka Bondi 8</div>
+                  <div class="flex items-center gap-1 mt-0.5">
+                    <span class="text-[10px] px-1.5 py-0.5 rounded" style="background: rgba(59, 130, 246, 0.15); color: #2563EB;">Long</span>
+                  </div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs tabular" style="color: var(--text-muted);">420 / 500 mi</div>
+              </div>
+            </div>
+            <div class="h-1 rounded-full" style="background: var(--border);">
+              <div class="h-full rounded-full bg-amber-500" style="width: 84%;"></div>
+            </div>
+            <div class="mt-2 text-[11px] inline-flex items-center gap-1 text-amber-600 dark:text-amber-400">
+              <i data-lucide="alert-triangle" class="w-3 h-3"></i>
+              Retirement approaching
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insights row -->
+    <div class="rounded-lg border p-5 md:p-6 mb-6" style="border-color: var(--border); background: var(--bg-elevated);">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <div class="text-base font-semibold">Recent insights</div>
+          <div class="text-xs mt-0.5" style="color: var(--text-muted);">What your coach has noticed</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <!-- Insight 1 -->
+        <div class="rounded-md border p-4 hover:shadow-sm transition-shadow cursor-pointer" style="border-color: var(--border);">
+          <div class="flex items-start gap-2 mb-2">
+            <div class="h-6 w-6 rounded flex items-center justify-center shrink-0" style="background: rgba(22, 163, 74, 0.15);">
+              <i data-lucide="trending-up" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i>
+            </div>
+            <div class="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Progress</div>
+          </div>
+          <div class="text-sm font-medium mb-1">800m pace improved 4s</div>
+          <div class="text-xs" style="color: var(--text-muted);">Your average 800m rep is <span class="font-mono tabular">3:05</span>, down from <span class="font-mono tabular">3:09</span> two weeks ago at similar HR.</div>
+        </div>
+
+        <!-- Insight 2 -->
+        <div class="rounded-md border p-4 hover:shadow-sm transition-shadow cursor-pointer" style="border-color: var(--border);">
+          <div class="flex items-start gap-2 mb-2">
+            <div class="h-6 w-6 rounded flex items-center justify-center shrink-0" style="background: rgba(245, 158, 11, 0.15);">
+              <i data-lucide="activity" class="w-3.5 h-3.5 text-amber-600 dark:text-amber-400"></i>
+            </div>
+            <div class="text-xs font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Pattern</div>
+          </div>
+          <div class="text-sm font-medium mb-1">Tuesday tempo correlation</div>
+          <div class="text-xs" style="color: var(--text-muted);">3 Tuesday runs this month felt "heavy" — all after Monday weights. Consider shifting lifting day.</div>
+        </div>
+
+        <!-- Insight 3 -->
+        <div class="rounded-md border p-4 hover:shadow-sm transition-shadow cursor-pointer" style="border-color: var(--border);">
+          <div class="flex items-start gap-2 mb-2">
+            <div class="h-6 w-6 rounded flex items-center justify-center shrink-0" style="background: rgba(59, 130, 246, 0.15);">
+              <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400"></i>
+            </div>
+            <div class="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400">Recommendation</div>
+          </div>
+          <div class="text-sm font-medium mb-1">Feel run this week?</div>
+          <div class="text-xs" style="color: var(--text-muted);">You've tracked data on every run for 3 weeks. A feel run Thursday could help you recalibrate.</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    lucide.createIcons();
+    const toggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      html.classList.toggle('light');
+      const icon = toggle.querySelector('i');
+      icon.setAttribute('data-lucide', html.classList.contains('dark') ? 'sun' : 'moon');
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
