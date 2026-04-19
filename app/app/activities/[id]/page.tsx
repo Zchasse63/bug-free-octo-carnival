@@ -1,5 +1,6 @@
 import { AppShell } from "@/components/app-shell";
 import { ActivityNoteForm } from "@/components/activity-note-form";
+import { ActivityStreamsPanel } from "@/components/activity-streams-panel";
 import { getAthlete } from "@/lib/data/queries";
 import { createServiceClient } from "@/lib/supabase/service";
 import {
@@ -26,22 +27,35 @@ export default async function ActivityDetailPage({
   if (Number.isNaN(id)) notFound();
 
   const sb = createServiceClient();
-  const [athlete, activityRes, weatherRes, lapsRes, splitsRes] = await Promise.all([
-    getAthlete(ATHLETE_ID),
-    sb.from("activities").select("*").eq("id", id).maybeSingle(),
-    sb.from("activity_weather").select("*").eq("activity_id", id).maybeSingle(),
-    sb
-      .from("activity_laps")
-      .select("*")
-      .eq("activity_id", id)
-      .order("lap_index", { ascending: true }),
-    sb
-      .from("activity_splits")
-      .select("*")
-      .eq("activity_id", id)
-      .eq("unit_system", "metric")
-      .order("split_number", { ascending: true }),
-  ]);
+  const [athlete, activityRes, weatherRes, lapsRes, splitsRes, streamsRes, notesRes] =
+    await Promise.all([
+      getAthlete(ATHLETE_ID),
+      sb.from("activities").select("*").eq("id", id).maybeSingle(),
+      sb.from("activity_weather").select("*").eq("activity_id", id).maybeSingle(),
+      sb
+        .from("activity_laps")
+        .select("*")
+        .eq("activity_id", id)
+        .order("lap_index", { ascending: true }),
+      sb
+        .from("activity_splits")
+        .select("*")
+        .eq("activity_id", id)
+        .eq("unit_system", "metric")
+        .order("split_number", { ascending: true }),
+      sb
+        .from("activity_streams")
+        .select(
+          "time_data, distance_data, heartrate_data, velocity_data, altitude_data, cadence_data",
+        )
+        .eq("activity_id", id)
+        .maybeSingle(),
+      sb
+        .from("activity_notes")
+        .select("id, raw_text, sentiment, perceived_effort, created_at")
+        .eq("activity_id", id)
+        .order("created_at", { ascending: false }),
+    ]);
 
   const activity = activityRes.data;
   if (!activity) notFound();
@@ -52,6 +66,19 @@ export default async function ActivityDetailPage({
   const weather = weatherRes.data;
   const laps = lapsRes.data ?? [];
   const splits = splitsRes.data ?? [];
+  const streamsRow = streamsRes.data;
+  const notes = notesRes.data ?? [];
+
+  const streams = streamsRow
+    ? {
+        time: (streamsRow.time_data as number[] | null) ?? [],
+        distance: (streamsRow.distance_data as number[] | null) ?? undefined,
+        heartrate: (streamsRow.heartrate_data as number[] | null) ?? undefined,
+        velocity: (streamsRow.velocity_data as number[] | null) ?? undefined,
+        altitude: (streamsRow.altitude_data as number[] | null) ?? undefined,
+        cadence: (streamsRow.cadence_data as number[] | null) ?? undefined,
+      }
+    : null;
 
   return (
     <AppShell
@@ -130,6 +157,13 @@ export default async function ActivityDetailPage({
         />
         <MetricCard label="Training load" value={activity.training_load ?? "—"} />
       </div>
+
+      {/* Streams charts */}
+      {streams && streams.time.length > 0 && (
+        <div className="mb-6">
+          <ActivityStreamsPanel streams={streams} useMetric={useMetric} />
+        </div>
+      )}
 
       {/* Weather */}
       {weather && (
@@ -263,6 +297,37 @@ export default async function ActivityDetailPage({
       <div className="mb-6">
         <ActivityNoteForm activityId={activity.id} />
       </div>
+
+      {notes.length > 0 && (
+        <div className="mb-6 rounded-xl border bg-card p-5">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Notes
+          </h2>
+          <div className="space-y-3">
+            {notes.map((n) => (
+              <div key={n.id} className="rounded-md border p-3 text-sm">
+                <div className="flex items-baseline justify-between text-xs text-muted-foreground">
+                  <span>
+                    {n.created_at
+                      ? new Date(n.created_at).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })
+                      : ""}
+                  </span>
+                  <span className="uppercase tracking-wider">
+                    {n.sentiment ?? ""}
+                    {n.perceived_effort ? ` · RPE ${n.perceived_effort}` : ""}
+                  </span>
+                </div>
+                <div className="mt-1 whitespace-pre-wrap">{n.raw_text}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {!activity.detail_fetched && (
         <div className="mt-6 rounded-xl border border-dashed bg-muted/40 p-5 text-sm text-muted-foreground">

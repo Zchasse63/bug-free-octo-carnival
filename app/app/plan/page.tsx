@@ -2,7 +2,8 @@ import { AppShell } from "@/components/app-shell";
 import { getAthlete } from "@/lib/data/queries";
 import { createServiceClient } from "@/lib/supabase/service";
 import { PlanGeneratorForm } from "@/components/plan-generator-form";
-import { metersToKm, secondsToDuration } from "@/lib/format";
+import { PlannedWorkoutActions } from "@/components/planned-workout-actions";
+import { metersToKm } from "@/lib/format";
 
 const ATHLETE_ID = 56272355;
 
@@ -119,7 +120,13 @@ export default async function PlanPage() {
                   {days.map((w) => (
                     <div
                       key={w.id}
-                      className={`rounded-lg border p-3 text-sm ${w.status === "completed" ? "bg-emerald-500/5" : ""}`}
+                      className={`rounded-lg border p-3 text-sm ${
+                        w.status === "completed"
+                          ? "bg-emerald-500/5"
+                          : w.status === "skipped"
+                            ? "bg-muted/40 opacity-60"
+                            : ""
+                      }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -144,6 +151,9 @@ export default async function PlanPage() {
                           {w.description}
                         </div>
                       )}
+                      <div className="mt-2">
+                        <PlannedWorkoutActions id={w.id} status={w.status} />
+                      </div>
                     </div>
                   ))}
                 </div>

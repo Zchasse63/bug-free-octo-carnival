@@ -1,83 +1,76 @@
 "use client";
 
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+
 type Row = { week: string; km: number; load: number };
+
+function weekLabel(iso: string) {
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "numeric",
+    day: "numeric",
+  });
+}
 
 export function WeeklyVolumeChart({ data }: { data: Row[] }) {
   if (data.length === 0) {
     return (
-      <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
+      <div className="flex h-56 items-center justify-center text-sm text-muted-foreground">
         No data.
       </div>
     );
   }
-  const w = 600;
-  const h = 200;
-  const pad = { l: 32, r: 8, t: 8, b: 28 };
-  const max = Math.max(...data.map((d) => d.km), 1);
-  const barW = (w - pad.l - pad.r) / data.length - 4;
-  const scaleY = (v: number) =>
-    h - pad.b - ((v / max) * (h - pad.t - pad.b));
-
-  const ticks = [0, Math.round(max / 2), Math.round(max)];
-
+  const chartData = data.map((d) => ({
+    week: d.week,
+    label: weekLabel(d.week),
+    km: Math.round(d.km * 10) / 10,
+    load: Math.round(d.load),
+  }));
   return (
-    <div className="w-full">
-      <svg viewBox={`0 0 ${w} ${h}`} className="h-56 w-full">
-        {ticks.map((t) => (
-          <g key={t}>
-            <line
-              x1={pad.l}
-              x2={w - pad.r}
-              y1={scaleY(t)}
-              y2={scaleY(t)}
-              stroke="hsl(var(--border))"
-              strokeWidth={1}
-            />
-            <text
-              x={pad.l - 4}
-              y={scaleY(t) + 3}
-              fontSize={9}
-              fill="hsl(var(--muted-foreground))"
-              textAnchor="end"
-              fontFamily="JetBrains Mono, monospace"
-            >
-              {t}
-            </text>
-          </g>
-        ))}
-        {data.map((d, i) => {
-          const x = pad.l + i * ((w - pad.l - pad.r) / data.length) + 2;
-          const y = scaleY(d.km);
-          const barH = h - pad.b - y;
-          const label = new Date(d.week).toLocaleDateString("en-US", {
-            month: "numeric",
-            day: "numeric",
-          });
-          return (
-            <g key={d.week}>
-              <rect
-                x={x}
-                y={y}
-                width={barW}
-                height={barH}
-                rx={3}
-                fill="#C48A2A"
-                opacity={0.85}
-              />
-              <text
-                x={x + barW / 2}
-                y={h - pad.b + 14}
-                fontSize={9}
-                fill="hsl(var(--muted-foreground))"
-                textAnchor="middle"
-                fontFamily="JetBrains Mono, monospace"
-              >
-                {label}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
+    <div className="h-56 w-full">
+      <ResponsiveContainer>
+        <BarChart
+          data={chartData}
+          margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+        >
+          <CartesianGrid stroke="hsl(var(--border))" vertical={false} />
+          <XAxis
+            dataKey="label"
+            tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+            tickLine={false}
+            axisLine={{ stroke: "hsl(var(--border))" }}
+          />
+          <YAxis
+            tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+            tickLine={false}
+            axisLine={false}
+            width={30}
+          />
+          <Tooltip
+            contentStyle={{
+              background: "hsl(var(--card))",
+              border: "1px solid hsl(var(--border))",
+              borderRadius: 8,
+              fontSize: 12,
+            }}
+            labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+            formatter={(value, name) => {
+              const v = typeof value === "number" ? value : Number(value ?? 0);
+              return name === "km"
+                ? [`${v} km`, "Distance"]
+                : [String(v), "Load"];
+            }}
+          />
+          <Bar dataKey="km" fill="#C48A2A" opacity={0.85} radius={[3, 3, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }

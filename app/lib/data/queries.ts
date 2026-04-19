@@ -97,6 +97,59 @@ export async function getInjuryRisk(athleteId: number) {
   return computeACWR(athleteId);
 }
 
+export async function getUpcomingPlannedWorkouts(athleteId: number, days = 7) {
+  const sb = createServiceClient();
+  const today = new Date().toISOString().slice(0, 10);
+  const until = new Date(Date.now() + days * 86400000)
+    .toISOString()
+    .slice(0, 10);
+  const { data } = await sb
+    .from("planned_workouts")
+    .select(
+      "id, planned_date, workout_type, title, target_distance_meters, status",
+    )
+    .eq("athlete_id", athleteId)
+    .gte("planned_date", today)
+    .lte("planned_date", until)
+    .order("planned_date", { ascending: true })
+    .limit(7);
+  return data ?? [];
+}
+
+export async function getSyncStatus(athleteId: number) {
+  const sb = createServiceClient();
+  const [totalRes, detailedRes, weatheredRes, embeddedRes, lastSyncRes] = await Promise.all([
+    sb.from("activities").select("id", { count: "exact", head: true }).eq("athlete_id", athleteId),
+    sb
+      .from("activities")
+      .select("id", { count: "exact", head: true })
+      .eq("athlete_id", athleteId)
+      .eq("detail_fetched", true),
+    sb
+      .from("activity_weather")
+      .select("activity_id", { count: "exact", head: true })
+      .eq("athlete_id", athleteId),
+    sb
+      .from("activity_embeddings")
+      .select("activity_id", { count: "exact", head: true })
+      .eq("athlete_id", athleteId),
+    sb
+      .from("sync_log")
+      .select("sync_type, status, activities_synced, started_at")
+      .eq("athlete_id", athleteId)
+      .order("started_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ]);
+  return {
+    total: totalRes.count ?? 0,
+    detailed: detailedRes.count ?? 0,
+    weathered: weatheredRes.count ?? 0,
+    embedded: embeddedRes.count ?? 0,
+    last_sync: lastSyncRes.data,
+  };
+}
+
 export async function getLast12Weeks(athleteId: number) {
   const sb = createServiceClient();
   const { data } = await sb

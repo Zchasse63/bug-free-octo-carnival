@@ -8,7 +8,9 @@ import {
   getInjuryRisk,
   getLast12Weeks,
   getRecentActivities,
+  getSyncStatus,
   getTrainingLoadSeries,
+  getUpcomingPlannedWorkouts,
 } from "@/lib/data/queries";
 import {
   metersToKm,
@@ -35,6 +37,8 @@ export default async function DashboardPage() {
     last12,
     vdotInfo,
     injuryRisk,
+    upcoming,
+    syncStatus,
   ] = await Promise.all([
     getAthlete(ATHLETE_ID),
     getCurrentWeekSummary(ATHLETE_ID),
@@ -44,7 +48,13 @@ export default async function DashboardPage() {
     getLast12Weeks(ATHLETE_ID),
     getCurrentVdot(ATHLETE_ID),
     getInjuryRisk(ATHLETE_ID),
+    getUpcomingPlannedWorkouts(ATHLETE_ID, 7),
+    getSyncStatus(ATHLETE_ID),
   ]);
+
+  const syncPct = syncStatus.total
+    ? Math.round((syncStatus.detailed / syncStatus.total) * 100)
+    : 0;
 
   const todayPoint = trainingLoad[trainingLoad.length - 1];
   const ctl = todayPoint?.ctl ?? 0;
@@ -266,6 +276,73 @@ export default async function DashboardPage() {
               load: Number(w.total_training_load) || 0,
             }))}
           />
+        </div>
+      </div>
+
+      {/* Upcoming plan preview */}
+      {upcoming.length > 0 && (
+        <div className="mb-6 rounded-xl border bg-card p-5">
+          <div className="mb-3 flex items-baseline justify-between">
+            <h2 className="text-base font-semibold">Coming up</h2>
+            <a
+              href="/plan"
+              className="text-xs text-saffron-600 hover:underline dark:text-saffron-400"
+            >
+              View plan →
+            </a>
+          </div>
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-7">
+            {upcoming.slice(0, 7).map((p) => (
+              <div
+                key={p.id}
+                className={`rounded-lg border p-3 text-sm ${p.status === "completed" ? "bg-emerald-500/5" : ""}`}
+              >
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  {new Date(p.planned_date).toLocaleDateString("en-US", {
+                    weekday: "short",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </div>
+                <div className="mt-1 font-medium leading-tight">{p.title}</div>
+                {p.target_distance_meters && (
+                  <div className="mt-0.5 font-mono text-xs text-muted-foreground">
+                    {(Number(p.target_distance_meters) / 1000).toFixed(1)} km
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Sync status */}
+      <div className="mb-6 rounded-xl border bg-card p-4 text-xs text-muted-foreground">
+        <div className="flex flex-wrap items-baseline gap-4">
+          <span>
+            <span className="font-semibold text-foreground">
+              {syncStatus.total}
+            </span>{" "}
+            activities total
+          </span>
+          <span>
+            <span className="font-semibold text-foreground">
+              {syncStatus.detailed}
+            </span>{" "}
+            detail-synced ({syncPct}%)
+          </span>
+          <span>
+            <span className="font-semibold text-foreground">
+              {syncStatus.weathered}
+            </span>{" "}
+            with weather
+          </span>
+          <span>
+            <span className="font-semibold text-foreground">
+              {syncStatus.embedded}
+            </span>{" "}
+            embedded
+          </span>
         </div>
       </div>
 

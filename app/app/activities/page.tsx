@@ -18,27 +18,51 @@ export const dynamic = "force-dynamic";
 export default async function ActivitiesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; sport?: string; q?: string }>;
 }) {
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, Number(pageParam ?? 1));
+  const params = await searchParams;
+  const page = Math.max(1, Number(params.page ?? 1));
+  const sport = params.sport ?? "";
+  const q = params.q?.trim() ?? "";
   const athlete = await getAthlete(ATHLETE_ID);
 
   const sb = createServiceClient();
-  const { data: activities, count } = await sb
+  let query = sb
     .from("activities")
     .select(
       "id, name, sport_type, workout_classification, start_date_local, distance_meters, moving_time, average_heartrate, training_load, pace_per_km_seconds",
       { count: "exact" },
     )
-    .eq("athlete_id", ATHLETE_ID)
+    .eq("athlete_id", ATHLETE_ID);
+  if (sport) query = query.eq("sport_type", sport);
+  if (q) query = query.ilike("name", `%${q}%`);
+
+  const { data: activities, count } = await query
     .order("start_date_local", { ascending: false })
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
 
-  const totalPages = count ? Math.ceil(count / PAGE_SIZE) : 1;
+  const totalPages = count ? Math.max(1, Math.ceil(count / PAGE_SIZE)) : 1;
   const useMetric = athlete.measurement_preference !== "standard";
   const distanceFn = useMetric ? metersToKm : metersToMiles;
   const unit = useMetric ? "km" : "mi";
+
+  // Get distinct sport types for filter
+  const { data: sportRows } = await sb
+    .from("activities")
+    .select("sport_type")
+    .eq("athlete_id", ATHLETE_ID);
+  const sports = Array.from(
+    new Set((sportRows ?? []).map((r) => r.sport_type)),
+  ).sort();
+
+  function hrefWith(overrides: Record<string, string | undefined>): string {
+    const p = new URLSearchParams();
+    if (sport && overrides.sport === undefined) p.set("sport", sport);
+    if (q && overrides.q === undefined) p.set("q", q);
+    for (const [k, v] of Object.entries(overrides))
+      if (v) p.set(k, v);
+    return `/activities?${p.toString()}`;
+  }
 
   return (
     <AppShell
@@ -53,6 +77,47 @@ export default async function ActivitiesPage({
           </p>
         </div>
       </div>
+
+      {/* Filters */}
+      <form
+        action="/activities"
+        method="get"
+        className="mb-4 flex flex-wrap items-center gap-2"
+      >
+        <input
+          type="text"
+          name="q"
+          defaultValue={q}
+          placeholder="Search name…"
+          className="w-56 rounded-md border bg-background px-3 py-1.5 text-sm"
+        />
+        <select
+          name="sport"
+          defaultValue={sport}
+          className="rounded-md border bg-background px-3 py-1.5 text-sm"
+        >
+          <option value="">All sports</option>
+          {sports.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+        <button
+          type="submit"
+          className="rounded-md border px-3 py-1.5 text-sm hover:bg-muted"
+        >
+          Filter
+        </button>
+        {(sport || q) && (
+          <Link
+            href="/activities"
+            className="text-xs text-muted-foreground hover:underline"
+          >
+            Clear
+          </Link>
+        )}
+      </form>
 
       <div className="overflow-hidden rounded-xl border bg-card">
         <table className="w-full text-sm">
@@ -117,13 +182,13 @@ export default async function ActivitiesPage({
 
       <div className="mt-6 flex items-center justify-between">
         <Link
-          href={`/activities?page=${Math.max(1, page - 1)}`}
+          href={hrefWith({ page: String(Math.max(1, page - 1)) })}
           className={`rounded-md border px-3 py-1.5 text-sm ${page === 1 ? "pointer-events-none opacity-40" : "hover:bg-black/[.03] dark:hover:bg-white/[.03]"}`}
         >
           ← Previous
         </Link>
         <Link
-          href={`/activities?page=${Math.min(totalPages, page + 1)}`}
+          href={hrefWith({ page: String(Math.min(totalPages, page + 1)) })}
           className={`rounded-md border px-3 py-1.5 text-sm ${page === totalPages ? "pointer-events-none opacity-40" : "hover:bg-black/[.03] dark:hover:bg-white/[.03]"}`}
         >
           Next →
