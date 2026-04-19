@@ -79,18 +79,72 @@ export async function recomputeVdot(athleteId: number) {
 }
 
 /**
- * Daniels-derived paces from VDOT (seconds per km).
- * Simplified polynomial fits that match the published tables reasonably well.
+ * Jack Daniels v4 VDOT training paces, seconds per kilometer.
+ * Anchor rows are the published table values; we linearly interpolate
+ * between them and clamp at the endpoints. VDOT 51.2 through this table:
+ * E≈311s/km (8:21/mi), M≈270 (7:14/mi), T≈249 (6:41/mi), I≈230 (6:10/mi), R≈210 (5:38/mi).
  */
+const VDOT_PACE_TABLE: ReadonlyArray<{
+  vdot: number;
+  easy: number;
+  marathon: number;
+  threshold: number;
+  interval: number;
+  repetition: number;
+}> = [
+  { vdot: 30, easy: 506, marathon: 425, threshold: 401, interval: 383, repetition: 355 },
+  { vdot: 35, easy: 433, marathon: 379, threshold: 354, interval: 336, repetition: 311 },
+  { vdot: 40, easy: 378, marathon: 341, threshold: 317, interval: 298, repetition: 275 },
+  { vdot: 45, easy: 342, marathon: 308, threshold: 284, interval: 266, repetition: 246 },
+  { vdot: 50, easy: 317, marathon: 275, threshold: 254, interval: 235, repetition: 215 },
+  { vdot: 55, easy: 294, marathon: 253, threshold: 233, interval: 214, repetition: 194 },
+  { vdot: 60, easy: 274, marathon: 236, threshold: 217, interval: 198, repetition: 181 },
+  { vdot: 65, easy: 259, marathon: 221, threshold: 204, interval: 185, repetition: 168 },
+  { vdot: 70, easy: 244, marathon: 209, threshold: 192, interval: 173, repetition: 157 },
+  { vdot: 75, easy: 232, marathon: 199, threshold: 181, interval: 163, repetition: 148 },
+  { vdot: 80, easy: 220, marathon: 189, threshold: 172, interval: 155, repetition: 140 },
+  { vdot: 85, easy: 211, marathon: 181, threshold: 165, interval: 148, repetition: 134 },
+];
+
 export function pacesFromVdot(vdot: number) {
   if (vdot <= 0) return null;
-  // Fit y = a/vdot + b for each pace tier, calibrated against Daniels' tables.
-  const easy = Math.round(60 * (270 / vdot + 1.7));       // Easy pace sec/km
-  const marathon = Math.round(60 * (234 / vdot + 1.4));   // Marathon pace
-  const threshold = Math.round(60 * (210 / vdot + 1.3));  // Threshold (tempo)
-  const interval = Math.round(60 * (188 / vdot + 1.2));   // VO2max intervals
-  const repetition = Math.round(60 * (175 / vdot + 1.1)); // Rep pace
-  return { easy, marathon, threshold, interval, repetition };
+  const table = VDOT_PACE_TABLE;
+  if (vdot <= table[0].vdot) {
+    const r = table[0];
+    return {
+      easy: r.easy,
+      marathon: r.marathon,
+      threshold: r.threshold,
+      interval: r.interval,
+      repetition: r.repetition,
+    };
+  }
+  if (vdot >= table[table.length - 1].vdot) {
+    const r = table[table.length - 1];
+    return {
+      easy: r.easy,
+      marathon: r.marathon,
+      threshold: r.threshold,
+      interval: r.interval,
+      repetition: r.repetition,
+    };
+  }
+  for (let i = 0; i < table.length - 1; i++) {
+    const lo = table[i];
+    const hi = table[i + 1];
+    if (vdot >= lo.vdot && vdot <= hi.vdot) {
+      const frac = (vdot - lo.vdot) / (hi.vdot - lo.vdot);
+      const interp = (a: number, b: number) => Math.round(a + (b - a) * frac);
+      return {
+        easy: interp(lo.easy, hi.easy),
+        marathon: interp(lo.marathon, hi.marathon),
+        threshold: interp(lo.threshold, hi.threshold),
+        interval: interp(lo.interval, hi.interval),
+        repetition: interp(lo.repetition, hi.repetition),
+      };
+    }
+  }
+  return null;
 }
 
 /**

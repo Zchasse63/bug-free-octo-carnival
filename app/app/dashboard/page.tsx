@@ -251,6 +251,7 @@ export default async function DashboardPage() {
                 km: (Number(w.run_distance_meters) || 0) / 1000,
                 load: Number(w.total_training_load) || 0,
               }))}
+              useMetric={useMetric}
             />
           </div>
         </section>

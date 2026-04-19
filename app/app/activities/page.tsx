@@ -116,7 +116,52 @@ export default async function ActivitiesPage({
         )}
       </form>
 
-      <div className="overflow-hidden rounded-xl border bg-card">
+      {/* Mobile — card list. Desktop — table. */}
+      <div className="rounded-xl border bg-card md:hidden">
+        <ul>
+          {(activities ?? []).map((a) => (
+            <li
+              key={a.id}
+              className="border-b last:border-b-0"
+            >
+              <Link
+                href={`/activities/${a.id}`}
+                className="flex items-start justify-between gap-3 px-4 py-3 hover:bg-black/[.02] dark:hover:bg-white/[.02]"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium">{a.name}</div>
+                  <div className="mt-0.5 text-xs text-muted-foreground">
+                    {relativeDate(a.start_date_local)} · {a.sport_type}
+                    {a.workout_classification && ` · ${a.workout_classification}`}
+                  </div>
+                  <div className="mt-1 flex gap-3 font-mono text-xs tabular-nums text-muted-foreground">
+                    <span>
+                      {paceFromSecondsPerKm(
+                        a.pace_per_km_seconds,
+                        useMetric ? "metric" : "imperial",
+                      )}
+                    </span>
+                    {a.average_heartrate && (
+                      <span>{Math.round(a.average_heartrate)} bpm</span>
+                    )}
+                    {a.training_load && <span>load {a.training_load}</span>}
+                  </div>
+                </div>
+                <div className="flex flex-col items-end">
+                  <div className="font-mono text-sm tabular-nums">
+                    {distanceFn(a.distance_meters, 1)} {unit}
+                  </div>
+                  <div className="font-mono text-xs tabular-nums text-muted-foreground">
+                    {secondsToDuration(a.moving_time)}
+                  </div>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="hidden overflow-hidden rounded-xl border bg-card md:block">
         <table className="w-full text-sm">
           <thead className="border-b text-xs uppercase tracking-wider text-muted-foreground">
             <tr>
@@ -124,12 +169,8 @@ export default async function ActivitiesPage({
               <th className="px-4 py-3 text-left font-semibold">Activity</th>
               <th className="px-4 py-3 text-right font-semibold">Distance</th>
               <th className="px-4 py-3 text-right font-semibold">Time</th>
-              <th className="hidden px-4 py-3 text-right font-semibold md:table-cell">
-                Pace
-              </th>
-              <th className="hidden px-4 py-3 text-right font-semibold md:table-cell">
-                HR
-              </th>
+              <th className="px-4 py-3 text-right font-semibold">Pace</th>
+              <th className="px-4 py-3 text-right font-semibold">HR</th>
               <th className="hidden px-4 py-3 text-right font-semibold lg:table-cell">
                 Load
               </th>
@@ -159,13 +200,13 @@ export default async function ActivitiesPage({
                 <td className="px-4 py-3 text-right font-mono tabular-nums text-muted-foreground">
                   {secondsToDuration(a.moving_time)}
                 </td>
-                <td className="hidden px-4 py-3 text-right font-mono tabular-nums text-muted-foreground md:table-cell">
+                <td className="px-4 py-3 text-right font-mono tabular-nums text-muted-foreground">
                   {paceFromSecondsPerKm(
                     a.pace_per_km_seconds,
                     useMetric ? "metric" : "imperial",
                   )}
                 </td>
-                <td className="hidden px-4 py-3 text-right font-mono tabular-nums text-muted-foreground md:table-cell">
+                <td className="px-4 py-3 text-right font-mono tabular-nums text-muted-foreground">
                   {a.average_heartrate ? Math.round(a.average_heartrate) : "—"}
                 </td>
                 <td className="hidden px-4 py-3 text-right font-mono tabular-nums text-muted-foreground lg:table-cell">

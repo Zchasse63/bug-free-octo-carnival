@@ -43,9 +43,13 @@ export default async function InsightsPage() {
             </thead>
             <tbody>
               {tm.years.map((y) => {
-                const sec = y.pace_sec_per_km
-                  ? Number(y.pace_sec_per_km) * paceScale
-                  : null;
+                const rawSec = y.pace_sec_per_km ? Number(y.pace_sec_per_km) : null;
+                // Aggregate paces slower than 10:00/km (~16:06/mi) are almost
+                // always walks mis-labelled as runs in Strava. Don't pretend
+                // that's a comparable running pace — show "—" instead so YoY
+                // weeks aren't skewed by walking data.
+                const isLikelyWalk = rawSec !== null && rawSec > 600;
+                const sec = rawSec && !isLikelyWalk ? rawSec * paceScale : null;
                 return (
                   <tr
                     key={y.year}

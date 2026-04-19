@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { paceFromSecondsPerKm } from "@/lib/format";
 
 type Result = {
   predicted_time_seconds: number;
@@ -30,11 +31,21 @@ function fmt(sec: number): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-export function RaceSimForm() {
+function fToC(f: number): number {
+  return ((f - 32) * 5) / 9;
+}
+
+function ftToM(ft: number): number {
+  return ft * 0.3048;
+}
+
+export function RaceSimForm({ useMetric = false }: { useMetric?: boolean }) {
   const [distance, setDistance] = useState(21097.5);
-  const [temp, setTemp] = useState<number | "">(18);
+  // Inputs are displayed in the athlete's chosen unit. Backend expects
+  // metric, so we convert at submit time.
+  const [temp, setTemp] = useState<number | "">(useMetric ? 18 : 64);
   const [humidity, setHumidity] = useState<number | "">(60);
-  const [elev, setElev] = useState<number | "">(100);
+  const [elev, setElev] = useState<number | "">(useMetric ? 100 : 328);
   const [result, setResult] = useState<Result | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,14 +55,18 @@ export function RaceSimForm() {
     setSubmitting(true);
     setError(null);
     try {
+      const temperature_c =
+        temp === "" ? undefined : useMetric ? Number(temp) : fToC(Number(temp));
+      const elevation_gain_m =
+        elev === "" ? undefined : useMetric ? Number(elev) : ftToM(Number(elev));
       const res = await fetch("/api/race-sim", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           distance_m: distance,
-          temperature_c: temp === "" ? undefined : temp,
+          temperature_c,
           humidity_pct: humidity === "" ? undefined : humidity,
-          elevation_gain_m: elev === "" ? undefined : elev,
+          elevation_gain_m,
         }),
       });
       const json = await res.json();
@@ -63,6 +78,10 @@ export function RaceSimForm() {
       setSubmitting(false);
     }
   }
+
+  const tempLabel = useMetric ? "Temp (°C)" : "Temp (°F)";
+  const elevLabel = useMetric ? "Elev gain (m)" : "Elev gain (ft)";
+  const paceUnit = useMetric ? "metric" : "imperial";
 
   return (
     <div>
@@ -85,10 +104,15 @@ export function RaceSimForm() {
         </div>
         <div className="mb-4 grid grid-cols-3 gap-4">
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Temp (°C)
+            <label
+              htmlFor="race-sim-temp"
+              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+            >
+              {tempLabel}
             </label>
             <input
+              id="race-sim-temp"
+              name="temperature"
               type="number"
               value={temp}
               onChange={(e) => setTemp(e.target.value === "" ? "" : Number(e.target.value))}
@@ -96,10 +120,15 @@ export function RaceSimForm() {
             />
           </div>
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <label
+              htmlFor="race-sim-humidity"
+              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+            >
               Humidity (%)
             </label>
             <input
+              id="race-sim-humidity"
+              name="humidity"
               type="number"
               value={humidity}
               onChange={(e) =>
@@ -109,10 +138,15 @@ export function RaceSimForm() {
             />
           </div>
           <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Elev gain (m)
+            <label
+              htmlFor="race-sim-elev"
+              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+            >
+              {elevLabel}
             </label>
             <input
+              id="race-sim-elev"
+              name="elevation"
               type="number"
               value={elev}
               onChange={(e) => setElev(e.target.value === "" ? "" : Number(e.target.value))}
@@ -144,8 +178,7 @@ export function RaceSimForm() {
             {fmt(result.predicted_time_seconds)}
           </div>
           <div className="mt-1 text-sm text-muted-foreground">
-            Pace {Math.floor(result.pace_seconds_per_km / 60)}:
-            {String(result.pace_seconds_per_km % 60).padStart(2, "0")} /km
+            Pace {paceFromSecondsPerKm(result.pace_seconds_per_km, paceUnit)}
           </div>
 
           <div className="mt-4 grid grid-cols-3 gap-3 border-t pt-4">

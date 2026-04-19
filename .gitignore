@@ -33,3 +33,17 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Playwright MCP session artifacts
+.playwright-mcp/
+
+# Local secrets / bootstrap notes (never commit)
+**/bootstrap-secret.local.md
+*.local.md
+
+# QA/audit screenshots (keep reports in docs/, drop the PNGs)
+audit*.png
+audit2-*.png
+/*-*.png
+/*.png
+!/public/**/*.png

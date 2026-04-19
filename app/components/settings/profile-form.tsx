@@ -11,8 +11,32 @@ type ProfileFields = {
   weight_kg: number | null;
 };
 
-export function ProfileForm({ initial }: { initial: ProfileFields }) {
-  const [fields, setFields] = useState(initial);
+const KG_PER_LB = 0.45359237;
+
+function kgToLbs(kg: number): number {
+  return kg / KG_PER_LB;
+}
+
+function lbsToKg(lbs: number): number {
+  return lbs * KG_PER_LB;
+}
+
+export function ProfileForm({
+  initial,
+  useMetric,
+}: {
+  initial: ProfileFields;
+  useMetric: boolean;
+}) {
+  // UI shows whichever unit the athlete prefers; DB stores canonical kg.
+  const [fields, setFields] = useState<ProfileFields>(initial);
+  const [weightInput, setWeightInput] = useState<string>(
+    initial.weight_kg == null
+      ? ""
+      : useMetric
+        ? String(Math.round(initial.weight_kg * 10) / 10)
+        : String(Math.round(kgToLbs(initial.weight_kg) * 10) / 10),
+  );
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,16 +48,22 @@ export function ProfileForm({ initial }: { initial: ProfileFields }) {
     setSaved(false);
     setError(null);
     try {
+      let weight_kg: number | null = null;
+      if (weightInput.trim() !== "") {
+        const parsed = Number(weightInput);
+        if (!Number.isFinite(parsed)) throw new Error("weight must be a number");
+        weight_kg = useMetric
+          ? Math.round(parsed * 10) / 10
+          : Math.round(lbsToKg(parsed) * 10) / 10;
+      }
       const res = await fetch("/api/settings/profile", {
         method: "PATCH",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          ...fields,
-          weight_kg: fields.weight_kg ? Number(fields.weight_kg) : null,
-        }),
+        body: JSON.stringify({ ...fields, weight_kg }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "save failed");
+      setFields({ ...fields, weight_kg });
       setSaved(true);
       router.refresh();
       setTimeout(() => setSaved(false), 2500);
@@ -44,48 +74,55 @@ export function ProfileForm({ initial }: { initial: ProfileFields }) {
     }
   }
 
+  const weightLabel = useMetric ? "Weight (kg)" : "Weight (lbs)";
+
   return (
     <form onSubmit={save} className="max-w-2xl space-y-6 rounded-xl border bg-card p-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Field label="First name">
+        <Field id="profile-firstname" label="First name">
           <input
+            id="profile-firstname"
+            name="firstname"
             value={fields.firstname}
             onChange={(e) => setFields({ ...fields, firstname: e.target.value })}
             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
           />
         </Field>
-        <Field label="Last name">
+        <Field id="profile-lastname" label="Last name">
           <input
+            id="profile-lastname"
+            name="lastname"
             value={fields.lastname}
             onChange={(e) => setFields({ ...fields, lastname: e.target.value })}
             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
           />
         </Field>
-        <Field label="City">
+        <Field id="profile-city" label="City">
           <input
+            id="profile-city"
+            name="city"
             value={fields.city}
             onChange={(e) => setFields({ ...fields, city: e.target.value })}
             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
           />
         </Field>
-        <Field label="State / Region">
+        <Field id="profile-state" label="State / Region">
           <input
+            id="profile-state"
+            name="state"
             value={fields.state}
             onChange={(e) => setFields({ ...fields, state: e.target.value })}
             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
           />
         </Field>
-        <Field label="Weight (kg)">
+        <Field id="profile-weight" label={weightLabel}>
           <input
+            id="profile-weight"
+            name="weight"
             type="number"
             step="0.1"
-            value={fields.weight_kg ?? ""}
-            onChange={(e) =>
-              setFields({
-                ...fields,
-                weight_kg: e.target.value === "" ? null : Number(e.target.value),
-              })
-            }
+            value={weightInput}
+            onChange={(e) => setWeightInput(e.target.value)}
             className="w-full rounded-md border bg-background px-3 py-2 text-sm"
           />
         </Field>
@@ -112,16 +149,20 @@ export function ProfileForm({ initial }: { initial: ProfileFields }) {
 }
 
 function Field({
+  id,
   label,
   children,
 }: {
+  id: string;
   label: string;
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="eyebrow">{label}</span>
+    <div className="block">
+      <label htmlFor={id} className="eyebrow">
+        {label}
+      </label>
       <div className="mt-1.5">{children}</div>
-    </label>
+    </div>
   );
 }

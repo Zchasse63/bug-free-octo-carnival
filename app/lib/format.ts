@@ -35,11 +35,16 @@ export function paceFromSecondsPerKm(
 export function relativeDate(iso: string): string {
   const date = new Date(iso);
   const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const day = 86400000;
-  if (diffMs < day) return "Today";
-  if (diffMs < 2 * day) return "Yesterday";
-  if (diffMs < 7 * day) return `${Math.floor(diffMs / day)}d ago`;
+  // Calendar-day comparison (local timezone) so an activity uploaded
+  // 22h ago but yesterday on the calendar doesn't say "Today".
+  const startOfDay = (d: Date) =>
+    new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const daysAgo = Math.round(
+    (startOfDay(now) - startOfDay(date)) / 86400000,
+  );
+  if (daysAgo <= 0) return "Today";
+  if (daysAgo === 1) return "Yesterday";
+  if (daysAgo < 7) return `${daysAgo}d ago`;
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 

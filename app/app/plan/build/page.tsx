@@ -1,6 +1,14 @@
 import { WorkoutBuilderForm } from "@/components/workout-builder-form";
+import { getAthlete } from "@/lib/data/queries";
+import { isImperial } from "@/lib/units";
 
-export default function PlanBuildPage() {
+const ATHLETE_ID = 56272355;
+
+export const dynamic = "force-dynamic";
+
+export default async function PlanBuildPage() {
+  const athlete = await getAthlete(ATHLETE_ID);
+  const useMetric = !isImperial(athlete.measurement_preference);
   return (
     <>
       <div className="mb-6">
@@ -9,7 +17,7 @@ export default function PlanBuildPage() {
           Describe a session in plain English. Claude will structure it.
         </p>
       </div>
-      <WorkoutBuilderForm />
+      <WorkoutBuilderForm useMetric={useMetric} />
     </>
   );
 }

@@ -37,10 +37,16 @@ export default async function CommunityPage() {
             Weekly {unit} percentile
           </div>
           <div className="mt-1 font-mono text-3xl font-bold tabular-nums">
-            {compare.km_percentile !== null ? `${compare.km_percentile}th` : "—"}
+            {compare.km_percentile !== null
+              ? `${compare.km_percentile}th`
+              : compare.peer_sample_size === 0
+                ? "—"
+                : "—"}
           </div>
           <div className="mt-1 text-xs text-muted-foreground">
-            {vol.toFixed(1)} {unit}/week (4-week avg)
+            {compare.peer_sample_size === 0
+              ? `You: ${vol.toFixed(1)} ${unit}/week (need more athletes to compare)`
+              : `${vol.toFixed(1)} ${unit}/week (4-week avg)`}
           </div>
         </div>
         <div className="rounded-xl border bg-card p-5">
@@ -48,17 +54,22 @@ export default async function CommunityPage() {
             Weekly load percentile
           </div>
           <div className="mt-1 font-mono text-3xl font-bold tabular-nums">
-            {compare.load_percentile !== null ? `${compare.load_percentile}th` : "—"}
+            {compare.load_percentile !== null
+              ? `${compare.load_percentile}th`
+              : "—"}
           </div>
           <div className="mt-1 text-xs text-muted-foreground">
-            {compare.my_avg_load_per_week} load/week (4-week avg)
+            {compare.peer_sample_size === 0
+              ? `You: ${compare.my_avg_load_per_week} load/week (need more athletes to compare)`
+              : `${compare.my_avg_load_per_week} load/week (4-week avg)`}
           </div>
         </div>
       </div>
 
       <div className="mt-4 rounded-md border border-dashed p-4 text-sm text-muted-foreground">
-        Peer pool: {compare.peer_sample_size} other athletes. Only anonymized
-        aggregates are compared — no individual data is ever shared.
+        {compare.peer_sample_size === 0
+          ? "No peers yet. Percentiles show up once more Cadence athletes are in the pool. Only anonymized aggregates are compared — no individual data is ever shared."
+          : `Peer pool: ${compare.peer_sample_size} other athletes. Only anonymized aggregates are compared — no individual data is ever shared.`}
       </div>
     </>
   );

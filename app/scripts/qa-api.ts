@@ -49,7 +49,7 @@ async function main() {
   console.log(`\nQA against ${base}\n`);
 
   console.log("PAGES (server-rendered HTML)");
-  await run("/dashboard", () => expectHtml("/dashboard", "Your training"));
+  await run("/dashboard", () => expectHtml("/dashboard", "Today&#x27;s read"));
   await run("/activities", () => expectHtml("/activities", "Activities"));
   await run("/plan", () => expectHtml("/plan", "Calendar"));
   await run("/plan/build", () => expectHtml("/plan/build", "Build workout"));

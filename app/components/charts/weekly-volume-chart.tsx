@@ -19,7 +19,13 @@ function weekLabel(iso: string) {
   });
 }
 
-export function WeeklyVolumeChart({ data }: { data: Row[] }) {
+export function WeeklyVolumeChart({
+  data,
+  useMetric = true,
+}: {
+  data: Row[];
+  useMetric?: boolean;
+}) {
   if (data.length === 0) {
     return (
       <div className="flex h-56 items-center justify-center text-sm text-muted-foreground">
@@ -27,14 +33,18 @@ export function WeeklyVolumeChart({ data }: { data: Row[] }) {
       </div>
     );
   }
-  const chartData = data.map((d) => ({
-    week: d.week,
-    label: weekLabel(d.week),
-    km: Math.round(d.km * 10) / 10,
-    load: Math.round(d.load),
-  }));
+  const unitLabel = useMetric ? "km" : "mi";
+  const chartData = data.map((d) => {
+    const display = useMetric ? d.km : d.km * 0.621371;
+    return {
+      week: d.week,
+      label: weekLabel(d.week),
+      distance: Math.round(display * 10) / 10,
+      load: Math.round(d.load),
+    };
+  });
   return (
-    <div className="h-56 w-full">
+    <div className="h-56 w-full" style={{ minHeight: 224 }}>
       <ResponsiveContainer>
         <BarChart
           data={chartData}
@@ -63,12 +73,12 @@ export function WeeklyVolumeChart({ data }: { data: Row[] }) {
             labelStyle={{ color: "hsl(var(--muted-foreground))" }}
             formatter={(value, name) => {
               const v = typeof value === "number" ? value : Number(value ?? 0);
-              return name === "km"
-                ? [`${v} km`, "Distance"]
+              return name === "distance"
+                ? [`${v} ${unitLabel}`, "Distance"]
                 : [String(v), "Load"];
             }}
           />
-          <Bar dataKey="km" fill="#C48A2A" opacity={0.85} radius={[3, 3, 0, 0]} />
+          <Bar dataKey="distance" fill="#C48A2A" opacity={0.85} radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

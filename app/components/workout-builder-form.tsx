@@ -2,19 +2,36 @@
 
 import { useState } from "react";
 import type { BuiltWorkout } from "@/lib/ai/workout-builder";
+import { metersToMiles, metersToKm, secondsToDuration } from "@/lib/format";
 
-const EXAMPLES = [
-  "6x1km at threshold with 90s jog between reps",
+const EXAMPLES_IMPERIAL = [
+  "6x1mi at threshold with 90s jog between reps",
   "10 mile long run with the last 3 at marathon pace",
   "Fartlek: 8x 1 min hard / 1 min easy after a 20-min warm up",
   "45 min recovery run, super easy",
 ];
+const EXAMPLES_METRIC = [
+  "6x1km at threshold with 90s jog between reps",
+  "16 km long run with the last 5 at marathon pace",
+  "Fartlek: 8x 1 min hard / 1 min easy after a 20-min warm up",
+  "45 min recovery run, super easy",
+];
 
-export function WorkoutBuilderForm() {
+function formatSegmentDistance(meters: number, useMetric: boolean): string {
+  if (useMetric) return `${metersToKm(meters, 2)}km`;
+  return `${metersToMiles(meters, 2)}mi`;
+}
+
+export function WorkoutBuilderForm({ useMetric = false }: { useMetric?: boolean }) {
   const [description, setDescription] = useState("");
   const [result, setResult] = useState<BuiltWorkout | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const examples = useMetric ? EXAMPLES_METRIC : EXAMPLES_IMPERIAL;
+  const placeholder = useMetric
+    ? "e.g. 4x1km at 5k pace with 2min jog between"
+    : "e.g. 4x800m at 5k pace with 2min jog between";
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -40,19 +57,24 @@ export function WorkoutBuilderForm() {
   return (
     <div>
       <form onSubmit={submit} className="mb-6 rounded-xl border bg-card p-5">
-        <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <label
+          htmlFor="workout-description"
+          className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+        >
           Describe your workout
         </label>
         <textarea
+          id="workout-description"
+          name="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
           required
-          placeholder="e.g. 4x1km at 5k pace with 2min jog between"
+          placeholder={placeholder}
           className="mt-2 w-full rounded-md border bg-background px-3 py-2 text-sm"
         />
         <div className="mt-3 flex flex-wrap gap-2">
-          {EXAMPLES.map((ex) => (
+          {examples.map((ex) => (
             <button
               key={ex}
               type="button"
@@ -93,9 +115,8 @@ export function WorkoutBuilderForm() {
                 <div className="font-medium">{s.step}</div>
                 <div className="mt-1 font-mono text-xs tabular-nums text-muted-foreground">
                   {s.reps && `${s.reps} × `}
-                  {s.distance_m && `${s.distance_m}m`}
-                  {s.duration_s &&
-                    ` ${Math.floor(s.duration_s / 60)}:${String(s.duration_s % 60).padStart(2, "0")}`}
+                  {s.distance_m && formatSegmentDistance(s.distance_m, useMetric)}
+                  {s.duration_s && ` ${secondsToDuration(s.duration_s)}`}
                   {s.pace && ` @ ${s.pace}`}
                   {s.recovery_s && ` · ${s.recovery_s}s recovery`}
                 </div>

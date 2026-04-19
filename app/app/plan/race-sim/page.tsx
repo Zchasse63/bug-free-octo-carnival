@@ -1,6 +1,14 @@
 import { RaceSimForm } from "@/components/race-sim-form";
+import { getAthlete } from "@/lib/data/queries";
+import { isImperial } from "@/lib/units";
 
-export default function PlanRaceSimPage() {
+const ATHLETE_ID = 56272355;
+
+export const dynamic = "force-dynamic";
+
+export default async function PlanRaceSimPage() {
+  const athlete = await getAthlete(ATHLETE_ID);
+  const useMetric = !isImperial(athlete.measurement_preference);
   return (
     <>
       <div className="mb-6">
@@ -9,7 +17,7 @@ export default function PlanRaceSimPage() {
           VDOT-based prediction with heat, elevation, and form adjustments.
         </p>
       </div>
-      <RaceSimForm />
+      <RaceSimForm useMetric={useMetric} />
     </>
   );
 }
