@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { DailySeriesPoint } from "@/lib/analytics/training-load";
 import {
   CartesianGrid,
@@ -20,12 +21,17 @@ function shortDate(iso: string): string {
 }
 
 export function TrainingLoadChart({ data }: { data: DailySeriesPoint[] }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   if (data.length < 2) {
     return (
       <div className="flex h-56 items-center justify-center text-sm text-muted-foreground">
         Not enough data yet.
       </div>
     );
+  }
+  if (!mounted) {
+    return <div className="h-56 w-full" style={{ minHeight: 224 }} />;
   }
 
   const chartData = data.map((d) => ({

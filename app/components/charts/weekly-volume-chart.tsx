@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -26,12 +27,17 @@ export function WeeklyVolumeChart({
   data: Row[];
   useMetric?: boolean;
 }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   if (data.length === 0) {
     return (
       <div className="flex h-56 items-center justify-center text-sm text-muted-foreground">
         No data.
       </div>
     );
+  }
+  if (!mounted) {
+    return <div className="h-56 w-full" style={{ minHeight: 224 }} />;
   }
   const unitLabel = useMetric ? "km" : "mi";
   const chartData = data.map((d) => {

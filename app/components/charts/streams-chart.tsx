@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   Area,
   CartesianGrid,
@@ -35,12 +36,17 @@ export function StreamsChart({
   mode?: "hr" | "pace" | "elevation" | "cadence";
   useMetric: boolean;
 }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   if (!streams.time || streams.time.length === 0) {
     return (
       <div className="flex h-56 items-center justify-center text-sm text-muted-foreground">
         No stream data.
       </div>
     );
+  }
+  if (!mounted) {
+    return <div className="h-56 w-full" style={{ minHeight: 224 }} />;
   }
 
   // Downsample to at most ~500 points for render
