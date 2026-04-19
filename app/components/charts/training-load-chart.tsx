@@ -37,8 +37,8 @@ export function TrainingLoadChart({ data }: { data: DailySeriesPoint[] }) {
   }));
 
   return (
-    <div className="h-56 w-full" style={{ minHeight: 224 }}>
-      <ResponsiveContainer>
+    <div className="h-56 w-full" style={{ minHeight: 224, minWidth: 0 }}>
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <LineChart
           data={chartData}
           margin={{ top: 8, right: 8, left: 0, bottom: 0 }}

@@ -84,8 +84,8 @@ export function StreamsChart({
   const spec = specs[mode];
 
   return (
-    <div className="h-56 w-full">
-      <ResponsiveContainer>
+    <div className="h-56 w-full" style={{ minHeight: 224, minWidth: 0 }}>
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <CartesianGrid stroke="hsl(var(--border))" vertical={false} />
           <XAxis
