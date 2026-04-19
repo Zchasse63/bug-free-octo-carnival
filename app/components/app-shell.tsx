@@ -8,9 +8,10 @@ import {
   List,
   LayoutDashboard,
   CalendarDays,
+  Sparkles,
+  Users,
   Moon,
   Sun,
-  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -20,6 +21,8 @@ const NAV: { href: string; label: string; icon: typeof MessageCircle }[] = [
   { href: "/activities", label: "Activities", icon: List },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/plan", label: "Plan", icon: CalendarDays },
+  { href: "/insights", label: "Insights", icon: Sparkles },
+  { href: "/teams", label: "Teams", icon: Users },
 ];
 
 export function AppShell({

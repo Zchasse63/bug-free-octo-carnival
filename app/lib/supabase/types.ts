@@ -2168,6 +2168,7 @@ export type Database = {
     }
     Functions: {
       auth_athlete_id: { Args: never; Returns: number }
+      increment_factor_usage: { Args: { key: string }; Returns: undefined }
       match_activities: {
         Args: {
           athlete_id_in: number

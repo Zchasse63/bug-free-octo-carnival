@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/app-shell";
+import { ActivityNoteForm } from "@/components/activity-note-form";
 import { getAthlete } from "@/lib/data/queries";
 import { createServiceClient } from "@/lib/supabase/service";
 import {
@@ -258,6 +259,10 @@ export default async function ActivityDetailPage({
           </div>
         </div>
       )}
+
+      <div className="mb-6">
+        <ActivityNoteForm activityId={activity.id} />
+      </div>
 
       {!activity.detail_fetched && (
         <div className="mt-6 rounded-xl border border-dashed bg-muted/40 p-5 text-sm text-muted-foreground">

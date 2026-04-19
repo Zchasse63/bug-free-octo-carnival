@@ -3,7 +3,9 @@ import { BigNumber, GlowTile, TileLabel } from "@/components/glow-tile";
 import {
   getActiveGear,
   getAthlete,
+  getCurrentVdot,
   getCurrentWeekSummary,
+  getInjuryRisk,
   getLast12Weeks,
   getRecentActivities,
   getTrainingLoadSeries,
@@ -24,15 +26,25 @@ const ATHLETE_ID = 56272355;
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const [athlete, weekSummary, recent, trainingLoad, gear, last12] =
-    await Promise.all([
-      getAthlete(ATHLETE_ID),
-      getCurrentWeekSummary(ATHLETE_ID),
-      getRecentActivities(ATHLETE_ID, 6),
-      getTrainingLoadSeries(ATHLETE_ID, 90),
-      getActiveGear(ATHLETE_ID),
-      getLast12Weeks(ATHLETE_ID),
-    ]);
+  const [
+    athlete,
+    weekSummary,
+    recent,
+    trainingLoad,
+    gear,
+    last12,
+    vdotInfo,
+    injuryRisk,
+  ] = await Promise.all([
+    getAthlete(ATHLETE_ID),
+    getCurrentWeekSummary(ATHLETE_ID),
+    getRecentActivities(ATHLETE_ID, 6),
+    getTrainingLoadSeries(ATHLETE_ID, 90),
+    getActiveGear(ATHLETE_ID),
+    getLast12Weeks(ATHLETE_ID),
+    getCurrentVdot(ATHLETE_ID),
+    getInjuryRisk(ATHLETE_ID),
+  ]);
 
   const todayPoint = trainingLoad[trainingLoad.length - 1];
   const ctl = todayPoint?.ctl ?? 0;
@@ -117,6 +129,65 @@ export default async function DashboardPage() {
           <div className="mt-3 text-xs text-muted-foreground">
             {tsbState.label} · ATL {atl.toFixed(1)}
           </div>
+        </div>
+      </div>
+
+      {/* VDOT + injury risk row */}
+      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div className="rounded-xl border bg-card p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+            VDOT
+          </div>
+          <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-foreground">
+            {vdotInfo.vdot?.toFixed(1) ?? "—"}
+          </div>
+          {vdotInfo.paces && (
+            <div className="mt-1 text-[10px] text-muted-foreground">
+              Easy {Math.floor(vdotInfo.paces.easy / 60)}:
+              {String(vdotInfo.paces.easy % 60).padStart(2, "0")} · Thresh{" "}
+              {Math.floor(vdotInfo.paces.threshold / 60)}:
+              {String(vdotInfo.paces.threshold % 60).padStart(2, "0")}
+            </div>
+          )}
+        </div>
+        <div className="rounded-xl border bg-card p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+            Injury risk
+          </div>
+          <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-foreground">
+            {injuryRisk.acwr?.toFixed(2) ?? "—"}
+          </div>
+          <div
+            className={`mt-1 text-[10px] font-semibold uppercase ${
+              injuryRisk.level === "optimal"
+                ? "text-emerald-500"
+                : injuryRisk.level === "elevated"
+                  ? "text-amber-500"
+                  : injuryRisk.level === "high"
+                    ? "text-red-500"
+                    : "text-muted-foreground"
+            }`}
+          >
+            {injuryRisk.level}
+          </div>
+        </div>
+        <div className="rounded-xl border bg-card p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+            Acute load
+          </div>
+          <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-foreground">
+            {injuryRisk.acute}
+          </div>
+          <div className="mt-1 text-[10px] text-muted-foreground">Last 7 days</div>
+        </div>
+        <div className="rounded-xl border bg-card p-4">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+            Chronic load
+          </div>
+          <div className="mt-1 font-mono text-2xl font-bold tabular-nums text-foreground">
+            {injuryRisk.chronic}
+          </div>
+          <div className="mt-1 text-[10px] text-muted-foreground">4-week avg</div>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import { createServiceClient } from "@/lib/supabase/service";
 import { computeDailySeries } from "@/lib/analytics/training-load";
+import { pacesFromVdot, computeACWR } from "@/lib/analytics/vdot";
 
 export async function getAthlete(athleteId: number) {
   const sb = createServiceClient();
@@ -73,6 +74,27 @@ export async function getActiveGear(athleteId: number) {
     .order("distance_meters", { ascending: false })
     .limit(4);
   return data ?? [];
+}
+
+export async function getCurrentVdot(athleteId: number) {
+  const sb = createServiceClient();
+  const { data } = await sb
+    .from("athlete_zones")
+    .select("estimated_vdot, effective_date")
+    .eq("athlete_id", athleteId)
+    .order("effective_date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const vdot = data?.estimated_vdot ? Number(data.estimated_vdot) : null;
+  return {
+    vdot,
+    date: data?.effective_date ?? null,
+    paces: vdot ? pacesFromVdot(vdot) : null,
+  };
+}
+
+export async function getInjuryRisk(athleteId: number) {
+  return computeACWR(athleteId);
 }
 
 export async function getLast12Weeks(athleteId: number) {
