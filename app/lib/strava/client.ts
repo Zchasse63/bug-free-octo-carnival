@@ -20,13 +20,40 @@ export class StravaHttpError extends Error {
   }
 }
 
+/**
+ * Strava returns TWO limit pairs:
+ *   x-ratelimit-*      — overall (200/15min, 2000/day)
+ *   x-readratelimit-*  — read-only (100/15min, 1000/day)
+ * We must watch the tighter of the two. 429 responses typically come from
+ * the read-only limit being hit even when overall usage is trivial.
+ */
 function parseRateLimit(res: Response): StravaRateLimit | null {
-  const usage = res.headers.get("x-ratelimit-usage");
-  const limit = res.headers.get("x-ratelimit-limit");
-  if (!usage || !limit) return null;
-  const [su, lu] = usage.split(",").map((x) => parseInt(x, 10));
-  const [sl, ll] = limit.split(",").map((x) => parseInt(x, 10));
-  return { shortUsed: su, shortLimit: sl, longUsed: lu, longLimit: ll };
+  const overallUsage = res.headers.get("x-ratelimit-usage");
+  const overallLimit = res.headers.get("x-ratelimit-limit");
+  const readUsage = res.headers.get("x-readratelimit-usage");
+  const readLimit = res.headers.get("x-readratelimit-limit");
+
+  function pair(s: string): [number, number] | null {
+    const [a, b] = s.split(",").map((x) => parseInt(x, 10));
+    return Number.isNaN(a) || Number.isNaN(b) ? null : [a, b];
+  }
+
+  const o = overallUsage && overallLimit ? { u: pair(overallUsage), l: pair(overallLimit) } : null;
+  const r = readUsage && readLimit ? { u: pair(readUsage), l: pair(readLimit) } : null;
+  if (!o?.u || !o?.l) return null;
+
+  // Return the tighter set (highest usage fraction). Fall back to overall if read headers missing.
+  const candidates: StravaRateLimit[] = [
+    { shortUsed: o.u[0], shortLimit: o.l[0], longUsed: o.u[1], longLimit: o.l[1] },
+  ];
+  if (r?.u && r?.l) {
+    candidates.push({ shortUsed: r.u[0], shortLimit: r.l[0], longUsed: r.u[1], longLimit: r.l[1] });
+  }
+  return candidates.reduce((tightest, c) => {
+    const tMax = Math.max(tightest.shortUsed / tightest.shortLimit, tightest.longUsed / tightest.longLimit);
+    const cMax = Math.max(c.shortUsed / c.shortLimit, c.longUsed / c.longLimit);
+    return cMax > tMax ? c : tightest;
+  });
 }
 
 export type StravaRequestOptions = {
@@ -54,10 +81,12 @@ async function request<T>(
   const rate = parseRateLimit(res);
 
   if (res.status === 429) {
-    throw new StravaRateLimitError(
-      rate && rate.longUsed >= rate.longLimit ? "long" : "short",
-      rate ?? { shortUsed: 0, shortLimit: 100, longUsed: 0, longLimit: 1000 },
-    );
+    const fallback = { shortUsed: 0, shortLimit: 100, longUsed: 0, longLimit: 1000 };
+    const r = rate ?? fallback;
+    // When 429 fires but short usage looks trivial, the daily read limit is the real culprit.
+    const kind: "short" | "long" =
+      r.longUsed >= r.longLimit || r.shortUsed < r.shortLimit * 0.5 ? "long" : "short";
+    throw new StravaRateLimitError(kind, r);
   }
   if (!res.ok) throw new StravaHttpError(res.status, await res.text());
 

@@ -15,8 +15,14 @@ import { backfillWeather } from "@/lib/weather/open-meteo";
 import { embedActivitiesBatch } from "@/lib/ai/activity-embeddings";
 import { recomputeTrainingLoad, rollupWeeklySummaries } from "@/lib/analytics/training-load";
 
-const FIFTEEN_MIN_MS = 15 * 60 * 1000;
-const SLEEP_MS = 15 * 60 * 1000 + 30 * 1000; // 15m30s — a little over a window
+const SHORT_SLEEP_MS = 15 * 60 * 1000 + 30 * 1000; // 15m30s — one 15-min window plus buffer
+function msUntilNextUtcMidnight(): number {
+  const now = new Date();
+  const next = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 1, 0),
+  );
+  return next.getTime() - now.getTime();
+}
 
 function ts(): string {
   return new Date().toISOString().replace("T", " ").slice(0, 19);
@@ -41,6 +47,8 @@ async function main() {
     iterations += 1;
     console.log(`[${ts()}] iteration #${iterations}`);
 
+    let hitDailyLimit = false;
+
     if (!detailsDone) {
       const r = await syncDetails(id, 200);
       console.log(`[${ts()}]   details: ${JSON.stringify(r)}`);
@@ -48,6 +56,8 @@ async function main() {
         detailsDone = true;
         console.log(`[${ts()}]   details DONE`);
       }
+      // If the message mentions "long" or read-limit, we hit daily cap.
+      if (r.rateLimited && /long|1000/.test(r.message ?? "")) hitDailyLimit = true;
     }
 
     if (detailsDone && !streamsDone) {
@@ -57,6 +67,7 @@ async function main() {
         streamsDone = true;
         console.log(`[${ts()}]   streams DONE`);
       }
+      if (r.rateLimited && /long|1000/.test(r.message ?? "")) hitDailyLimit = true;
     }
 
     // Between passes, push forward on things that don't hit Strava
@@ -82,8 +93,12 @@ async function main() {
     }
 
     if (!detailsDone || !streamsDone) {
-      console.log(`[${ts()}]   sleeping ~${Math.round(SLEEP_MS / 60000)} min until Strava window resets`);
-      await sleep(SLEEP_MS);
+      const sleepMs = hitDailyLimit ? msUntilNextUtcMidnight() : SHORT_SLEEP_MS;
+      const minutes = Math.round(sleepMs / 60000);
+      console.log(
+        `[${ts()}]   sleeping ~${minutes} min until ${hitDailyLimit ? "UTC midnight (daily limit)" : "next 15-min window"}`,
+      );
+      await sleep(sleepMs);
     }
   }
 
