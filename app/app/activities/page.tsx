@@ -1,4 +1,3 @@
-import { AppShell } from "@/components/app-shell";
 import { getAthlete } from "@/lib/data/queries";
 import { createServiceClient } from "@/lib/supabase/service";
 import {
@@ -8,6 +7,7 @@ import {
   relativeDate,
   secondsToDuration,
 } from "@/lib/format";
+import { prefersMetric } from "@/lib/units";
 import Link from "next/link";
 
 const ATHLETE_ID = 56272355;
@@ -42,7 +42,7 @@ export default async function ActivitiesPage({
     .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
 
   const totalPages = count ? Math.max(1, Math.ceil(count / PAGE_SIZE)) : 1;
-  const useMetric = athlete.measurement_preference !== "standard";
+  const useMetric = prefersMetric(athlete.measurement_preference);
   const distanceFn = useMetric ? metersToKm : metersToMiles;
   const unit = useMetric ? "km" : "mi";
 
@@ -65,10 +65,7 @@ export default async function ActivitiesPage({
   }
 
   return (
-    <AppShell
-      athleteName={`${athlete.firstname ?? ""} ${athlete.lastname ?? ""}`.trim() || "Athlete"}
-      athleteLocation={[athlete.city, athlete.state].filter(Boolean).join(", ") || undefined}
-    >
+    <>
       <div className="mb-6 flex items-baseline justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">Activities</h1>
@@ -194,6 +191,6 @@ export default async function ActivitiesPage({
           Next →
         </Link>
       </div>
-    </AppShell>
+    </>
   );
 }

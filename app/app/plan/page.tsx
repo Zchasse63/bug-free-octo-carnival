@@ -1,16 +1,17 @@
-import { AppShell } from "@/components/app-shell";
 import { getAthlete } from "@/lib/data/queries";
 import { createServiceClient } from "@/lib/supabase/service";
 import { PlanGeneratorForm } from "@/components/plan-generator-form";
 import { PlannedWorkoutActions } from "@/components/planned-workout-actions";
-import { metersToKm } from "@/lib/format";
+import { metersToKm, metersToMiles } from "@/lib/format";
+import { prefersMetric } from "@/lib/units";
 
 const ATHLETE_ID = 56272355;
 
-export const dynamic = "force-dynamic";
-
 export default async function PlanPage() {
   const athlete = await getAthlete(ATHLETE_ID);
+  const useMetric = prefersMetric(athlete.measurement_preference);
+  const distanceFn = useMetric ? metersToKm : metersToMiles;
+  const unit = useMetric ? "km" : "mi";
   const sb = createServiceClient();
 
   const { data: activePlan } = await sb
@@ -73,19 +74,14 @@ export default async function PlanPage() {
   };
 
   return (
-    <AppShell
-      athleteName={`${athlete.firstname ?? ""} ${athlete.lastname ?? ""}`.trim() || "Athlete"}
-      athleteLocation={[athlete.city, athlete.state].filter(Boolean).join(", ") || undefined}
-    >
-      <div className="mb-6 flex items-baseline justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Training plan</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {activePlan
-              ? `${activePlan.name} · ${activePlan.current_phase ?? "base"} phase`
-              : "No active plan. Generate one below."}
-          </p>
-        </div>
+    <>
+      <div className="mb-6">
+        <h1 className="text-3xl font-semibold tracking-tight">Calendar</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {activePlan
+            ? `${activePlan.name} · ${activePlan.current_phase ?? "base"} phase`
+            : "No active plan. Generate one below."}
+        </p>
       </div>
 
       {!activePlan && <PlanGeneratorForm />}
@@ -143,7 +139,7 @@ export default async function PlanPage() {
                       <div className="mt-1 font-medium leading-tight">{w.title}</div>
                       {w.target_distance_meters && (
                         <div className="mt-1 font-mono text-xs text-muted-foreground">
-                          {metersToKm(w.target_distance_meters, 1)} km
+                          {distanceFn(w.target_distance_meters, 1)} {unit}
                         </div>
                       )}
                       {w.description && (
@@ -162,6 +158,6 @@ export default async function PlanPage() {
           })}
         </div>
       )}
-    </AppShell>
+    </>
   );
 }

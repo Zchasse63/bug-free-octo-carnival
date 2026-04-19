@@ -10,10 +10,10 @@ import { config } from "dotenv";
 import { resolve } from "node:path";
 config({ path: resolve(process.cwd(), ".env.local") });
 
-import { syncDetails, syncStreams } from "@/lib/strava/sync";
-import { backfillWeather } from "@/lib/weather/open-meteo";
-import { embedActivitiesBatch } from "@/lib/ai/activity-embeddings";
-import { recomputeTrainingLoad, rollupWeeklySummaries } from "@/lib/analytics/training-load";
+import { syncDetails, syncStreams } from "../lib/strava/sync";
+import { backfillWeather } from "../lib/weather/open-meteo";
+import { embedActivitiesBatch } from "../lib/ai/activity-embeddings";
+import { recomputeTrainingLoad, rollupWeeklySummaries } from "../lib/analytics/training-load";
 
 const SHORT_SLEEP_MS = 15 * 60 * 1000 + 30 * 1000; // 15m30s — one 15-min window plus buffer
 function msUntilNextUtcMidnight(): number {

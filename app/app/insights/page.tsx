@@ -1,11 +1,9 @@
-import { AppShell } from "@/components/app-shell";
-import { getAthlete } from "@/lib/data/queries";
 import { timeMachine } from "@/lib/analytics/time-machine";
 import { detectFatigueSignals } from "@/lib/analytics/fatigue-fingerprint";
+import { getAthlete } from "@/lib/data/queries";
+import { prefersMetric } from "@/lib/units";
 
 const ATHLETE_ID = 56272355;
-
-export const dynamic = "force-dynamic";
 
 export default async function InsightsPage() {
   const [athlete, tm, signals] = await Promise.all([
@@ -13,20 +11,21 @@ export default async function InsightsPage() {
     timeMachine(ATHLETE_ID),
     detectFatigueSignals(ATHLETE_ID),
   ]);
+  const useMetric = prefersMetric(athlete.measurement_preference);
+  const unit = useMetric ? "km" : "mi";
+  const convert = (km: number) => (useMetric ? km : km * 0.621371);
+  const paceLabel = useMetric ? "/km" : "/mi";
+  const paceScale = useMetric ? 1 : 1.609344;
 
   return (
-    <AppShell
-      athleteName={`${athlete.firstname ?? ""} ${athlete.lastname ?? ""}`.trim() || "Athlete"}
-      athleteLocation={[athlete.city, athlete.state].filter(Boolean).join(", ") || undefined}
-    >
+    <>
       <div className="mb-6">
         <h1 className="text-3xl font-semibold tracking-tight">Insights</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Time machine, fatigue signals, and patterns the coach noticed.
+          Year-over-year comparisons and fatigue signals the coach noticed.
         </p>
       </div>
 
-      {/* Time machine */}
       <div className="mb-6 rounded-xl border bg-card p-5">
         <h2 className="mb-3 text-sm font-semibold">
           Time machine — week {tm.week_number} through the years
@@ -43,28 +42,33 @@ export default async function InsightsPage() {
               </tr>
             </thead>
             <tbody>
-              {tm.years.map((y) => (
-                <tr
-                  key={y.year}
-                  className={`border-t ${y.is_current_year ? "bg-saffron-500/5 font-medium" : ""}`}
-                >
-                  <td className="py-2 font-mono tabular-nums">{y.year}</td>
-                  <td className="py-2 text-right font-mono tabular-nums">
-                    {y.distance_km.toFixed(1)} km
-                  </td>
-                  <td className="py-2 text-right font-mono tabular-nums">
-                    {y.training_load ?? "—"}
-                  </td>
-                  <td className="py-2 text-right font-mono tabular-nums">
-                    {y.avg_hr ? Math.round(Number(y.avg_hr)) : "—"}
-                  </td>
-                  <td className="py-2 text-right font-mono tabular-nums">
-                    {y.pace_sec_per_km
-                      ? `${Math.floor(Number(y.pace_sec_per_km) / 60)}:${String(Number(y.pace_sec_per_km) % 60).padStart(2, "0")}/km`
-                      : "—"}
-                  </td>
-                </tr>
-              ))}
+              {tm.years.map((y) => {
+                const sec = y.pace_sec_per_km
+                  ? Number(y.pace_sec_per_km) * paceScale
+                  : null;
+                return (
+                  <tr
+                    key={y.year}
+                    className={`border-t ${y.is_current_year ? "bg-saffron-500/5 font-medium" : ""}`}
+                  >
+                    <td className="py-2 font-mono tabular-nums">{y.year}</td>
+                    <td className="py-2 text-right font-mono tabular-nums">
+                      {convert(y.distance_km).toFixed(1)} {unit}
+                    </td>
+                    <td className="py-2 text-right font-mono tabular-nums">
+                      {y.training_load ?? "—"}
+                    </td>
+                    <td className="py-2 text-right font-mono tabular-nums">
+                      {y.avg_hr ? Math.round(Number(y.avg_hr)) : "—"}
+                    </td>
+                    <td className="py-2 text-right font-mono tabular-nums">
+                      {sec
+                        ? `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")}${paceLabel}`
+                        : "—"}
+                    </td>
+                  </tr>
+                );
+              })}
               {tm.years.length === 0 && (
                 <tr>
                   <td colSpan={5} className="py-3 text-sm text-muted-foreground">
@@ -77,7 +81,6 @@ export default async function InsightsPage() {
         </div>
       </div>
 
-      {/* Fatigue signals */}
       <div className="rounded-xl border bg-card p-5">
         <h2 className="mb-3 text-sm font-semibold">Fatigue fingerprint</h2>
         {signals.length === 0 ? (
@@ -112,6 +115,6 @@ export default async function InsightsPage() {
           </div>
         )}
       </div>
-    </AppShell>
+    </>
   );
 }

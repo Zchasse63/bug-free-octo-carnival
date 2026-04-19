@@ -1,15 +1,10 @@
-import { AppShell } from "@/components/app-shell";
-import { getAthlete } from "@/lib/data/queries";
 import { createServiceClient } from "@/lib/supabase/service";
 import Link from "next/link";
 import { TeamCreateForm } from "@/components/team-create-form";
 
 const ATHLETE_ID = 56272355;
 
-export const dynamic = "force-dynamic";
-
 export default async function TeamsPage() {
-  const athlete = await getAthlete(ATHLETE_ID);
   const sb = createServiceClient();
 
   const { data: memberships } = await sb
@@ -18,10 +13,7 @@ export default async function TeamsPage() {
     .eq("athlete_id", ATHLETE_ID);
 
   return (
-    <AppShell
-      athleteName={`${athlete.firstname ?? ""} ${athlete.lastname ?? ""}`.trim() || "Athlete"}
-      athleteLocation={[athlete.city, athlete.state].filter(Boolean).join(", ") || undefined}
-    >
+    <>
       <div className="mb-6">
         <h1 className="text-3xl font-semibold tracking-tight">Teams</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -59,6 +51,6 @@ export default async function TeamsPage() {
       </div>
 
       <TeamCreateForm athleteId={ATHLETE_ID} />
-    </AppShell>
+    </>
   );
 }

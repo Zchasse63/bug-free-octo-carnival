@@ -60,7 +60,8 @@ export default async function DashboardPage() {
   const ctl = todayPoint?.ctl ?? 0;
   const atl = todayPoint?.atl ?? 0;
   const tsb = todayPoint?.tsb ?? 0;
-  const useMetric = athlete.measurement_preference !== "standard";
+  const { prefersMetric } = await import("@/lib/units");
+  const useMetric = prefersMetric(athlete.measurement_preference);
   const distanceFn = useMetric ? metersToKm : metersToMiles;
   const unit = useMetric ? "km" : "mi";
 

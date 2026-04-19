@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 // Web Speech API typing for browsers that expose it
 type SR = {
@@ -19,6 +20,7 @@ export function ActivityNoteForm({ activityId }: { activityId: number }) {
   const [saved, setSaved] = useState(false);
   const [recording, setRecording] = useState(false);
   const recognitionRef = useRef<SR | null>(null);
+  const router = useRouter();
 
   function toggleVoice() {
     const SR = (
@@ -71,6 +73,9 @@ export function ActivityNoteForm({ activityId }: { activityId: number }) {
     if (res.ok) {
       setSaved(true);
       setText("");
+      // Pull freshly-saved note + any parsed factors back from the server.
+      router.refresh();
+      setTimeout(() => setSaved(false), 2500);
     }
   }
 
