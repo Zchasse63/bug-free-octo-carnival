@@ -1,7 +1,7 @@
 import { AppShell } from "@/components/app-shell";
 import { getAthlete } from "@/lib/data/queries";
 import Link from "next/link";
-import { Hammer, Wind, Compass, Gauge, LineChart, Users, Sparkles, Rocket } from "lucide-react";
+import { Hammer, Wind, Compass, Gauge, LineChart, Users, Sparkles, Rocket, Target } from "lucide-react";
 
 const ATHLETE_ID = 56272355;
 
@@ -13,6 +13,12 @@ const TOOLS = [
     label: "Workout builder",
     icon: Hammer,
     desc: "Plain-English → structured workout",
+  },
+  {
+    href: "/goal",
+    label: "Goal analyzer",
+    icon: Target,
+    desc: "Reverse-engineer a race goal into required VDOT",
   },
   {
     href: "/race-sim",
