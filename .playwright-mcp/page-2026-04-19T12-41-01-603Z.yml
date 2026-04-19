@@ -1,0 +1,270 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img [ref=e7]
+          - generic [ref=e9]: Cadence
+        - button "Toggle theme" [ref=e10] [cursor=pointer]:
+          - img [ref=e11]
+      - navigation [ref=e13]:
+        - link "Coach" [ref=e14] [cursor=pointer]:
+          - /url: /coach
+          - img [ref=e15]
+          - generic [ref=e17]: Coach
+        - link "Activities" [ref=e18] [cursor=pointer]:
+          - /url: /activities
+          - img [ref=e19]
+          - generic [ref=e20]: Activities
+        - link "Dashboard" [ref=e21] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e22]
+          - generic [ref=e27]: Dashboard
+        - link "Plan" [ref=e28] [cursor=pointer]:
+          - /url: /plan
+          - img [ref=e29]
+          - generic [ref=e31]: Plan
+        - link "Insights" [ref=e32] [cursor=pointer]:
+          - /url: /insights
+          - img [ref=e33]
+          - generic [ref=e35]: Insights
+        - link "Teams" [ref=e36] [cursor=pointer]:
+          - /url: /teams
+          - img [ref=e37]
+          - generic [ref=e42]: Teams
+      - generic [ref=e44]:
+        - generic [ref=e45]: ZC
+        - generic [ref=e47]: Zach Chasse
+    - main [ref=e48]:
+      - generic [ref=e50]:
+        - complementary [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - img [ref=e55]
+              - generic [ref=e57]: Cadence
+            - button "Toggle theme" [ref=e58] [cursor=pointer]:
+              - img [ref=e59]
+          - navigation [ref=e61]:
+            - link "Coach" [ref=e62] [cursor=pointer]:
+              - /url: /coach
+              - img [ref=e63]
+              - generic [ref=e65]: Coach
+            - link "Activities" [ref=e66] [cursor=pointer]:
+              - /url: /activities
+              - img [ref=e67]
+              - generic [ref=e68]: Activities
+            - link "Dashboard" [ref=e69] [cursor=pointer]:
+              - /url: /dashboard
+              - img [ref=e70]
+              - generic [ref=e75]: Dashboard
+            - link "Plan" [ref=e76] [cursor=pointer]:
+              - /url: /plan
+              - img [ref=e77]
+              - generic [ref=e79]: Plan
+            - link "Insights" [ref=e80] [cursor=pointer]:
+              - /url: /insights
+              - img [ref=e81]
+              - generic [ref=e83]: Insights
+            - link "Teams" [ref=e84] [cursor=pointer]:
+              - /url: /teams
+              - img [ref=e85]
+              - generic [ref=e90]: Teams
+          - generic [ref=e92]:
+            - generic [ref=e93]: ZC
+            - generic [ref=e95]: Zach Chasse
+        - main [ref=e96]:
+          - generic [ref=e97]:
+            - generic [ref=e98]:
+              - generic [ref=e99]: Saturday, April 18, 2026 · Run
+              - heading "Easy on paper / Hard on sore legs" [level=1] [ref=e100]
+              - paragraph [ref=e101]: "Hyrox Plan (Week 2/8) 2.5mi at a comfortable pace 3.8mi at 6:35/mi 2.5mi at a comfortable pace 📈 aiendurance.com summary: External stress score: 151"
+            - generic [ref=e102]:
+              - generic [ref=e103]:
+                - generic [ref=e104]: Distance
+                - generic [ref=e105]:
+                  - generic [ref=e106]: "15.30"
+                  - generic [ref=e107]: km
+              - generic [ref=e108]:
+                - generic [ref=e109]: Moving time
+                - generic [ref=e111]: 1h 11m
+              - generic [ref=e112]:
+                - generic [ref=e113]: Avg pace
+                - generic [ref=e115]: 4:42/km
+              - generic [ref=e116]:
+                - generic [ref=e117]: Avg HR
+                - generic [ref=e118]:
+                  - generic [ref=e119]: "169"
+                  - generic [ref=e120]: bpm
+              - generic [ref=e121]:
+                - generic [ref=e122]: Max HR
+                - generic [ref=e123]:
+                  - generic [ref=e124]: "182"
+                  - generic [ref=e125]: bpm
+              - generic [ref=e126]:
+                - generic [ref=e127]: Elev gain
+                - generic [ref=e128]:
+                  - generic [ref=e129]: "3"
+                  - generic [ref=e130]: m
+              - generic [ref=e131]:
+                - generic [ref=e132]: Avg cadence
+                - generic [ref=e133]:
+                  - generic [ref=e134]: "172"
+                  - generic [ref=e135]: spm
+              - generic [ref=e136]:
+                - generic [ref=e137]: Training load
+                - generic [ref=e139]: —
+            - generic [ref=e140]:
+              - heading "Weather" [level=2] [ref=e141]
+              - generic [ref=e142]:
+                - generic [ref=e143]:
+                  - generic [ref=e144]: Temp
+                  - generic [ref=e145]: 18°C
+                - generic [ref=e146]:
+                  - generic [ref=e147]: Feels like
+                  - generic [ref=e148]: 18°C
+                - generic [ref=e149]:
+                  - generic [ref=e150]: Humidity
+                  - generic [ref=e151]: 77%
+                - generic [ref=e152]:
+                  - generic [ref=e153]: Wind
+                  - generic [ref=e154]: 6 km/h N
+                - generic [ref=e155]:
+                  - generic [ref=e156]: Conditions
+                  - generic [ref=e157]: clear
+            - generic [ref=e158]:
+              - heading "Splits (16 km)" [level=2] [ref=e159]
+              - table [ref=e161]:
+                - rowgroup [ref=e162]:
+                  - row "# Pace HR Elev ∆" [ref=e163]:
+                    - columnheader "#" [ref=e164]
+                    - columnheader "Pace" [ref=e165]
+                    - columnheader "HR" [ref=e166]
+                    - columnheader "Elev ∆" [ref=e167]
+                - rowgroup [ref=e168]:
+                  - row "1 4:56/km 144 +0m" [ref=e169]:
+                    - cell "1" [ref=e170]
+                    - cell "4:56/km" [ref=e171]
+                    - cell "144" [ref=e172]
+                    - cell "+0m" [ref=e173]
+                  - row "2 4:43/km 161 0m" [ref=e174]:
+                    - cell "2" [ref=e175]
+                    - cell "4:43/km" [ref=e176]
+                    - cell "161" [ref=e177]
+                    - cell "0m" [ref=e178]
+                  - row "3 4:41/km 164 +1m" [ref=e179]:
+                    - cell "3" [ref=e180]
+                    - cell "4:41/km" [ref=e181]
+                    - cell "164" [ref=e182]
+                    - cell "+1m" [ref=e183]
+                  - row "4 5:12/km 165 -1m" [ref=e184]:
+                    - cell "4" [ref=e185]
+                    - cell "5:12/km" [ref=e186]
+                    - cell "165" [ref=e187]
+                    - cell "-1m" [ref=e188]
+                  - row "5 5:29/km 156 +0m" [ref=e189]:
+                    - cell "5" [ref=e190]
+                    - cell "5:29/km" [ref=e191]
+                    - cell "156" [ref=e192]
+                    - cell "+0m" [ref=e193]
+                  - row "6 4:07/km 178 +1m" [ref=e194]:
+                    - cell "6" [ref=e195]
+                    - cell "4:07/km" [ref=e196]
+                    - cell "178" [ref=e197]
+                    - cell "+1m" [ref=e198]
+                  - row "7 4:49/km 170 +1m" [ref=e199]:
+                    - cell "7" [ref=e200]
+                    - cell "4:49/km" [ref=e201]
+                    - cell "170" [ref=e202]
+                    - cell "+1m" [ref=e203]
+                  - row "8 4:20/km 177 -1m" [ref=e204]:
+                    - cell "8" [ref=e205]
+                    - cell "4:20/km" [ref=e206]
+                    - cell "177" [ref=e207]
+                    - cell "-1m" [ref=e208]
+                  - row "9 4:32/km 172 +0m" [ref=e209]:
+                    - cell "9" [ref=e210]
+                    - cell "4:32/km" [ref=e211]
+                    - cell "172" [ref=e212]
+                    - cell "+0m" [ref=e213]
+                  - row "10 4:12/km 180 0m" [ref=e214]:
+                    - cell "10" [ref=e215]
+                    - cell "4:12/km" [ref=e216]
+                    - cell "180" [ref=e217]
+                    - cell "0m" [ref=e218]
+                  - row "11 5:41/km 162 0m" [ref=e219]:
+                    - cell "11" [ref=e220]
+                    - cell "5:41/km" [ref=e221]
+                    - cell "162" [ref=e222]
+                    - cell "0m" [ref=e223]
+                  - row "12 4:36/km 174 —" [ref=e224]:
+                    - cell "12" [ref=e225]
+                    - cell "4:36/km" [ref=e226]
+                    - cell "174" [ref=e227]
+                    - cell "—" [ref=e228]
+                  - row "13 4:28/km 177 0m" [ref=e229]:
+                    - cell "13" [ref=e230]
+                    - cell "4:28/km" [ref=e231]
+                    - cell "177" [ref=e232]
+                    - cell "0m" [ref=e233]
+                  - row "14 4:26/km 178 —" [ref=e234]:
+                    - cell "14" [ref=e235]
+                    - cell "4:26/km" [ref=e236]
+                    - cell "178" [ref=e237]
+                    - cell "—" [ref=e238]
+                  - row "15 4:23/km 179 —" [ref=e239]:
+                    - cell "15" [ref=e240]
+                    - cell "4:23/km" [ref=e241]
+                    - cell "179" [ref=e242]
+                    - cell "—" [ref=e243]
+                  - row "16 4:26/km 180 —" [ref=e244]:
+                    - cell "16" [ref=e245]
+                    - cell "4:26/km" [ref=e246]
+                    - cell "180" [ref=e247]
+                    - cell "—" [ref=e248]
+            - generic [ref=e249]:
+              - heading "Laps (4)" [level=2] [ref=e250]
+              - table [ref=e252]:
+                - rowgroup [ref=e253]:
+                  - row "# Distance Time Avg HR Cadence" [ref=e254]:
+                    - columnheader "#" [ref=e255]
+                    - columnheader "Distance" [ref=e256]
+                    - columnheader "Time" [ref=e257]
+                    - columnheader "Avg HR" [ref=e258]
+                    - columnheader "Cadence" [ref=e259]
+                - rowgroup [ref=e260]:
+                  - row "1 4.02 km 20:12 158 172" [ref=e261]:
+                    - cell "1" [ref=e262]
+                    - cell "4.02 km" [ref=e263]
+                    - cell "20:12" [ref=e264]
+                    - cell "158" [ref=e265]
+                    - cell "172" [ref=e266]
+                  - row "2 6.12 km 27:24 172 173" [ref=e267]:
+                    - cell "2" [ref=e268]
+                    - cell "6.12 km" [ref=e269]
+                    - cell "27:24" [ref=e270]
+                    - cell "172" [ref=e271]
+                    - cell "173" [ref=e272]
+                  - row "3 4.02 km 19:18 172 168" [ref=e273]:
+                    - cell "3" [ref=e274]
+                    - cell "4.02 km" [ref=e275]
+                    - cell "19:18" [ref=e276]
+                    - cell "172" [ref=e277]
+                    - cell "168" [ref=e278]
+                  - row "4 1.14 km 5:00 180 177" [ref=e279]:
+                    - cell "4" [ref=e280]
+                    - cell "1.14 km" [ref=e281]
+                    - cell "5:00" [ref=e282]
+                    - cell "180" [ref=e283]
+                    - cell "177" [ref=e284]
+            - generic [ref=e286]:
+              - heading "How did this run feel?" [level=2] [ref=e287]
+              - textbox "Legs heavy from yesterday's tempo, ran in the Vaporflys, hot and humid, last two miles hurt…" [ref=e288]
+              - generic [ref=e289]:
+                - button "Save note" [disabled] [ref=e290]
+                - button "🎤 Voice" [ref=e291] [cursor=pointer]
+            - generic [ref=e292]:
+              - heading "Notes" [level=2] [ref=e293]
+              - generic [ref=e295]:
+                - generic [ref=e297]: Apr 19, 12:09 PM
+                - generic [ref=e298]: Legs were sore from Hyrox workout, didn't really have that pop that I normally have for a workout like this so it was hard to maintain pace on the 3.8 miles of marathon pace in the middle of the workout. Mentally I was ready and wanted to push it so that helped and I got through it but my splits were not consistent
+  - alert [ref=e299]

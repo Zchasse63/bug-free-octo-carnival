@@ -1,0 +1,78 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img [ref=e7]
+          - generic [ref=e9]: Cadence
+        - button "Toggle theme" [ref=e10] [cursor=pointer]:
+          - img [ref=e11]
+      - navigation [ref=e13]:
+        - link "Coach" [ref=e14] [cursor=pointer]:
+          - /url: /coach
+          - img [ref=e15]
+          - generic [ref=e17]: Coach
+        - link "Activities" [ref=e18] [cursor=pointer]:
+          - /url: /activities
+          - img [ref=e19]
+          - generic [ref=e20]: Activities
+        - link "Dashboard" [ref=e21] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e22]
+          - generic [ref=e27]: Dashboard
+        - link "Plan" [ref=e28] [cursor=pointer]:
+          - /url: /plan
+          - img [ref=e29]
+          - generic [ref=e31]: Plan
+        - link "Insights" [ref=e32] [cursor=pointer]:
+          - /url: /insights
+          - img [ref=e33]
+          - generic [ref=e35]: Insights
+        - link "Teams" [ref=e36] [cursor=pointer]:
+          - /url: /teams
+          - img [ref=e37]
+          - generic [ref=e42]: Teams
+      - generic [ref=e44]:
+        - generic [ref=e45]: ZC
+        - generic [ref=e47]: Zach Chasse
+    - main [ref=e48]:
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - link "Analysis" [ref=e51] [cursor=pointer]:
+            - /url: /insights
+          - link "Community" [ref=e52] [cursor=pointer]:
+            - /url: /insights/community
+        - generic [ref=e53]:
+          - heading "Insights" [level=1] [ref=e54]
+          - paragraph [ref=e55]: Year-over-year comparisons and fatigue signals the coach noticed.
+        - generic [ref=e56]:
+          - heading "Time machine — week 16 through the years" [level=2] [ref=e57]
+          - table [ref=e59]:
+            - rowgroup [ref=e60]:
+              - row "Year Distance Load Avg HR Pace" [ref=e61]:
+                - columnheader "Year" [ref=e62]
+                - columnheader "Distance" [ref=e63]
+                - columnheader "Load" [ref=e64]
+                - columnheader "Avg HR" [ref=e65]
+                - columnheader "Pace" [ref=e66]
+            - rowgroup [ref=e67]:
+              - row "2022 5.6 mi 157 126 34:49/mi" [ref=e68]:
+                - cell "2022" [ref=e69]
+                - cell "5.6 mi" [ref=e70]
+                - cell "157" [ref=e71]
+                - cell "126" [ref=e72]
+                - cell "34:49/mi" [ref=e73]
+              - row "2021 4.6 mi 333 146 30:01/mi" [ref=e74]:
+                - cell "2021" [ref=e75]
+                - cell "4.6 mi" [ref=e76]
+                - cell "333" [ref=e77]
+                - cell "146" [ref=e78]
+                - cell "30:01/mi" [ref=e79]
+        - generic [ref=e80]:
+          - heading "Fatigue fingerprint" [level=2] [ref=e81]
+          - generic [ref=e83]:
+            - generic [ref=e84]:
+              - generic [ref=e85]: hr elevated at pace
+              - generic [ref=e86]: moderate
+            - generic [ref=e87]: 2026-04-14 · HR 172 bpm was 1.5 SD above your easy baseline (158)
+  - alert [ref=e88]

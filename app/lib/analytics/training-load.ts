@@ -46,15 +46,34 @@ export function computeActivityLoad(a: {
  */
 export async function recomputeTrainingLoad(athleteId: number) {
   const sb = createServiceClient();
-  const { data: activities, error } = await sb
-    .from("activities")
-    .select(
-      "id, start_date, start_date_local, sport_type, moving_time, average_heartrate, max_heartrate, suffer_score, training_load",
-    )
-    .eq("athlete_id", athleteId)
-    .order("start_date", { ascending: true });
-  if (error) throw error;
-  if (!activities) return { updated: 0 };
+  const PAGE = 1000;
+  type Row = {
+    id: number;
+    start_date: string;
+    start_date_local: string;
+    sport_type: string;
+    moving_time: number;
+    average_heartrate: number | null;
+    max_heartrate: number | null;
+    suffer_score: number | null;
+    training_load: number | null;
+  };
+  const activities: Row[] = [];
+  for (let offset = 0; ; offset += PAGE) {
+    const { data, error } = await sb
+      .from("activities")
+      .select(
+        "id, start_date, start_date_local, sport_type, moving_time, average_heartrate, max_heartrate, suffer_score, training_load",
+      )
+      .eq("athlete_id", athleteId)
+      .order("start_date", { ascending: true })
+      .range(offset, offset + PAGE - 1);
+    if (error) throw error;
+    if (!data || data.length === 0) break;
+    activities.push(...(data as Row[]));
+    if (data.length < PAGE) break;
+  }
+  if (activities.length === 0) return { updated: 0 };
 
   let updated = 0;
   const loadUpdates: { id: number; training_load: number }[] = [];
@@ -131,15 +150,36 @@ function addDays(d: Date, n: number) {
 /** Weekly rollup: populates weekly_summaries table. */
 export async function rollupWeeklySummaries(athleteId: number) {
   const sb = createServiceClient();
-  const { data: activities, error } = await sb
-    .from("activities")
-    .select(
-      "id, start_date_local, sport_type, moving_time, distance_meters, total_elevation_gain, average_heartrate, suffer_score, training_load, workout_classification",
-    )
-    .eq("athlete_id", athleteId)
-    .order("start_date_local", { ascending: true });
-  if (error) throw error;
-  if (!activities || activities.length === 0) return { weeks: 0 };
+  // Page through all activities — Supabase caps responses at 1000 rows by default.
+  const PAGE = 1000;
+  type ActivityRow = {
+    id: number;
+    start_date_local: string;
+    sport_type: string;
+    moving_time: number;
+    distance_meters: number | null;
+    total_elevation_gain: number | null;
+    average_heartrate: number | null;
+    suffer_score: number | null;
+    training_load: number | null;
+    workout_classification: string | null;
+  };
+  const activities: ActivityRow[] = [];
+  for (let offset = 0; ; offset += PAGE) {
+    const { data, error } = await sb
+      .from("activities")
+      .select(
+        "id, start_date_local, sport_type, moving_time, distance_meters, total_elevation_gain, average_heartrate, suffer_score, training_load, workout_classification",
+      )
+      .eq("athlete_id", athleteId)
+      .order("start_date_local", { ascending: true })
+      .range(offset, offset + PAGE - 1);
+    if (error) throw error;
+    if (!data || data.length === 0) break;
+    activities.push(...(data as ActivityRow[]));
+    if (data.length < PAGE) break;
+  }
+  if (activities.length === 0) return { weeks: 0 };
 
   // Group by ISO week Monday
   const byWeek = new Map<string, typeof activities>();

@@ -1,4 +1,3 @@
-import { AppShell } from "@/components/app-shell";
 import { ActivityNoteForm } from "@/components/activity-note-form";
 import { ActivityStreamsPanel } from "@/components/activity-streams-panel";
 import { getAthlete } from "@/lib/data/queries";
@@ -11,6 +10,7 @@ import {
   paceFromSecondsPerKm,
   secondsToDuration,
 } from "@/lib/format";
+import { prefersMetric } from "@/lib/units";
 import { notFound } from "next/navigation";
 
 const ATHLETE_ID = 56272355;
@@ -41,7 +41,6 @@ export default async function ActivityDetailPage({
         .from("activity_splits")
         .select("*")
         .eq("activity_id", id)
-        .eq("unit_system", "metric")
         .order("split_number", { ascending: true }),
       sb
         .from("activity_streams")
@@ -60,14 +59,22 @@ export default async function ActivityDetailPage({
   const activity = activityRes.data;
   if (!activity) notFound();
 
-  const useMetric = athlete.measurement_preference !== "standard";
+  const useMetric = prefersMetric(athlete.measurement_preference);
   const distanceFn = useMetric ? metersToKm : metersToMiles;
   const unit = useMetric ? "km" : "mi";
+  const tempUnit = useMetric ? "°C" : "°F";
+  const windUnit = useMetric ? "km/h" : "mph";
+  const splitUnit = useMetric ? "km" : "mi";
   const weather = weatherRes.data;
   const laps = lapsRes.data ?? [];
   const splits = splitsRes.data ?? [];
   const streamsRow = streamsRes.data;
   const notes = notesRes.data ?? [];
+
+  const splitsFiltered = splits.filter(
+    (s) => s.unit_system === (useMetric ? "metric" : "standard"),
+  );
+  const splitsToShow = splitsFiltered.length > 0 ? splitsFiltered : splits;
 
   const streams = streamsRow
     ? {
@@ -81,10 +88,7 @@ export default async function ActivityDetailPage({
     : null;
 
   return (
-    <AppShell
-      athleteName={`${athlete.firstname ?? ""} ${athlete.lastname ?? ""}`.trim() || "Athlete"}
-      athleteLocation={[athlete.city, athlete.state].filter(Boolean).join(", ") || undefined}
-    >
+    <>
       <div className="mb-6">
         <div className="text-sm text-muted-foreground">
           {new Date(activity.start_date_local).toLocaleDateString("en-US", {
@@ -143,8 +147,10 @@ export default async function ActivityDetailPage({
         />
         <MetricCard
           label="Elev gain"
-          value={`${Math.round(Number(activity.total_elevation_gain ?? 0))}`}
-          unit="m"
+          value={`${Math.round(
+            Number(activity.total_elevation_gain ?? 0) * (useMetric ? 1 : 3.28084),
+          )}`}
+          unit={useMetric ? "m" : "ft"}
         />
         <MetricCard
           label="Avg cadence"
@@ -198,8 +204,8 @@ export default async function ActivityDetailPage({
               value={
                 weather.wind_speed_kmh != null
                   ? useMetric
-                    ? `${weather.wind_speed_kmh?.toFixed(0)} km/h ${weather.wind_direction}`
-                    : `${kmhToMph(weather.wind_speed_kmh)?.toFixed(0)} mph ${weather.wind_direction}`
+                    ? `${weather.wind_speed_kmh?.toFixed(0)} ${windUnit} ${weather.wind_direction}`
+                    : `${kmhToMph(weather.wind_speed_kmh)?.toFixed(0)} ${windUnit} ${weather.wind_direction}`
                   : "—"
               }
             />
@@ -209,10 +215,10 @@ export default async function ActivityDetailPage({
       )}
 
       {/* Splits */}
-      {splits.length > 0 && (
+      {splitsToShow.length > 0 && (
         <div className="mb-6 rounded-xl border bg-card p-5">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Splits ({splits.length} km)
+            Splits ({splitsToShow.length} {splitUnit})
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -225,11 +231,21 @@ export default async function ActivityDetailPage({
                 </tr>
               </thead>
               <tbody>
-                {splits.map((s) => {
+                {splitsToShow.map((s) => {
                   const paceSec =
                     s.distance_meters && Number(s.distance_meters) > 0 && s.moving_time
                       ? s.moving_time / (Number(s.distance_meters) / 1000)
                       : null;
+                  const elevM =
+                    s.elevation_difference != null
+                      ? Number(s.elevation_difference)
+                      : null;
+                  const elevDisplay =
+                    elevM === null
+                      ? "—"
+                      : useMetric
+                        ? `${elevM > 0 ? "+" : ""}${Math.round(elevM)}m`
+                        : `${elevM > 0 ? "+" : ""}${Math.round(elevM * 3.28084)}ft`;
                   return (
                     <tr key={s.split_number} className="border-t">
                       <td className="py-2 font-mono tabular-nums">{s.split_number}</td>
@@ -239,11 +255,7 @@ export default async function ActivityDetailPage({
                       <td className="py-2 text-right font-mono tabular-nums">
                         {s.average_heartrate ? Math.round(s.average_heartrate) : "—"}
                       </td>
-                      <td className="py-2 text-right font-mono tabular-nums">
-                        {s.elevation_difference
-                          ? `${Number(s.elevation_difference) > 0 ? "+" : ""}${Math.round(Number(s.elevation_difference))}m`
-                          : "—"}
-                      </td>
+                      <td className="py-2 text-right font-mono tabular-nums">{elevDisplay}</td>
                     </tr>
                   );
                 })}
@@ -335,7 +347,7 @@ export default async function ActivityDetailPage({
           Pass 2 of the Strava backfill runs in batches due to rate limits.
         </div>
       )}
-    </AppShell>
+    </>
   );
 }
 

@@ -1,0 +1,515 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img [ref=e7]
+          - generic [ref=e9]: Cadence
+        - button "Toggle theme" [ref=e10] [cursor=pointer]:
+          - img [ref=e11]
+      - navigation [ref=e13]:
+        - link "Coach" [ref=e14] [cursor=pointer]:
+          - /url: /coach
+          - img [ref=e15]
+          - generic [ref=e17]: Coach
+        - link "Activities" [ref=e18] [cursor=pointer]:
+          - /url: /activities
+          - img [ref=e19]
+          - generic [ref=e20]: Activities
+        - link "Dashboard" [ref=e21] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e22]
+          - generic [ref=e27]: Dashboard
+        - link "Plan" [ref=e28] [cursor=pointer]:
+          - /url: /plan
+          - img [ref=e29]
+          - generic [ref=e31]: Plan
+        - link "Insights" [ref=e32] [cursor=pointer]:
+          - /url: /insights
+          - img [ref=e33]
+          - generic [ref=e35]: Insights
+        - link "Teams" [ref=e36] [cursor=pointer]:
+          - /url: /teams
+          - img [ref=e37]
+          - generic [ref=e42]: Teams
+      - generic [ref=e44]:
+        - generic [ref=e45]: ZC
+        - generic [ref=e47]: Zach Chasse
+    - main [ref=e48]:
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - link "All activities" [ref=e51] [cursor=pointer]:
+            - /url: /activities
+          - link "Routes" [ref=e52] [cursor=pointer]:
+            - /url: /activities/routes
+        - generic [ref=e54]:
+          - heading "Activities" [level=1] [ref=e55]
+          - paragraph [ref=e56]: 2,979 total · page 1 of 75
+        - generic [ref=e57]:
+          - textbox "Search name…" [ref=e58]
+          - combobox [ref=e59]:
+            - option "All sports" [selected]
+            - option "HighIntensityIntervalTraining"
+            - option "Hike"
+            - option "Pickleball"
+            - option "Ride"
+            - option "Rowing"
+            - option "Run"
+          - button "Filter" [ref=e60] [cursor=pointer]
+        - table [ref=e62]:
+          - rowgroup [ref=e63]:
+            - row "Date Activity Distance Time Pace HR Load" [ref=e64]:
+              - columnheader "Date" [ref=e65]
+              - columnheader "Activity" [ref=e66]
+              - columnheader "Distance" [ref=e67]
+              - columnheader "Time" [ref=e68]
+              - columnheader "Pace" [ref=e69]
+              - columnheader "HR" [ref=e70]
+              - columnheader "Load" [ref=e71]
+          - rowgroup [ref=e72]:
+            - row "Today Afternoon Weight Training WeightTraining 0.0 mi 55:55 — 86 —" [ref=e73]:
+              - cell "Today" [ref=e74]
+              - cell "Afternoon Weight Training WeightTraining" [ref=e75]:
+                - link "Afternoon Weight Training" [ref=e76] [cursor=pointer]:
+                  - /url: /activities/18163360399
+                - generic [ref=e77]: WeightTraining
+              - cell "0.0 mi" [ref=e78]
+              - cell "55:55" [ref=e79]
+              - cell "—" [ref=e80]
+              - cell "86" [ref=e81]
+              - cell "—" [ref=e82]
+            - row "Today Afternoon Weight Training WeightTraining 0.0 mi 18:21 — 91 —" [ref=e83]:
+              - cell "Today" [ref=e84]
+              - cell "Afternoon Weight Training WeightTraining" [ref=e85]:
+                - link "Afternoon Weight Training" [ref=e86] [cursor=pointer]:
+                  - /url: /activities/18162801113
+                - generic [ref=e87]: WeightTraining
+              - cell "0.0 mi" [ref=e88]
+              - cell "18:21" [ref=e89]
+              - cell "—" [ref=e90]
+              - cell "91" [ref=e91]
+              - cell "—" [ref=e92]
+            - row "Today Afternoon Weight Training WeightTraining 0.0 mi 1h 13m — 120 —" [ref=e93]:
+              - cell "Today" [ref=e94]
+              - cell "Afternoon Weight Training WeightTraining" [ref=e95]:
+                - link "Afternoon Weight Training" [ref=e96] [cursor=pointer]:
+                  - /url: /activities/18162491323
+                - generic [ref=e97]: WeightTraining
+              - cell "0.0 mi" [ref=e98]
+              - cell "1h 13m" [ref=e99]
+              - cell "—" [ref=e100]
+              - cell "120" [ref=e101]
+              - cell "—" [ref=e102]
+            - row "Yesterday Easy on paper / Hard on sore legs Run 9.5 mi 1h 11m 7:34/mi 169 —" [ref=e103]:
+              - cell "Yesterday" [ref=e104]
+              - cell "Easy on paper / Hard on sore legs Run" [ref=e105]:
+                - link "Easy on paper / Hard on sore legs" [ref=e106] [cursor=pointer]:
+                  - /url: /activities/18159314938
+                - generic [ref=e107]: Run
+              - cell "9.5 mi" [ref=e108]
+              - cell "1h 11m" [ref=e109]
+              - cell "7:34/mi" [ref=e110]
+              - cell "169" [ref=e111]
+              - cell "—" [ref=e112]
+            - row "2d ago 10mi Easy Run 10.3 mi 1h 23m 8:09/mi 163 —" [ref=e113]:
+              - cell "2d ago" [ref=e114]
+              - cell "10mi Easy Run" [ref=e115]:
+                - link "10mi Easy" [ref=e116] [cursor=pointer]:
+                  - /url: /activities/18145481680
+                - generic [ref=e117]: Run
+              - cell "10.3 mi" [ref=e118]
+              - cell "1h 23m" [ref=e119]
+              - cell "8:09/mi" [ref=e120]
+              - cell "163" [ref=e121]
+              - cell "—" [ref=e122]
+            - row "4d ago Wednesday Morning Run Run 1.5 mi 12:01 8:01/mi 168 —" [ref=e123]:
+              - cell "4d ago" [ref=e124]
+              - cell "Wednesday Morning Run Run" [ref=e125]:
+                - link "Wednesday Morning Run" [ref=e126] [cursor=pointer]:
+                  - /url: /activities/18117524898
+                - generic [ref=e127]: Run
+              - cell "1.5 mi" [ref=e128]
+              - cell "12:01" [ref=e129]
+              - cell "8:01/mi" [ref=e130]
+              - cell "168" [ref=e131]
+              - cell "—" [ref=e132]
+            - row "4d ago AM HIIT Run Run 1.9 mi 12:00 6:18/mi — —" [ref=e133]:
+              - cell "4d ago" [ref=e134]
+              - cell "AM HIIT Run Run" [ref=e135]:
+                - link "AM HIIT Run" [ref=e136] [cursor=pointer]:
+                  - /url: /activities/18145563979
+                - generic [ref=e137]: Run
+              - cell "1.9 mi" [ref=e138]
+              - cell "12:00" [ref=e139]
+              - cell "6:18/mi" [ref=e140]
+              - cell "—" [ref=e141]
+              - cell "—" [ref=e142]
+            - row "4d ago Morning HIIT HighIntensityIntervalTraining 0.0 mi 1h 4m — 136 —" [ref=e143]:
+              - cell "4d ago" [ref=e144]
+              - cell "Morning HIIT HighIntensityIntervalTraining" [ref=e145]:
+                - link "Morning HIIT" [ref=e146] [cursor=pointer]:
+                  - /url: /activities/18118954905
+                - generic [ref=e147]: HighIntensityIntervalTraining
+              - cell "0.0 mi" [ref=e148]
+              - cell "1h 4m" [ref=e149]
+              - cell "—" [ref=e150]
+              - cell "136" [ref=e151]
+              - cell "—" [ref=e152]
+            - row "5d ago Tuesday Morning Run Run 4.3 mi 28:51 6:42/mi 172 —" [ref=e153]:
+              - cell "5d ago" [ref=e154]
+              - cell "Tuesday Morning Run Run" [ref=e155]:
+                - link "Tuesday Morning Run" [ref=e156] [cursor=pointer]:
+                  - /url: /activities/18102907919
+                - generic [ref=e157]: Run
+              - cell "4.3 mi" [ref=e158]
+              - cell "28:51" [ref=e159]
+              - cell "6:42/mi" [ref=e160]
+              - cell "172" [ref=e161]
+              - cell "—" [ref=e162]
+            - row "5d ago Tuesday Morning Run Run 1.5 mi 11:39 7:60/mi 141 —" [ref=e163]:
+              - cell "5d ago" [ref=e164]
+              - cell "Tuesday Morning Run Run" [ref=e165]:
+                - link "Tuesday Morning Run" [ref=e166] [cursor=pointer]:
+                  - /url: /activities/18102294791
+                - generic [ref=e167]: Run
+              - cell "1.5 mi" [ref=e168]
+              - cell "11:39" [ref=e169]
+              - cell "7:60/mi" [ref=e170]
+              - cell "141" [ref=e171]
+              - cell "—" [ref=e172]
+            - row "6d ago Morning Weight Training WeightTraining 0.0 mi 56:09 — 121 —" [ref=e173]:
+              - cell "6d ago" [ref=e174]
+              - cell "Morning Weight Training WeightTraining" [ref=e175]:
+                - link "Morning Weight Training" [ref=e176] [cursor=pointer]:
+                  - /url: /activities/18091411859
+                - generic [ref=e177]: WeightTraining
+              - cell "0.0 mi" [ref=e178]
+              - cell "56:09" [ref=e179]
+              - cell "—" [ref=e180]
+              - cell "121" [ref=e181]
+              - cell "—" [ref=e182]
+            - row "6d ago Morning Row Rowing 0.0 mi 14:12 — 121 —" [ref=e183]:
+              - cell "6d ago" [ref=e184]
+              - cell "Morning Row Rowing" [ref=e185]:
+                - link "Morning Row" [ref=e186] [cursor=pointer]:
+                  - /url: /activities/18090513891
+                - generic [ref=e187]: Rowing
+              - cell "0.0 mi" [ref=e188]
+              - cell "14:12" [ref=e189]
+              - cell "—" [ref=e190]
+              - cell "121" [ref=e191]
+              - cell "—" [ref=e192]
+            - row "Apr 12 9.9mi Easy Run Run 10.3 mi 1h 23m 8:04/mi 158 —" [ref=e193]:
+              - cell "Apr 12" [ref=e194]
+              - cell "9.9mi Easy Run Run" [ref=e195]:
+                - link "9.9mi Easy Run" [ref=e196] [cursor=pointer]:
+                  - /url: /activities/18080158673
+                - generic [ref=e197]: Run
+              - cell "10.3 mi" [ref=e198]
+              - cell "1h 23m" [ref=e199]
+              - cell "8:04/mi" [ref=e200]
+              - cell "158" [ref=e201]
+              - cell "—" [ref=e202]
+            - row "Apr 11 Morning Run Run 5.1 mi 46:27 9:07/mi 147 —" [ref=e203]:
+              - cell "Apr 11" [ref=e204]
+              - cell "Morning Run Run" [ref=e205]:
+                - link "Morning Run" [ref=e206] [cursor=pointer]:
+                  - /url: /activities/18066671763
+                - generic [ref=e207]: Run
+              - cell "5.1 mi" [ref=e208]
+              - cell "46:27" [ref=e209]
+              - cell "9:07/mi" [ref=e210]
+              - cell "147" [ref=e211]
+              - cell "—" [ref=e212]
+            - row "Apr 10 Evening Row Rowing 0.0 mi 53:59 — 148 —" [ref=e213]:
+              - cell "Apr 10" [ref=e214]
+              - cell "Evening Row Rowing" [ref=e215]:
+                - link "Evening Row" [ref=e216] [cursor=pointer]:
+                  - /url: /activities/18063748227
+                - generic [ref=e217]: Rowing
+              - cell "0.0 mi" [ref=e218]
+              - cell "53:59" [ref=e219]
+              - cell "—" [ref=e220]
+              - cell "148" [ref=e221]
+              - cell "—" [ref=e222]
+            - row "Apr 10 Friday Morning Run Run 2.0 mi 19:08 9:30/mi 156 —" [ref=e223]:
+              - cell "Apr 10" [ref=e224]
+              - cell "Friday Morning Run Run" [ref=e225]:
+                - link "Friday Morning Run" [ref=e226] [cursor=pointer]:
+                  - /url: /activities/18053907982
+                - generic [ref=e227]: Run
+              - cell "2.0 mi" [ref=e228]
+              - cell "19:08" [ref=e229]
+              - cell "9:30/mi" [ref=e230]
+              - cell "156" [ref=e231]
+              - cell "—" [ref=e232]
+            - row "Apr 10 Morning Weight Training WeightTraining 0.0 mi 54:41 — 105 —" [ref=e233]:
+              - cell "Apr 10" [ref=e234]
+              - cell "Morning Weight Training WeightTraining" [ref=e235]:
+                - link "Morning Weight Training" [ref=e236] [cursor=pointer]:
+                  - /url: /activities/18053758834
+                - generic [ref=e237]: WeightTraining
+              - cell "0.0 mi" [ref=e238]
+              - cell "54:41" [ref=e239]
+              - cell "—" [ref=e240]
+              - cell "105" [ref=e241]
+              - cell "—" [ref=e242]
+            - row "Apr 9 9.9mi Easy Run Run 9.1 mi 1h 16m 8:22/mi 152 —" [ref=e243]:
+              - cell "Apr 9" [ref=e244]
+              - cell "9.9mi Easy Run Run" [ref=e245]:
+                - link "9.9mi Easy Run" [ref=e246] [cursor=pointer]:
+                  - /url: /activities/18040632121
+                - generic [ref=e247]: Run
+              - cell "9.1 mi" [ref=e248]
+              - cell "1h 16m" [ref=e249]
+              - cell "8:22/mi" [ref=e250]
+              - cell "152" [ref=e251]
+              - cell "—" [ref=e252]
+            - row "Apr 8 Afternoon Ride Ride 0.0 mi 43:29 — 134 —" [ref=e253]:
+              - cell "Apr 8" [ref=e254]
+              - cell "Afternoon Ride Ride" [ref=e255]:
+                - link "Afternoon Ride" [ref=e256] [cursor=pointer]:
+                  - /url: /activities/18033622204
+                - generic [ref=e257]: Ride
+              - cell "0.0 mi" [ref=e258]
+              - cell "43:29" [ref=e259]
+              - cell "—" [ref=e260]
+              - cell "134" [ref=e261]
+              - cell "—" [ref=e262]
+            - row "Apr 8 Morning Weight Training WeightTraining 0.0 mi 53:28 — 107 —" [ref=e263]:
+              - cell "Apr 8" [ref=e264]
+              - cell "Morning Weight Training WeightTraining" [ref=e265]:
+                - link "Morning Weight Training" [ref=e266] [cursor=pointer]:
+                  - /url: /activities/18026768615
+                - generic [ref=e267]: WeightTraining
+              - cell "0.0 mi" [ref=e268]
+              - cell "53:28" [ref=e269]
+              - cell "—" [ref=e270]
+              - cell "107" [ref=e271]
+              - cell "—" [ref=e272]
+            - row "Apr 7 Tuesday Track (800m Repeats) Run 3.9 mi 30:51 7:55/mi 161 —" [ref=e273]:
+              - cell "Apr 7" [ref=e274]
+              - cell "Tuesday Track (800m Repeats) Run" [ref=e275]:
+                - link "Tuesday Track (800m Repeats)" [ref=e276] [cursor=pointer]:
+                  - /url: /activities/18011310996
+                - generic [ref=e277]: Run
+              - cell "3.9 mi" [ref=e278]
+              - cell "30:51" [ref=e279]
+              - cell "7:55/mi" [ref=e280]
+              - cell "161" [ref=e281]
+              - cell "—" [ref=e282]
+            - row "Apr 7 Tuesday Morning Run Run 1.2 mi 9:40 8:01/mi 146 —" [ref=e283]:
+              - cell "Apr 7" [ref=e284]
+              - cell "Tuesday Morning Run Run" [ref=e285]:
+                - link "Tuesday Morning Run" [ref=e286] [cursor=pointer]:
+                  - /url: /activities/18010641671
+                - generic [ref=e287]: Run
+              - cell "1.2 mi" [ref=e288]
+              - cell "9:40" [ref=e289]
+              - cell "8:01/mi" [ref=e290]
+              - cell "146" [ref=e291]
+              - cell "—" [ref=e292]
+            - row "Apr 6 Morning Weight Training WeightTraining 0.0 mi 1h 0m — 132 —" [ref=e293]:
+              - cell "Apr 6" [ref=e294]
+              - cell "Morning Weight Training WeightTraining" [ref=e295]:
+                - link "Morning Weight Training" [ref=e296] [cursor=pointer]:
+                  - /url: /activities/18000805810
+                - generic [ref=e297]: WeightTraining
+              - cell "0.0 mi" [ref=e298]
+              - cell "1h 0m" [ref=e299]
+              - cell "—" [ref=e300]
+              - cell "132" [ref=e301]
+              - cell "—" [ref=e302]
+            - row "Apr 4 Afternoon Weight Training WeightTraining 0.0 mi 10:10 — 113 —" [ref=e303]:
+              - cell "Apr 4" [ref=e304]
+              - cell "Afternoon Weight Training WeightTraining" [ref=e305]:
+                - link "Afternoon Weight Training" [ref=e306] [cursor=pointer]:
+                  - /url: /activities/17981150499
+                - generic [ref=e307]: WeightTraining
+              - cell "0.0 mi" [ref=e308]
+              - cell "10:10" [ref=e309]
+              - cell "—" [ref=e310]
+              - cell "113" [ref=e311]
+              - cell "—" [ref=e312]
+            - row "Apr 4 Saturday Lunch Run Run 0.0 mi 17:07 55093:13/mi 167 —" [ref=e313]:
+              - cell "Apr 4" [ref=e314]
+              - cell "Saturday Lunch Run Run" [ref=e315]:
+                - link "Saturday Lunch Run" [ref=e316] [cursor=pointer]:
+                  - /url: /activities/18011269899
+                - generic [ref=e317]: Run
+              - cell "0.0 mi" [ref=e318]
+              - cell "17:07" [ref=e319]
+              - cell "55093:13/mi" [ref=e320]
+              - cell "167" [ref=e321]
+              - cell "—" [ref=e322]
+            - row "Apr 4 Morning Run Run 8.5 mi 1h 1m 7:15/mi — —" [ref=e323]:
+              - cell "Apr 4" [ref=e324]
+              - cell "Morning Run Run" [ref=e325]:
+                - link "Morning Run" [ref=e326] [cursor=pointer]:
+                  - /url: /activities/17975129556
+                - generic [ref=e327]: Run
+              - cell "8.5 mi" [ref=e328]
+              - cell "1h 1m" [ref=e329]
+              - cell "7:15/mi" [ref=e330]
+              - cell "—" [ref=e331]
+              - cell "—" [ref=e332]
+            - row "Apr 3 Afternoon Workout Workout 0.0 mi 49:29 — 125 —" [ref=e333]:
+              - cell "Apr 3" [ref=e334]
+              - cell "Afternoon Workout Workout" [ref=e335]:
+                - link "Afternoon Workout" [ref=e336] [cursor=pointer]:
+                  - /url: /activities/17969231431
+                - generic [ref=e337]: Workout
+              - cell "0.0 mi" [ref=e338]
+              - cell "49:29" [ref=e339]
+              - cell "—" [ref=e340]
+              - cell "125" [ref=e341]
+              - cell "—" [ref=e342]
+            - row "Apr 3 Morning Weight Training WeightTraining 0.0 mi 1h 0m — 157 —" [ref=e343]:
+              - cell "Apr 3" [ref=e344]
+              - cell "Morning Weight Training WeightTraining" [ref=e345]:
+                - link "Morning Weight Training" [ref=e346] [cursor=pointer]:
+                  - /url: /activities/17963121436
+                - generic [ref=e347]: WeightTraining
+              - cell "0.0 mi" [ref=e348]
+              - cell "1h 0m" [ref=e349]
+              - cell "—" [ref=e350]
+              - cell "157" [ref=e351]
+              - cell "—" [ref=e352]
+            - row "Apr 3 Morning Weight Training WeightTraining 0.0 mi 8:19 — 107 —" [ref=e353]:
+              - cell "Apr 3" [ref=e354]
+              - cell "Morning Weight Training WeightTraining" [ref=e355]:
+                - link "Morning Weight Training" [ref=e356] [cursor=pointer]:
+                  - /url: /activities/17962340242
+                - generic [ref=e357]: WeightTraining
+              - cell "0.0 mi" [ref=e358]
+              - cell "8:19" [ref=e359]
+              - cell "—" [ref=e360]
+              - cell "107" [ref=e361]
+              - cell "—" [ref=e362]
+            - row "Apr 3 Morning Weight Training WeightTraining 0.0 mi 4:22 — 98 —" [ref=e363]:
+              - cell "Apr 3" [ref=e364]
+              - cell "Morning Weight Training WeightTraining" [ref=e365]:
+                - link "Morning Weight Training" [ref=e366] [cursor=pointer]:
+                  - /url: /activities/17962122123
+                - generic [ref=e367]: WeightTraining
+              - cell "0.0 mi" [ref=e368]
+              - cell "4:22" [ref=e369]
+              - cell "—" [ref=e370]
+              - cell "98" [ref=e371]
+              - cell "—" [ref=e372]
+            - row "Apr 2 Long Intervals Run 6.0 mi 1h 31m 15:25/mi 162 —" [ref=e373]:
+              - cell "Apr 2" [ref=e374]
+              - cell "Long Intervals Run" [ref=e375]:
+                - link "Long Intervals" [ref=e376] [cursor=pointer]:
+                  - /url: /activities/17953856566
+                - generic [ref=e377]: Run
+              - cell "6.0 mi" [ref=e378]
+              - cell "1h 31m" [ref=e379]
+              - cell "15:25/mi" [ref=e380]
+              - cell "162" [ref=e381]
+              - cell "—" [ref=e382]
+            - row "Apr 1 Morning Weight Training WeightTraining 0.0 mi 1h 14m — 124 —" [ref=e383]:
+              - cell "Apr 1" [ref=e384]
+              - cell "Morning Weight Training WeightTraining" [ref=e385]:
+                - link "Morning Weight Training" [ref=e386] [cursor=pointer]:
+                  - /url: /activities/17937691203
+                - generic [ref=e387]: WeightTraining
+              - cell "0.0 mi" [ref=e388]
+              - cell "1h 14m" [ref=e389]
+              - cell "—" [ref=e390]
+              - cell "124" [ref=e391]
+              - cell "—" [ref=e392]
+            - row "Mar 31 Morning Run Run 0.5 mi 3:56 8:06/mi 165 —" [ref=e393]:
+              - cell "Mar 31" [ref=e394]
+              - cell "Morning Run Run" [ref=e395]:
+                - link "Morning Run" [ref=e396] [cursor=pointer]:
+                  - /url: /activities/17923521937
+                - generic [ref=e397]: Run
+              - cell "0.5 mi" [ref=e398]
+              - cell "3:56" [ref=e399]
+              - cell "8:06/mi" [ref=e400]
+              - cell "165" [ref=e401]
+              - cell "—" [ref=e402]
+            - row "Mar 31 Morning Run Run 4.0 mi 27:45 6:52/mi 174 —" [ref=e403]:
+              - cell "Mar 31" [ref=e404]
+              - cell "Morning Run Run" [ref=e405]:
+                - link "Morning Run" [ref=e406] [cursor=pointer]:
+                  - /url: /activities/17923521998
+                - generic [ref=e407]: Run
+              - cell "4.0 mi" [ref=e408]
+              - cell "27:45" [ref=e409]
+              - cell "6:52/mi" [ref=e410]
+              - cell "174" [ref=e411]
+              - cell "—" [ref=e412]
+            - row "Mar 31 Morning Run Run 1.0 mi 8:02 7:58/mi 148 —" [ref=e413]:
+              - cell "Mar 31" [ref=e414]
+              - cell "Morning Run Run" [ref=e415]:
+                - link "Morning Run" [ref=e416] [cursor=pointer]:
+                  - /url: /activities/17923521414
+                - generic [ref=e417]: Run
+              - cell "1.0 mi" [ref=e418]
+              - cell "8:02" [ref=e419]
+              - cell "7:58/mi" [ref=e420]
+              - cell "148" [ref=e421]
+              - cell "—" [ref=e422]
+            - row "Mar 29 Lunch HIIT HighIntensityIntervalTraining 0.0 mi 23:59 — 118 —" [ref=e423]:
+              - cell "Mar 29" [ref=e424]
+              - cell "Lunch HIIT HighIntensityIntervalTraining" [ref=e425]:
+                - link "Lunch HIIT" [ref=e426] [cursor=pointer]:
+                  - /url: /activities/17905125408
+                - generic [ref=e427]: HighIntensityIntervalTraining
+              - cell "0.0 mi" [ref=e428]
+              - cell "23:59" [ref=e429]
+              - cell "—" [ref=e430]
+              - cell "118" [ref=e431]
+              - cell "—" [ref=e432]
+            - row "Mar 29 Mile Up & Overs Run 7.8 mi 1h 3m 8:06/mi 165 —" [ref=e433]:
+              - cell "Mar 29" [ref=e434]
+              - cell "Mile Up & Overs Run" [ref=e435]:
+                - link "Mile Up & Overs" [ref=e436] [cursor=pointer]:
+                  - /url: /activities/17902912450
+                - generic [ref=e437]: Run
+              - cell "7.8 mi" [ref=e438]
+              - cell "1h 3m" [ref=e439]
+              - cell "8:06/mi" [ref=e440]
+              - cell "165" [ref=e441]
+              - cell "—" [ref=e442]
+            - row "Mar 27 Morning Weight Training WeightTraining 0.0 mi 1h 32m — 111 —" [ref=e443]:
+              - cell "Mar 27" [ref=e444]
+              - cell "Morning Weight Training WeightTraining" [ref=e445]:
+                - link "Morning Weight Training" [ref=e446] [cursor=pointer]:
+                  - /url: /activities/17877735177
+                - generic [ref=e447]: WeightTraining
+              - cell "0.0 mi" [ref=e448]
+              - cell "1h 32m" [ref=e449]
+              - cell "—" [ref=e450]
+              - cell "111" [ref=e451]
+              - cell "—" [ref=e452]
+            - row "Mar 26 Thursday Afternoon Run with Runna ✅ Run 0.0 mi 1h 2m — — —" [ref=e453]:
+              - cell "Mar 26" [ref=e454]
+              - cell "Thursday Afternoon Run with Runna ✅ Run" [ref=e455]:
+                - link "Thursday Afternoon Run with Runna ✅" [ref=e456] [cursor=pointer]:
+                  - /url: /activities/17902671940
+                - generic [ref=e457]: Run
+              - cell "0.0 mi" [ref=e458]
+              - cell "1h 2m" [ref=e459]
+              - cell "—" [ref=e460]
+              - cell "—" [ref=e461]
+              - cell "—" [ref=e462]
+            - row "Mar 26 Lunch Run Run 0.0 mi 1h 2m — 154 —" [ref=e463]:
+              - cell "Mar 26" [ref=e464]
+              - cell "Lunch Run Run" [ref=e465]:
+                - link "Lunch Run" [ref=e466] [cursor=pointer]:
+                  - /url: /activities/17866963472
+                - generic [ref=e467]: Run
+              - cell "0.0 mi" [ref=e468]
+              - cell "1h 2m" [ref=e469]
+              - cell "—" [ref=e470]
+              - cell "154" [ref=e471]
+              - cell "—" [ref=e472]
+        - generic [ref=e473]:
+          - link "← Previous":
+            - /url: /activities?page=1
+          - link "Next →" [ref=e474] [cursor=pointer]:
+            - /url: /activities?page=2
+  - alert [ref=e475]

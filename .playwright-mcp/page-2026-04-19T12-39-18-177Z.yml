@@ -1,0 +1,210 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img [ref=e7]
+          - generic [ref=e9]: Cadence
+        - button "Toggle theme" [ref=e10] [cursor=pointer]:
+          - img [ref=e11]
+      - navigation [ref=e13]:
+        - link "Coach" [ref=e14] [cursor=pointer]:
+          - /url: /coach
+          - img [ref=e15]
+          - generic [ref=e17]: Coach
+        - link "Activities" [ref=e18] [cursor=pointer]:
+          - /url: /activities
+          - img [ref=e19]
+          - generic [ref=e20]: Activities
+        - link "Dashboard" [ref=e21] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e22]
+          - generic [ref=e27]: Dashboard
+        - link "Plan" [ref=e28] [cursor=pointer]:
+          - /url: /plan
+          - img [ref=e29]
+          - generic [ref=e31]: Plan
+        - link "Insights" [ref=e32] [cursor=pointer]:
+          - /url: /insights
+          - img [ref=e33]
+          - generic [ref=e35]: Insights
+        - link "Teams" [ref=e36] [cursor=pointer]:
+          - /url: /teams
+          - img [ref=e37]
+          - generic [ref=e42]: Teams
+      - generic [ref=e44]:
+        - generic [ref=e45]: ZC
+        - generic [ref=e47]: Zach Chasse
+    - main [ref=e48]:
+      - generic [ref=e49]:
+        - generic [ref=e51]:
+          - heading "Your training" [level=1] [ref=e52]
+          - paragraph [ref=e53]: Sunday, April 19
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - generic [ref=e56]: This week
+            - generic [ref=e57]:
+              - generic [ref=e58]: —
+              - generic [ref=e59]: mi
+            - generic [ref=e60]: 0 runs · — moving
+          - generic [ref=e61]:
+            - generic [ref=e62]: Fitness (CTL)
+            - generic [ref=e64]: "0.0"
+            - generic [ref=e65]: 42-day rolling training load
+          - generic [ref=e66]:
+            - generic [ref=e67]: Form (TSB)
+            - generic [ref=e69]: "0.0"
+            - generic [ref=e70]: Neutral · ATL 0.0
+        - generic [ref=e71]:
+          - generic [ref=e72]:
+            - generic [ref=e73]: VDOT
+            - generic [ref=e74]: "51.2"
+            - generic [ref=e75]: Easy 6:58 · Thresh 5:24
+          - generic [ref=e76]:
+            - generic [ref=e77]: Injury risk
+            - generic [ref=e78]: "0.68"
+            - generic [ref=e79]: low
+          - generic [ref=e80]:
+            - generic [ref=e81]: Acute load
+            - generic [ref=e82]: "286"
+            - generic [ref=e83]: Last 7 days
+          - generic [ref=e84]:
+            - generic [ref=e85]: Chronic load
+            - generic [ref=e86]: "420.3"
+            - generic [ref=e87]: 4-week avg
+        - generic [ref=e88]:
+          - generic [ref=e90]:
+            - generic [ref=e91]: Training stress balance
+            - generic [ref=e92]:
+              - generic [ref=e93]: "0"
+              - generic [ref=e94]: TSB
+            - generic [ref=e95]: Neutral
+          - generic [ref=e97]:
+            - generic [ref=e98]: Avg HR this week
+            - generic [ref=e99]:
+              - generic [ref=e100]: —
+              - generic [ref=e101]: bpm
+            - generic [ref=e102]: Pace —
+          - generic [ref=e104]:
+            - generic [ref=e105]: Long run
+            - generic [ref=e106]:
+              - generic [ref=e107]: —
+              - generic [ref=e108]: mi
+            - generic [ref=e109]: —
+        - generic [ref=e110]:
+          - generic [ref=e111]:
+            - generic [ref=e113]:
+              - heading "Training load" [level=2] [ref=e114]
+              - paragraph [ref=e115]: CTL · ATL · TSB (last 90 days)
+            - generic [ref=e116]:
+              - application [ref=e119]:
+                - generic [ref=e123]:
+                  - generic [ref=e124]:
+                    - generic [ref=e126]: 1/21
+                    - generic [ref=e128]: 1/30
+                    - generic [ref=e130]: 2/7
+                    - generic [ref=e132]: 2/15
+                    - generic [ref=e134]: 2/24
+                    - generic [ref=e136]: 3/5
+                    - generic [ref=e138]: 3/13
+                    - generic [ref=e140]: 3/22
+                    - generic [ref=e142]: 3/31
+                    - generic [ref=e144]: 4/8
+                    - generic [ref=e146]: 4/17
+                  - generic [ref=e147]:
+                    - generic [ref=e149]: "0"
+                    - generic [ref=e151]: "1"
+                    - generic [ref=e153]: "2"
+                    - generic [ref=e155]: "3"
+                    - generic [ref=e157]: "4"
+              - generic [ref=e158]:
+                - generic [ref=e159]: CTL (fitness)
+                - generic [ref=e161]: ATL (fatigue)
+                - generic [ref=e163]: TSB (form)
+          - generic [ref=e165]:
+            - generic [ref=e167]:
+              - heading "Weekly volume" [level=2] [ref=e168]
+              - paragraph [ref=e169]: Last 12 weeks
+            - application [ref=e173]:
+              - generic [ref=e177]:
+                - generic [ref=e178]:
+                  - generic [ref=e180]: 3/20
+                  - generic [ref=e182]: 3/27
+                  - generic [ref=e184]: 4/3
+                  - generic [ref=e186]: 4/10
+                  - generic [ref=e188]: 4/17
+                  - generic [ref=e190]: 4/24
+                  - generic [ref=e192]: 5/1
+                  - generic [ref=e194]: 5/8
+                  - generic [ref=e196]: 5/15
+                  - generic [ref=e198]: 5/22
+                  - generic [ref=e200]: 5/29
+                  - generic [ref=e202]: 6/5
+                - generic [ref=e203]:
+                  - generic [ref=e205]: "0"
+                  - generic [ref=e207]: "40"
+                  - generic [ref=e209]: "80"
+                  - generic [ref=e211]: "120"
+                  - generic [ref=e213]: "160"
+        - generic [ref=e215]:
+          - generic [ref=e216]: 2979 activities total
+          - generic [ref=e217]: 1156 detail-synced (39%)
+          - generic [ref=e218]: 796 with weather
+          - generic [ref=e219]: 2979 embedded
+        - generic [ref=e220]:
+          - generic [ref=e221]:
+            - heading "Recent activities" [level=2] [ref=e222]
+            - generic [ref=e223]:
+              - link "Afternoon Weight Training Today · WeightTraining 0.0 mi 55:55" [ref=e224] [cursor=pointer]:
+                - /url: /activities/18163360399
+                - generic [ref=e225]:
+                  - generic [ref=e226]: Afternoon Weight Training
+                  - generic [ref=e227]: Today · WeightTraining
+                - generic [ref=e228]:
+                  - generic [ref=e229]: 0.0 mi
+                  - generic [ref=e230]: 55:55
+              - link "Afternoon Weight Training Today · WeightTraining 0.0 mi 18:21" [ref=e231] [cursor=pointer]:
+                - /url: /activities/18162801113
+                - generic [ref=e232]:
+                  - generic [ref=e233]: Afternoon Weight Training
+                  - generic [ref=e234]: Today · WeightTraining
+                - generic [ref=e235]:
+                  - generic [ref=e236]: 0.0 mi
+                  - generic [ref=e237]: 18:21
+              - link "Afternoon Weight Training Today · WeightTraining 0.0 mi 1h 13m" [ref=e238] [cursor=pointer]:
+                - /url: /activities/18162491323
+                - generic [ref=e239]:
+                  - generic [ref=e240]: Afternoon Weight Training
+                  - generic [ref=e241]: Today · WeightTraining
+                - generic [ref=e242]:
+                  - generic [ref=e243]: 0.0 mi
+                  - generic [ref=e244]: 1h 13m
+              - link "Easy on paper / Hard on sore legs Yesterday · Run 9.5 mi 1h 11m" [ref=e245] [cursor=pointer]:
+                - /url: /activities/18159314938
+                - generic [ref=e246]:
+                  - generic [ref=e247]: Easy on paper / Hard on sore legs
+                  - generic [ref=e248]: Yesterday · Run
+                - generic [ref=e249]:
+                  - generic [ref=e250]: 9.5 mi
+                  - generic [ref=e251]: 1h 11m
+              - link "10mi Easy 2d ago · Run 10.3 mi 1h 23m" [ref=e252] [cursor=pointer]:
+                - /url: /activities/18145481680
+                - generic [ref=e253]:
+                  - generic [ref=e254]: 10mi Easy
+                  - generic [ref=e255]: 2d ago · Run
+                - generic [ref=e256]:
+                  - generic [ref=e257]: 10.3 mi
+                  - generic [ref=e258]: 1h 23m
+              - link "Wednesday Morning Run 4d ago · Run 1.5 mi 12:01" [ref=e259] [cursor=pointer]:
+                - /url: /activities/18117524898
+                - generic [ref=e260]:
+                  - generic [ref=e261]: Wednesday Morning Run
+                  - generic [ref=e262]: 4d ago · Run
+                - generic [ref=e263]:
+                  - generic [ref=e264]: 1.5 mi
+                  - generic [ref=e265]: 12:01
+          - generic [ref=e266]:
+            - heading "Shoes" [level=2] [ref=e267]
+            - generic [ref=e269]: No shoes synced yet.
+  - alert [ref=e270]
+  - generic [ref=e271]: "40"

@@ -1,0 +1,44 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img [ref=e7]
+          - generic [ref=e9]: Cadence
+        - button "Toggle theme" [ref=e10] [cursor=pointer]:
+          - img [ref=e11]
+      - navigation [ref=e13]:
+        - link "Coach" [ref=e14] [cursor=pointer]:
+          - /url: /coach
+          - img [ref=e15]
+          - generic [ref=e17]: Coach
+        - link "Activities" [ref=e18] [cursor=pointer]:
+          - /url: /activities
+          - img [ref=e19]
+          - generic [ref=e20]: Activities
+        - link "Dashboard" [ref=e21] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e22]
+          - generic [ref=e27]: Dashboard
+        - link "Plan" [ref=e28] [cursor=pointer]:
+          - /url: /plan
+          - img [ref=e29]
+          - generic [ref=e31]: Plan
+        - link "Insights" [ref=e32] [cursor=pointer]:
+          - /url: /insights
+          - img [ref=e33]
+          - generic [ref=e35]: Insights
+        - link "Teams" [ref=e36] [cursor=pointer]:
+          - /url: /teams
+          - img [ref=e37]
+          - generic [ref=e42]: Teams
+      - generic [ref=e44]:
+        - generic [ref=e45]: ZC
+        - generic [ref=e47]: Zach Chasse
+    - main [ref=e48]:
+      - generic [ref=e50]:
+        - generic [ref=e54]: Hey Zach. I've got your training history loaded. What's on your mind?
+        - generic [ref=e55]:
+          - textbox "Ask your coach anything" [ref=e56]
+          - button "Send" [disabled] [ref=e57]
+  - alert [ref=e58]

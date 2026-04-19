@@ -1,0 +1,73 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - img [ref=e7]
+          - generic [ref=e9]: Cadence
+        - button "Toggle theme" [ref=e10] [cursor=pointer]:
+          - img [ref=e11]
+      - navigation [ref=e13]:
+        - link "Coach" [ref=e14] [cursor=pointer]:
+          - /url: /coach
+          - img [ref=e15]
+          - generic [ref=e17]: Coach
+        - link "Activities" [ref=e18] [cursor=pointer]:
+          - /url: /activities
+          - img [ref=e19]
+          - generic [ref=e20]: Activities
+        - link "Dashboard" [ref=e21] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e22]
+          - generic [ref=e27]: Dashboard
+        - link "Plan" [ref=e28] [cursor=pointer]:
+          - /url: /plan
+          - img [ref=e29]
+          - generic [ref=e31]: Plan
+        - link "Insights" [ref=e32] [cursor=pointer]:
+          - /url: /insights
+          - img [ref=e33]
+          - generic [ref=e35]: Insights
+        - link "Teams" [ref=e36] [cursor=pointer]:
+          - /url: /teams
+          - img [ref=e37]
+          - generic [ref=e42]: Teams
+      - generic [ref=e44]:
+        - generic [ref=e45]: ZC
+        - generic [ref=e47]: Zach Chasse
+    - main [ref=e48]:
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - link "Calendar" [ref=e51] [cursor=pointer]:
+            - /url: /plan
+          - link "Build workout" [ref=e52] [cursor=pointer]:
+            - /url: /plan/build
+          - link "Analyze goal" [ref=e53] [cursor=pointer]:
+            - /url: /plan/goal
+          - link "Simulate race" [ref=e54] [cursor=pointer]:
+            - /url: /plan/race-sim
+        - generic [ref=e55]:
+          - heading "Calendar" [level=1] [ref=e56]
+          - paragraph [ref=e57]: No active plan. Generate one below.
+        - generic [ref=e58]:
+          - generic [ref=e59]:
+            - text: Goal
+            - textbox "e.g. Sub-1:30 half marathon, December" [ref=e60]
+          - generic [ref=e61]:
+            - generic [ref=e62]:
+              - text: Plan type
+              - combobox [ref=e63]:
+                - option "Base building"
+                - option "5K"
+                - option "10K"
+                - option "Half marathon" [selected]
+                - option "Marathon"
+                - option "Maintenance"
+            - generic [ref=e64]:
+              - text: Length (weeks)
+              - spinbutton [ref=e65]: "12"
+          - generic [ref=e66]:
+            - text: Race date (optional)
+            - textbox [ref=e67]
+          - button "Generate plan with Claude" [disabled] [ref=e68]
+  - alert [ref=e69]

@@ -23,9 +23,12 @@ export function paceFromSecondsPerKm(
   unit: "metric" | "imperial" = "metric",
 ): string {
   if (secsPerKm === null || secsPerKm === undefined || secsPerKm <= 0) return "—";
-  const sec = unit === "imperial" ? secsPerKm * 1.609344 : secsPerKm;
-  const m = Math.floor(sec / 60);
-  const s = Math.round(sec % 60);
+  const raw = unit === "imperial" ? secsPerKm * 1.609344 : secsPerKm;
+  // Round to the nearest whole second first, then split into m/s so we never
+  // render "7:60" when the seconds component rounds up to 60.
+  const total = Math.round(raw);
+  const m = Math.floor(total / 60);
+  const s = total % 60;
   return `${m}:${String(s).padStart(2, "0")}${unit === "imperial" ? "/mi" : "/km"}`;
 }
 
