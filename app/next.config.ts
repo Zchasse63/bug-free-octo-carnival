@@ -4,6 +4,7 @@ const LEGACY_REDIRECTS: { source: string; destination: string }[] = [
   { source: "/goal", destination: "/plan/goal" },
   { source: "/community", destination: "/insights/community" },
   { source: "/coach-portal", destination: "/teams/coach-portal" },
+  { source: "/coach-portal/:athleteId", destination: "/teams/coach-portal/:athleteId" },
   { source: "/routes", destination: "/activities/routes" },
   { source: "/tools", destination: "/dashboard" },
   { source: "/race-sim", destination: "/plan/race-sim" },
