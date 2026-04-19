@@ -1,5 +1,8 @@
 import { createServiceClient } from "@/lib/supabase/service";
-import { buildAthleteContext } from "@/lib/ai/coach-context";
+import {
+  buildAthleteSnapshot,
+  renderSnapshotAsPrompt,
+} from "@/lib/ai/cohesive-context";
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-opus-4-7";
@@ -38,7 +41,8 @@ function anthropicKey(): string {
 
 export async function generateTrainingPlan(req: PlanRequest) {
   const sb = createServiceClient();
-  const ctx = await buildAthleteContext(req.athleteId);
+  const snapshot = await buildAthleteSnapshot(req.athleteId);
+  const ctx = renderSnapshotAsPrompt(snapshot);
 
   const startDate = new Date();
   // Nearest upcoming Monday

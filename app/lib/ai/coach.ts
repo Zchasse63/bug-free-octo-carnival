@@ -1,5 +1,8 @@
 import { retrieveKnowledge } from "@/lib/ai/rag";
-import { buildAthleteContext } from "@/lib/ai/coach-context";
+import {
+  buildAthleteSnapshot,
+  renderSnapshotAsPrompt,
+} from "@/lib/ai/cohesive-context";
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-opus-4-7";
@@ -35,10 +38,11 @@ export async function coachReply({
   history: CoachMessage[];
   userMessage: string;
 }): Promise<string> {
-  const [athleteContext, knowledgeChunks] = await Promise.all([
-    buildAthleteContext(athleteId),
+  const [snapshot, knowledgeChunks] = await Promise.all([
+    buildAthleteSnapshot(athleteId),
     retrieveKnowledge(userMessage, 5),
   ]);
+  const athleteContext = renderSnapshotAsPrompt(snapshot);
 
   const knowledgeBlock = knowledgeChunks.length
     ? knowledgeChunks

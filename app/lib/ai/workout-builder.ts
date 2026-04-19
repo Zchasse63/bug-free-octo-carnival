@@ -1,4 +1,7 @@
-import { buildAthleteContext } from "@/lib/ai/coach-context";
+import {
+  buildAthleteSnapshot,
+  renderSnapshotAsPrompt,
+} from "@/lib/ai/cohesive-context";
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-opus-4-7";
@@ -39,7 +42,8 @@ export async function buildWorkout(
   athleteId: number,
   description: string,
 ): Promise<BuiltWorkout> {
-  const ctx = await buildAthleteContext(athleteId);
+  const snapshot = await buildAthleteSnapshot(athleteId);
+  const ctx = renderSnapshotAsPrompt(snapshot);
   const system = `You convert plain-English running workout descriptions into structured JSON.
 
 Return STRICT JSON matching this schema:

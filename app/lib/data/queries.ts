@@ -6,7 +6,7 @@ export async function getAthlete(athleteId: number) {
   const sb = createServiceClient();
   const { data, error } = await sb
     .from("athletes")
-    .select("id, firstname, lastname, city, state, country, measurement_preference")
+    .select("id, firstname, lastname, city, state, country, measurement_preference, weight_kg")
     .eq("id", athleteId)
     .single();
   if (error) throw error;
