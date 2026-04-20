@@ -269,18 +269,20 @@ export function HrEfficiencyChart({
   }[];
   useMetric: boolean;
 }) {
-  if (data.length === 0) {
+  const rows = data
+    .filter((d) => d.avg_easy_hr != null && d.avg_easy_pace_sec_per_km != null)
+    .map((d) => ({
+      label: monthLabel(d.month),
+      hr: d.avg_easy_hr as number,
+      pace: d.avg_easy_pace_sec_per_km as number,
+    }));
+  if (rows.length === 0) {
     return (
       <div className="flex h-56 items-center justify-center text-sm text-muted-foreground">
         Not enough easy-pace data yet.
       </div>
     );
   }
-  const rows = data.map((d) => ({
-    label: monthLabel(d.month),
-    hr: d.avg_easy_hr,
-    pace: d.avg_easy_pace_sec_per_km,
-  }));
   return (
     <div {...CONTAINER_PROPS}>
       <ResponsiveContainer width="100%" height={224} debounce={1}>
@@ -294,28 +296,11 @@ export function HrEfficiencyChart({
             minTickGap={32}
           />
           <YAxis
-            yAxisId="hr"
-            orientation="left"
             tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
             tickLine={false}
             axisLine={false}
             width={34}
-            label={{
-              value: "HR",
-              angle: -90,
-              position: "insideLeft",
-              style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" },
-            }}
-          />
-          <YAxis
-            yAxisId="pace"
-            orientation="right"
-            tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
-            tickLine={false}
-            axisLine={false}
-            width={44}
-            reversed
-            tickFormatter={(v) => paceLabel(v as number, useMetric)}
+            domain={["auto", "auto"]}
           />
           <Tooltip
             contentStyle={{
@@ -324,21 +309,20 @@ export function HrEfficiencyChart({
               borderRadius: 8,
               fontSize: 12,
             }}
-            formatter={(value, name) => {
-              if (name === "pace") {
+            formatter={(value, name, item) => {
+              if (name === "hr") {
+                const pace = item?.payload?.pace as number | undefined;
                 return [
-                  paceLabel(
-                    typeof value === "number" ? value : Number(value ?? 0),
-                    useMetric,
-                  ),
-                  "Pace",
+                  `${value} bpm${
+                    pace ? ` @ ${paceLabel(pace, useMetric)}` : ""
+                  }`,
+                  "Avg easy HR",
                 ];
               }
-              return [String(value ?? "—"), "HR"];
+              return [String(value ?? "—"), String(name)];
             }}
           />
           <Line
-            yAxisId="hr"
             type="monotone"
             dataKey="hr"
             stroke="#EF4444"
@@ -346,26 +330,12 @@ export function HrEfficiencyChart({
             dot={false}
             isAnimationActive={false}
           />
-          <Line
-            yAxisId="pace"
-            type="monotone"
-            dataKey="pace"
-            stroke="#3B82F6"
-            strokeWidth={2}
-            strokeDasharray="3 3"
-            dot={false}
-            isAnimationActive={false}
-          />
         </LineChart>
       </ResponsiveContainer>
-      <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+      <div className="mt-2 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <span className="h-0.5 w-4 bg-red-500" />
-          Avg HR on easy runs
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="h-0.5 w-4 border-t-2 border-dashed border-blue-500" />
-          Avg easy pace
+          Avg HR on easy runs — lower at the same effort means better fitness.
         </span>
       </div>
     </div>

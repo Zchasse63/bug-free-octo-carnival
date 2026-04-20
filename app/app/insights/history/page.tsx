@@ -359,7 +359,8 @@ export default async function HistoryPage() {
                 <span className="absolute -left-[22px] top-1 inline-flex h-2.5 w-2.5 rounded-full bg-saffron-500 ring-2 ring-background dark:bg-saffron-400" />
                 <div className="text-sm font-medium">{m.label}</div>
                 <div className="text-xs text-muted-foreground">
-                  {displayDate(m.date)} &middot; {m.detail}
+                  {displayDate(m.date)} &middot;{" "}
+                  {distanceFn(m.distance_meters, 1)} {unit}
                 </div>
               </li>
             ))}

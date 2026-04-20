@@ -401,7 +401,7 @@ export async function getTimeOfDayStats(
 export type Milestone = {
   label: string;
   date: string;
-  detail: string;
+  distance_meters: number;
 };
 
 export async function getMilestones(
@@ -423,7 +423,7 @@ export async function getMilestones(
     out.push({
       label: "First run on Cadence",
       date: first.start_date_local.slice(0, 10),
-      detail: `${((Number(first.distance_meters) || 0) / 1000).toFixed(1)} km`,
+      distance_meters: Number(first.distance_meters) || 0,
     });
   }
 
@@ -447,7 +447,7 @@ export async function getMilestones(
       out.push({
         label: t.label,
         date: hit.start_date_local.slice(0, 10),
-        detail: `${((Number(hit.distance_meters) || 0) / 1000).toFixed(1)} km`,
+        distance_meters: Number(hit.distance_meters) || 0,
       });
   }
 
@@ -464,7 +464,7 @@ export async function getMilestones(
     out.push({
       label: "Longest run ever",
       date: lr.start_date_local.slice(0, 10),
-      detail: `${((Number(lr.distance_meters) || 0) / 1000).toFixed(1)} km`,
+      distance_meters: Number(lr.distance_meters) || 0,
     });
 
   // Biggest training week
@@ -479,7 +479,7 @@ export async function getMilestones(
     out.push({
       label: "Biggest training week",
       date: bw.week_start,
-      detail: `${((Number(bw.run_distance_meters) || 0) / 1000).toFixed(1)} km`,
+      distance_meters: Number(bw.run_distance_meters) || 0,
     });
 
   return out.sort((a, b) => a.date.localeCompare(b.date));
