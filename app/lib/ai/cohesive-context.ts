@@ -346,16 +346,20 @@ export function renderSnapshotAsPrompt(s: AthleteSnapshot): string {
   lines.push(`Units: ${useMetric ? "metric (km, °C)" : "imperial (mi, °F)"}`);
 
   lines.push(``);
-  lines.push(`# CURRENT FITNESS`);
+  lines.push(`# CURRENT STATE`);
   lines.push(
-    `CTL ${s.fitness.ctl.toFixed(1)} · ATL ${s.fitness.atl.toFixed(1)} · TSB ${s.fitness.tsb.toFixed(1)}`,
+    `Fitness ${s.fitness.ctl.toFixed(1)} (CTL) · Fatigue ${s.fitness.atl.toFixed(1)} (ATL) · Freshness ${s.fitness.tsb.toFixed(1)} (TSB)`,
   );
   if (s.fitness.vdot)
     lines.push(
-      `VDOT ${s.fitness.vdot.toFixed(1)} → easy ${pace(s.fitness.paces?.easy, useMetric)}, threshold ${pace(s.fitness.paces?.threshold, useMetric)}, interval ${pace(s.fitness.paces?.interval, useMetric)}`,
+      `Running score ${s.fitness.vdot.toFixed(1)} (VDOT) → easy ${pace(s.fitness.paces?.easy, useMetric)}, threshold ${pace(s.fitness.paces?.threshold, useMetric)}, interval ${pace(s.fitness.paces?.interval, useMetric)}`,
     );
   lines.push(
-    `ACWR ${s.injuryRisk.acwr ?? "—"} (${s.injuryRisk.level}) · acute ${s.injuryRisk.acute} / chronic ${s.injuryRisk.chronic}`,
+    `Injury risk ${s.injuryRisk.level} (ACWR ${s.injuryRisk.acwr ?? "—"}) · acute ${s.injuryRisk.acute} / chronic ${s.injuryRisk.chronic}`,
+  );
+  lines.push(``);
+  lines.push(
+    `VOCABULARY: speak to the athlete in plain English. Say "Fitness" not CTL, "Fatigue" not ATL, "Freshness" not TSB, "Running score" not VDOT, "injury risk" not ACWR. The technical abbreviations in parentheses above are for your reasoning only — don't surface them in replies unless the athlete asks for the underlying metric by name.`,
   );
 
   if (s.activePlan) {

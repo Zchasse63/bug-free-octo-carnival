@@ -1,6 +1,7 @@
 import { peerCompare } from "@/lib/analytics/peer-compare";
 import { getAthlete } from "@/lib/data/queries";
 import { prefersMetric } from "@/lib/units";
+import { runningScoreBand } from "@/lib/analytics/labels";
 
 const ATHLETE_ID = 56272355;
 
@@ -26,10 +27,13 @@ export default async function CommunityPage() {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="rounded-xl border bg-card p-5">
           <div className="text-xs uppercase tracking-wider text-muted-foreground">
-            Your VDOT
+            Your running score
           </div>
-          <div className="mt-1 font-mono text-3xl font-bold tabular-nums">
-            {compare.my_vdot?.toFixed(1) ?? "—"}
+          <div className="mt-1 text-2xl font-semibold">
+            {runningScoreBand(compare.my_vdot) ?? "—"}
+          </div>
+          <div className="mt-0.5 font-mono text-xs tabular-nums text-muted-foreground">
+            {compare.my_vdot?.toFixed(1) ?? "—"} · VO₂max estimate
           </div>
         </div>
         <div className="rounded-xl border bg-card p-5">

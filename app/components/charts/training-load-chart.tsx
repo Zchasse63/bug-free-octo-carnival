@@ -31,9 +31,9 @@ export function TrainingLoadChart({ data }: { data: DailySeriesPoint[] }) {
   const chartData = data.map((d) => ({
     date: d.date,
     label: shortDate(d.date),
-    CTL: d.ctl,
-    ATL: d.atl,
-    TSB: d.tsb,
+    Fitness: d.ctl,
+    Fatigue: d.atl,
+    Freshness: d.tsb,
   }));
 
   return (
@@ -69,7 +69,7 @@ export function TrainingLoadChart({ data }: { data: DailySeriesPoint[] }) {
           <ReferenceLine y={0} stroke="hsl(var(--border))" strokeDasharray="3 3" />
           <Line
             type="monotone"
-            dataKey="CTL"
+            dataKey="Fitness"
             stroke="#C48A2A"
             strokeWidth={1.75}
             dot={false}
@@ -77,7 +77,7 @@ export function TrainingLoadChart({ data }: { data: DailySeriesPoint[] }) {
           />
           <Line
             type="monotone"
-            dataKey="ATL"
+            dataKey="Fatigue"
             stroke="#EF4444"
             strokeWidth={1.75}
             strokeDasharray="3 3"
@@ -86,7 +86,7 @@ export function TrainingLoadChart({ data }: { data: DailySeriesPoint[] }) {
           />
           <Line
             type="monotone"
-            dataKey="TSB"
+            dataKey="Freshness"
             stroke="#3B82F6"
             strokeWidth={1.75}
             dot={false}
@@ -97,15 +97,15 @@ export function TrainingLoadChart({ data }: { data: DailySeriesPoint[] }) {
       <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <span className="h-0.5 w-4 bg-saffron-500" />
-          CTL (fitness)
+          Fitness
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-0.5 w-4 border-t-2 border-dashed border-red-500" />
-          ATL (fatigue)
+          Fatigue
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-0.5 w-4 bg-blue-500" />
-          TSB (form)
+          Freshness
         </span>
       </div>
     </div>

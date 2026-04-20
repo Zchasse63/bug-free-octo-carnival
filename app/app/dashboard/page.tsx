@@ -1,6 +1,7 @@
 import { AppShell } from "@/components/app-shell";
 import { EmptyState } from "@/components/empty-state";
 import { GlowTile, TileLabel, BigNumber } from "@/components/glow-tile";
+import { FreshnessScale } from "@/components/freshness-scale";
 import {
   getActiveGear,
   getAthlete,
@@ -26,6 +27,16 @@ import { WeeklyVolumeChart } from "@/components/charts/weekly-volume-chart";
 import { createServiceClient } from "@/lib/supabase/service";
 import { Activity, Footprints } from "lucide-react";
 import Link from "next/link";
+import {
+  fatigueLevel,
+  fitnessBand,
+  formatRaceTime,
+  freshnessBand,
+  predictedRaceTimes,
+  runningScoreBand,
+  trendArrow,
+  trendDelta,
+} from "@/lib/analytics/labels";
 
 const ATHLETE_ID = 56272355;
 
@@ -81,6 +92,19 @@ export default async function DashboardPage() {
   const unit = useMetric ? "km" : "mi";
   const verdict = tsbVerdict(tsb);
 
+  // Plain-English labels (the primary user-facing copy).
+  const fitnessLabel = fitnessBand(ctl);
+  const fatigueLabel = fatigueLevel(atl, ctl);
+  const freshnessLabel = freshnessBand(tsb);
+  const scoreBand = runningScoreBand(vdotInfo.vdot);
+  const races = predictedRaceTimes(vdotInfo.vdot);
+
+  // Fitness trend: CTL now vs 4 weeks ago (28 data points back).
+  const fourWeeksIdx = Math.max(0, trainingLoad.length - 29);
+  const ctlThen = trainingLoad[fourWeeksIdx]?.ctl ?? ctl;
+  const fitnessDelta = trendDelta(ctl, ctlThen, 1);
+  const fitnessDir = trendArrow(ctl, ctlThen, 0.5);
+
   const syncPct = syncStatus.total
     ? Math.round((syncStatus.detailed / syncStatus.total) * 100)
     : 0;
@@ -130,19 +154,28 @@ export default async function DashboardPage() {
           </h1>
 
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-            TSB{" "}
-            <span className="font-mono tabular-nums text-foreground">
-              {tsb.toFixed(0)}
-            </span>{" "}
-            · CTL{" "}
-            <span className="font-mono tabular-nums text-foreground">
-              {ctl.toFixed(1)}
-            </span>{" "}
-            · ACWR{" "}
-            <span className="font-mono tabular-nums text-foreground">
-              {injuryRisk.acwr?.toFixed(2) ?? "—"}
-            </span>{" "}
-            ({injuryRisk.level}). This week:{" "}
+            <span className="text-foreground">{freshnessLabel ?? "—"}</span>
+            {fitnessLabel && (
+              <>
+                {" "}· fitness is{" "}
+                <span className="text-foreground">{fitnessLabel.toLowerCase()}</span>
+              </>
+            )}
+            {" "}· injury risk{" "}
+            <span
+              className={
+                injuryRisk.level === "optimal"
+                  ? "text-emerald-500"
+                  : injuryRisk.level === "elevated"
+                    ? "text-amber-500"
+                    : injuryRisk.level === "high"
+                      ? "text-red-500"
+                      : "text-muted-foreground"
+              }
+            >
+              {injuryRisk.level}
+            </span>
+            . This week:{" "}
             <span className="font-mono tabular-nums text-foreground">
               {distanceFn(weekSummary?.run_distance_meters, 1)} {unit}
             </span>{" "}
@@ -160,18 +193,36 @@ export default async function DashboardPage() {
               unit={unit}
               large
             />
-            <Metric label="CTL" value={ctl.toFixed(1)} />
             <Metric
-              label="TSB"
-              value={tsb > 0 ? `+${tsb.toFixed(0)}` : tsb.toFixed(0)}
+              label="Fitness"
+              value={fitnessLabel ?? "—"}
+              valueIsLabel
+              detail={`${ctl.toFixed(0)} · ${
+                fitnessDir === "up" ? "↑" : fitnessDir === "down" ? "↓" : "→"
+              } ${fitnessDelta} vs 4 wk`}
             />
             <Metric
-              label="VDOT"
-              value={vdotInfo.vdot?.toFixed(1) ?? "—"}
+              label="Freshness"
+              value={freshnessLabel ?? "—"}
+              valueIsLabel
+              detail={`${tsb > 0 ? "+" : ""}${tsb.toFixed(0)} balance`}
+            />
+            <Metric
+              label="Running score"
+              value={scoreBand ?? "—"}
+              valueIsLabel
+              detail={
+                vdotInfo.vdot
+                  ? `${vdotInfo.vdot.toFixed(1)}${
+                      races ? ` · 5K ${formatRaceTime(races.km5)}` : ""
+                    }`
+                  : undefined
+              }
             />
             <Metric
               label="Injury risk"
-              value={injuryRisk.acwr?.toFixed(2) ?? "—"}
+              value={injuryRisk.level}
+              valueIsLabel
               tone={injuryRisk.level}
             />
           </div>
@@ -180,10 +231,16 @@ export default async function DashboardPage() {
         {/* Glow tiles — secondary accents */}
         <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <GlowTile tone={verdict.tone}>
-            <TileLabel>Training stress balance</TileLabel>
-            <BigNumber value={tsb.toFixed(0)} unit="TSB" />
-            <div className="mt-4 text-sm text-ink-900/80 dark:text-ink-50/80">
-              ATL {atl.toFixed(1)} · {verdict.verdict} {verdict.adjective}
+            <TileLabel>Freshness</TileLabel>
+            <div className="mt-2 text-2xl font-semibold leading-tight text-ink-900 dark:text-ink-50">
+              {freshnessLabel ?? "—"}
+            </div>
+            <div className="mt-1 font-mono text-xs tabular-nums text-ink-900/60 dark:text-ink-50/60">
+              {tsb > 0 ? "+" : ""}
+              {tsb.toFixed(0)} balance
+            </div>
+            <div className="mt-4">
+              <FreshnessScale tsb={tsb} />
             </div>
           </GlowTile>
 
@@ -229,10 +286,8 @@ export default async function DashboardPage() {
           <div className="card-hover rounded-xl border bg-card p-5">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h2 className="serif text-xl">Training load</h2>
-                <p className="text-xs text-muted-foreground">
-                  CTL · ATL · TSB · last 90 days
-                </p>
+                <h2 className="serif text-xl">Fitness, Fatigue & Freshness</h2>
+                <p className="text-xs text-muted-foreground">Last 90 days</p>
               </div>
             </div>
             <TrainingLoadChart data={trainingLoad} />
@@ -417,12 +472,16 @@ function Metric({
   unit,
   tone,
   large,
+  valueIsLabel,
+  detail,
 }: {
   label: string;
   value: string | number;
   unit?: string;
   tone?: "optimal" | "elevated" | "high" | "low";
   large?: boolean;
+  valueIsLabel?: boolean;
+  detail?: string;
 }) {
   const toneClass = {
     optimal: "text-emerald-500",
@@ -430,20 +489,32 @@ function Metric({
     high: "text-red-500",
     low: "text-muted-foreground",
   }[tone ?? "low"];
+  // Label-style values (e.g. "Competitive", "Productively tired") get a
+  // smaller serif-adjacent treatment so they don't fight with true
+  // numeric hero stats.
+  const numericClass = large ? "text-5xl md:text-6xl" : "text-2xl";
+  const labelClass = large
+    ? "text-3xl md:text-4xl font-semibold"
+    : "text-lg font-semibold capitalize";
   return (
     <div>
       <div className="eyebrow">{label}</div>
       <div className={large ? "mt-1" : "mt-0.5"}>
         <span
-          className={`hero-number text-foreground ${large ? "text-5xl md:text-6xl" : "text-2xl"}`}
+          className={`${valueIsLabel ? labelClass : "hero-number"} ${!valueIsLabel ? numericClass : ""} text-foreground`}
         >
           {value}
         </span>
-        {unit && (
+        {unit && !valueIsLabel && (
           <span className="ml-1.5 text-sm text-muted-foreground">{unit}</span>
         )}
       </div>
-      {tone && (
+      {detail && (
+        <div className="mt-0.5 font-mono text-[11px] tabular-nums text-muted-foreground">
+          {detail}
+        </div>
+      )}
+      {tone && !valueIsLabel && (
         <div
           className={`mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] ${toneClass}`}
         >

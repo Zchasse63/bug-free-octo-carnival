@@ -166,7 +166,7 @@ export function GoalAnalyzer() {
               </div>
               <div className="text-right">
                 <div className="text-xs uppercase tracking-wider text-muted-foreground">
-                  Target VDOT
+                  Target running score
                 </div>
                 <div className="mt-1 font-mono text-3xl font-bold tabular-nums">
                   {result.target_vdot.toFixed(1)}
@@ -205,7 +205,7 @@ export function GoalAnalyzer() {
           {result.recommended_paces && (
             <div className="rounded-xl border bg-card p-5">
               <h3 className="mb-3 text-sm font-semibold">
-                Target paces at VDOT {result.target_vdot.toFixed(1)}
+                Target paces at running score {result.target_vdot.toFixed(1)}
               </h3>
               <div className="grid grid-cols-2 gap-3 text-sm md:grid-cols-5">
                 <div>

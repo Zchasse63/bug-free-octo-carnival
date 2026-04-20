@@ -7,15 +7,15 @@ type ActionKey = "recompute-analytics" | "recompute-vdot" | "recompute-profile";
 const ACTIONS: { key: ActionKey; label: string; description: string }[] = [
   {
     key: "recompute-analytics",
-    label: "Recompute training load + weekly summaries",
+    label: "Recompute fitness & weekly totals",
     description:
-      "Replays every activity through the load formula and rebuilds the weekly rollup. Fast (<30s).",
+      "Replays every activity to rebuild your Fitness / Fatigue / Freshness curves and the weekly rollup. Fast (<30s).",
   },
   {
     key: "recompute-vdot",
-    label: "Recompute VDOT",
+    label: "Recompute running score",
     description:
-      "Re-evaluates best efforts from the last 180 days to pick the strongest performance. Updates paces across the app.",
+      "Re-evaluates your strongest performances from the last 180 days to update your Running score. Refreshes target paces across the app.",
   },
   {
     key: "recompute-profile",

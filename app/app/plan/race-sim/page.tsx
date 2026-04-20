@@ -14,7 +14,7 @@ export default async function PlanRaceSimPage() {
       <div className="mb-6">
         <h1 className="text-3xl font-semibold tracking-tight">Race day simulator</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          VDOT-based prediction with heat, elevation, and form adjustments.
+          Uses your Running score plus heat, elevation, and form adjustments.
         </p>
       </div>
       <RaceSimForm useMetric={useMetric} />
