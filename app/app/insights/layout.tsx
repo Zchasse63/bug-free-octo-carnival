@@ -6,6 +6,7 @@ const ATHLETE_ID = 56272355;
 
 const TABS = [
   { href: "/insights", label: "Analysis" },
+  { href: "/insights/history", label: "History" },
   { href: "/insights/community", label: "Community" },
 ];
 
